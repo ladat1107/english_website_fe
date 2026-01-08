@@ -1,0 +1,314 @@
+/**
+ * BeeStudy - Type Definitions
+ * File chứa các type và interface dùng trong toàn bộ ứng dụng
+ */
+
+// =====================================================
+// USER TYPES
+// =====================================================
+export interface User {
+    id: string;
+    email: string;
+    name: string;
+    avatar?: string;
+    googleId?: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface AuthState {
+    user: User | null;
+    isAuthenticated: boolean;
+    isLoading: boolean;
+}
+
+// =====================================================
+// EXAM TYPES
+// =====================================================
+export interface Exam {
+    id: string;
+    title: string;
+    slug: string;
+    description?: string;
+    type: ExamType;
+    duration: number; // phút
+    totalQuestions: number;
+    totalAttempts: number;
+    thumbnail?: string;
+    sections: Section[];
+    createdAt: string;
+    updatedAt: string;
+}
+
+export type ExamType =
+    | "ielts-full"
+    | "ielts-reading"
+    | "ielts-listening"
+    | "toeic";
+
+export interface Section {
+    id: string;
+    examId: string;
+    title: string;
+    order: number;
+    type: SectionType;
+    content?: string;
+    audioUrl?: string;
+    questionGroups: QuestionGroup[];
+}
+
+export type SectionType = "reading" | "listening" | "writing" | "speaking";
+
+export interface QuestionGroup {
+    id: string;
+    sectionId: string;
+    title?: string;
+    instruction?: string;
+    passage?: string;
+    imageUrl?: string;
+    order: number;
+    questions: Question[];
+}
+
+export interface Question {
+    id: string;
+    groupId: string;
+    content: string;
+    type: QuestionType;
+    options?: QuestionOption[];
+    correctAnswer?: string;
+    explanation?: string;
+    order: number;
+}
+
+export type QuestionType =
+    | "multiple-choice"
+    | "true-false-not-given"
+    | "fill-in-blank"
+    | "matching"
+    | "short-answer"
+    | "essay";
+
+export interface QuestionOption {
+    id: string;
+    label: string;
+    content: string;
+}
+
+// =====================================================
+// EXAM ATTEMPT TYPES
+// =====================================================
+export interface ExamAttempt {
+    id: string;
+    examId: string;
+    userId: string;
+    startTime: string;
+    endTime?: string;
+    status: AttemptStatus;
+    score?: number;
+    totalCorrect?: number;
+    totalWrong?: number;
+    answers: UserAnswer[];
+}
+
+export type AttemptStatus = "in-progress" | "completed" | "submitted";
+
+export interface UserAnswer {
+    id: string;
+    attemptId: string;
+    questionId: string;
+    answer: string;
+    isCorrect?: boolean;
+}
+
+// =====================================================
+// FLASHCARD TYPES
+// =====================================================
+export interface FlashcardDeck {
+    id: string;
+    title: string;
+    slug: string;
+    description?: string;
+    thumbnail?: string;
+    totalCards: number;
+    isPublic: boolean;
+    userId: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface Flashcard {
+    id: string;
+    deckId: string;
+    front: string;
+    back: string;
+    example?: string;
+    imageUrl?: string;
+    audioUrl?: string;
+    order: number;
+}
+
+export interface UserFlashcardProgress {
+    id: string;
+    userId: string;
+    cardId: string;
+    status: FlashcardStatus;
+    lastReviewedAt?: string;
+    nextReviewAt?: string;
+    reviewCount: number;
+}
+
+export type FlashcardStatus = "new" | "learning" | "review" | "mastered";
+
+// =====================================================
+// DICTATION TYPES (Chép chính tả)
+// =====================================================
+export interface DictationExercise {
+    id: string;
+    title: string;
+    slug: string;
+    audioUrl: string;
+    transcript: string;
+    sentences: DictationSentence[];
+    difficulty: DifficultyLevel;
+    totalAttempts: number;
+}
+
+export interface DictationSentence {
+    id: string;
+    exerciseId: string;
+    content: string;
+    startTime: number; // giây
+    endTime: number; // giây
+    order: number;
+}
+
+export type DifficultyLevel = "easy" | "medium" | "hard";
+
+// =====================================================
+// WRITING/SPEAKING SAMPLE TYPES
+// =====================================================
+export interface WritingSample {
+    id: string;
+    title: string;
+    slug: string;
+    type: WritingType;
+    topic: string;
+    question: string;
+    sampleAnswer: string;
+    outline?: string;
+    vocabulary?: VocabularyItem[];
+    band?: number;
+    createdAt: string;
+}
+
+export type WritingType = "task1" | "task2";
+
+export interface SpeakingSample {
+    id: string;
+    title: string;
+    slug: string;
+    part: SpeakingPart;
+    topic: string;
+    questions: string[];
+    sampleAnswer: string;
+    vocabulary?: VocabularyItem[];
+    audioUrl?: string;
+    band?: number;
+    createdAt: string;
+}
+
+export type SpeakingPart = "part1" | "part2" | "part3";
+
+export interface VocabularyItem {
+    word: string;
+    meaning: string;
+    example?: string;
+}
+
+// =====================================================
+// API RESPONSE TYPES
+// =====================================================
+export interface ApiResponse<T> {
+    success: boolean;
+    message?: string;
+    data?: T;
+    error?: string;
+}
+
+export interface PaginatedResponse<T> {
+    success: boolean;
+    data: T[];
+    pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+    };
+}
+
+// =====================================================
+// UI COMPONENT TYPES
+// =====================================================
+export interface NavItem {
+    title: string;
+    href: string;
+    description?: string;
+    children?: NavItem[];
+    icon?: React.ComponentType<{ className?: string }>;
+    disabled?: boolean;
+}
+
+export interface BreadcrumbItem {
+    title: string;
+    href?: string;
+}
+
+export interface SelectOption {
+    value: string;
+    label: string;
+    disabled?: boolean;
+}
+
+export interface TabItem {
+    value: string;
+    label: string;
+    content: React.ReactNode;
+    disabled?: boolean;
+}
+
+// =====================================================
+// FORM TYPES
+// =====================================================
+export interface LoginFormData {
+    email: string;
+    password: string;
+}
+
+export interface RegisterFormData {
+    name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+}
+
+// =====================================================
+// STATISTICS TYPES
+// =====================================================
+export interface UserStatistics {
+    totalExams: number;
+    completedExams: number;
+    averageScore: number;
+    totalStudyTime: number; // phút
+    flashcardsLearned: number;
+    dictationsCompleted: number;
+    streakDays: number;
+}
+
+export interface ExamStatistics {
+    totalAttempts: number;
+    averageScore: number;
+    highestScore: number;
+    lowestScore: number;
+    averageTime: number; // phút
+}

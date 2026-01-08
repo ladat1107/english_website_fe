@@ -1,0 +1,204 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =====================================================
+   BeeStudy - Website học tiếng Anh
+   Màu chủ đạo: Đỏ (#D42525) và Trắng
+   ===================================================== */
+
+@layer base {
+    :root {
+        /* Màu nền */
+        --background: 0 0% 100%;
+        --foreground: 0 0% 10%;
+
+        /* Màu card */
+        --card: 0 0% 100%;
+        --card-foreground: 0 0% 10%;
+
+        /* Màu popover */
+        --popover: 0 0% 100%;
+        --popover-foreground: 0 0% 10%;
+
+        /* Màu chính - Đỏ BeeStudy #D42525 */
+        --primary: 0 73% 49%;
+        --primary-foreground: 0 0% 100%;
+
+        /* Màu phụ - Đỏ nhạt hơn */
+        --secondary: 0 60% 95%;
+        --secondary-foreground: 0 73% 49%;
+
+        /* Màu muted */
+        --muted: 0 0% 96%;
+        --muted-foreground: 0 0% 45%;
+
+        /* Màu accent - Vàng ong */
+        --accent: 45 100% 51%;
+        --accent-foreground: 0 0% 10%;
+
+        /* Màu destructive */
+        --destructive: 0 84% 60%;
+        --destructive-foreground: 0 0% 100%;
+
+        /* Màu success - Xanh lá */
+        --success: 142 76% 36%;
+        --success-foreground: 0 0% 100%;
+
+        /* Màu warning - Cam */
+        --warning: 38 92% 50%;
+        --warning-foreground: 0 0% 100%;
+
+        /* Màu info - Xanh dương */
+        --info: 199 89% 48%;
+        --info-foreground: 0 0% 100%;
+
+        /* Border và input */
+        --border: 0 0% 90%;
+        --input: 0 0% 90%;
+        --ring: 0 73% 49%;
+
+        /* Border radius */
+        --radius: 0.75rem;
+
+        /* Màu gradient */
+        --gradient-start: 0 73% 49%;
+        --gradient-end: 0 73% 40%;
+    }
+
+    .dark {
+        /* Màu nền tối */
+        --background: 0 0% 7%;
+        --foreground: 0 0% 95%;
+
+        /* Màu card tối */
+        --card: 0 0% 12%;
+        --card-foreground: 0 0% 95%;
+
+        /* Màu popover tối */
+        --popover: 0 0% 12%;
+        --popover-foreground: 0 0% 95%;
+
+        /* Màu chính - Đỏ BeeStudy */
+        --primary: 0 73% 55%;
+        --primary-foreground: 0 0% 100%;
+
+        /* Màu phụ tối */
+        --secondary: 0 30% 20%;
+        --secondary-foreground: 0 73% 65%;
+
+        /* Màu muted tối */
+        --muted: 0 0% 20%;
+        --muted-foreground: 0 0% 60%;
+
+        /* Màu accent tối */
+        --accent: 45 100% 45%;
+        --accent-foreground: 0 0% 10%;
+
+        /* Màu destructive tối */
+        --destructive: 0 62% 30%;
+        --destructive-foreground: 0 0% 100%;
+
+        /* Border và input tối */
+        --border: 0 0% 20%;
+        --input: 0 0% 20%;
+        --ring: 0 73% 55%;
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply bg-background text-foreground antialiased;
+        font-feature-settings: "rlig" 1, "calt" 1;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        @apply bg-muted;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        @apply bg-primary/40 rounded-full;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        @apply bg-primary/60;
+    }
+}
+
+@layer components {
+
+    /* Container responsive */
+    .container-custom {
+        @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    }
+
+    /* Gradient background */
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--gradient-end)) 100%);
+    }
+
+    /* Text gradient */
+    .text-gradient-primary {
+        @apply bg-clip-text text-transparent;
+        background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--gradient-end)) 100%);
+        background-clip: text;
+        -webkit-background-clip: text;
+
+        color: transparent;
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* Hover card effect */
+    .hover-card-lift {
+        @apply transition-all duration-300 ease-out;
+    }
+
+    .hover-card-lift:hover {
+        @apply -translate-y-1 shadow-lg;
+    }
+
+    /* Glass effect */
+    .glass-effect {
+        @apply bg-white/80 backdrop-blur-md border border-white/20;
+    }
+
+    /* Bee pattern background */
+    .bee-pattern {
+        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D42525' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+}
+
+@layer utilities {
+
+    /* Animation delays */
+    .animation-delay-200 {
+        animation-delay: 200ms;
+    }
+
+    .animation-delay-400 {
+        animation-delay: 400ms;
+    }
+
+    .animation-delay-600 {
+        animation-delay: 600ms;
+    }
+
+    /* Text balance */
+    .text-balance {
+        text-wrap: balance;
+    }
+}
