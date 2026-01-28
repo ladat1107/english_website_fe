@@ -1,5 +1,5 @@
 /**
- * BeeStudy - Dialog/Modal Component
+ * Khailingo - Dialog/Modal Component
  * Component modal sử dụng Radix UI Dialog
  */
 
@@ -7,9 +7,8 @@
 
 import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/cn";
 
 // Dialog Root
 const Dialog = DialogPrimitive.Root;
@@ -63,7 +62,7 @@ const DialogContent = React.forwardRef<
             <DialogPrimitive.Content
                 ref={ref}
                 className={cn(
-                    "fixed left-[50%] top-[50%] z-50 grid w-full translate-x-[-50%] translate-y-[-50%]",
+                    "fixed left-[50%] top-[50%] z-50 grid w-[95vw] sm:w-full translate-x-[-50%] translate-y-[-50%]",
                     "gap-4 border bg-background p-6 shadow-xl rounded-2xl",
                     "duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out",
                     "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",

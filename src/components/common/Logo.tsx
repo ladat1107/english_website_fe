@@ -1,10 +1,10 @@
 /**
- * BeeStudy - Logo Component
- * Component hiển thị logo BeeStudy
+ * Khailingo - Logo Component
+ * Component hiển thị logo Khailingo
  */
 
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/cn";
 
 interface LogoProps {
     className?: string;
@@ -68,8 +68,8 @@ export const Logo: React.FC<LogoProps> = ({
                         sizeStyles[size].text
                     )}
                 >
-                    <span className="text-primary">Bee</span>
-                    <span className="text-foreground">Study</span>
+                    <span className="text-primary">Khai</span>
+                    <span className="text-foreground">lingo</span>
                 </span>
             )}
         </Link>

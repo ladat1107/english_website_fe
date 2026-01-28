@@ -1,5 +1,5 @@
 /**
- * BeeStudy - Type Definitions
+ * Khailingo - Type Definitions
  * File chứa các type và interface dùng trong toàn bộ ứng dụng
  */
 
@@ -229,11 +229,21 @@ export interface VocabularyItem {
 // =====================================================
 // API RESPONSE TYPES
 // =====================================================
+/**
+ * Interface response chuẩn từ Backend
+ * Khớp 100% với BE ApiResponse DTO
+ */
 export interface ApiResponse<T> {
-    success: boolean;
-    message?: string;
-    data?: T;
-    error?: string;
+    success: boolean;          // true = thành công, false = lỗi
+    message?: string;          // Thông báo cho user
+    data?: T;                  // Dữ liệu trả về (khi success = true)
+    error?: {                  // Thông tin lỗi (khi success = false)
+        code: string;          // Mã lỗi (VD: UNAUTHORIZED, VALIDATION_ERROR)
+        details?: any;         // Chi tiết lỗi (validation errors, stack trace...)
+    };
+    timestamp: string;         // Thời gian response
+    path: string;              // Đường dẫn API được gọi
+    statusCode?: number;       // HTTP status code
 }
 
 export interface PaginatedResponse<T> {

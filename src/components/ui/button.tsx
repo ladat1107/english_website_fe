@@ -1,12 +1,12 @@
 /**
- * BeeStudy - Button Component
+ * Khailingo - Button Component
  * Component nút bấm với nhiều biến thể và kích thước
  */
 
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/cn";
 
 // Định nghĩa các biến thể của button
 const buttonVariants = cva(
@@ -15,9 +15,9 @@ const buttonVariants = cva(
     {
         variants: {
             variant: {
-                // Nút chính - màu đỏ BeeStudy
+                // Nút chính - màu đỏ Khailingo
                 default:
-                    "bg-primary text-primary-foreground shadow-primary hover:bg-primary/90 active:scale-[0.98]",
+                    "bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.98]",
                 // Nút phá hoại - màu đỏ đậm
                 destructive:
                     "bg-destructive text-destructive-foreground hover:bg-destructive/90",

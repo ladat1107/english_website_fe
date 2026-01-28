@@ -1,11 +1,11 @@
 /**
- * BeeStudy - Trang Luyện Thi IELTS Speaking
+ * Khailingo - Trang Luyện Thi IELTS Speaking
  * Danh sách bài mẫu và luyện tập Speaking
  */
 
 import { Metadata } from "next";
 import Link from "next/link";
-import { FiMic, FiUsers, FiClock, FiArrowRight, FiPlay, FiVideo } from "react-icons/fi";
+import { FiMic, FiUsers, FiClock, FiPlay, FiVideo } from "react-icons/fi";
 import { Card, CardContent, Button, Badge, Tabs, TabsList, TabsTrigger } from "@/components/ui";
 
 export const metadata: Metadata = {

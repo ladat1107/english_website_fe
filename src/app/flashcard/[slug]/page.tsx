@@ -1,16 +1,16 @@
 /**
- * BeeStudy - Trang Chi tiết Flashcard Deck
+ * Khailingo - Trang Chi tiết Flashcard Deck
  * Hiển thị các thẻ flashcard và cho phép học
  */
 
 "use client";
 
 import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
     FiArrowLeft, FiArrowRight, FiRotateCcw, FiVolume2,
-    FiCheck, FiX, FiHelpCircle, FiLayers, FiHome
+    FiCheck, FiX, FiHelpCircle, FiLayers
 } from "react-icons/fi";
 import { Card, CardContent, Button, Badge, Progress } from "@/components/ui";
 
@@ -59,7 +59,6 @@ const sampleCards = [
 ];
 
 export default function FlashcardDetailPage() {
-    const params = useParams();
     const router = useRouter();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isFlipped, setIsFlipped] = useState(false);

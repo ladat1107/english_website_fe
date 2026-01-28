@@ -1,5 +1,5 @@
 /**
- * BeeStudy - Nghe Chép Chính Tả Layout
+ * Khailingo - Nghe Chép Chính Tả Layout
  * Layout chung cho các trang dictation
  */
 

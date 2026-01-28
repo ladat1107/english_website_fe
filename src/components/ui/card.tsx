@@ -1,10 +1,12 @@
 /**
- * BeeStudy - Card Component
+ * Khailingo - Card Component
  * Component thẻ card với nhiều biến thể
  */
 
+"use client";
 import * as React from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/cn";
+import Image from "next/image";
 
 // Card Container
 const Card = React.forwardRef<
@@ -127,10 +129,12 @@ const CardImage = React.forwardRef<
             )}
             {...props}
         >
-            <img
+            <Image
                 src={src}
                 alt={alt}
                 className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+                width={500}
+                height={300}
             />
         </div>
     );

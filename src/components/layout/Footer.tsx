@@ -1,14 +1,12 @@
 /**
- * BeeStudy - Footer Component
+ * Khailingo - Footer Component
  * Component footer của website
  */
 
 import Link from "next/link";
 import { FaFacebook, FaYoutube, FaTiktok, FaInstagram } from "react-icons/fa";
 import { FiMail, FiPhone, FiMapPin } from "react-icons/fi";
-import { cn } from "@/lib/utils";
-import { SITE_CONFIG, FOOTER_NAV } from "@/lib/constants";
-import Logo from "../common/Logo";
+import { SITE_CONFIG, FOOTER_NAV } from "@/utils/constants";
 
 export const Footer: React.FC = () => {
     const currentYear = new Date().getFullYear();
@@ -65,7 +63,7 @@ export const Footer: React.FC = () => {
                                 </svg>
                             </div>
                             <span className="text-2xl font-bold">
-                                <span className="text-primary">Bee</span>Study
+                                <span className="text-primary">Khai</span>lingo
                             </span>
                         </div>
                         <p className="text-white/70 mb-6 max-w-md">
@@ -198,7 +196,7 @@ export const Footer: React.FC = () => {
             <div className="border-t border-white/10">
                 <div className="container-custom py-6">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-white/60 text-sm">
-                        <p>© {currentYear} BeeStudy. All rights reserved.</p>
+                        <p>© {currentYear} Khailingo. All rights reserved.</p>
                         <div className="flex items-center gap-6">
                             <Link href="/chinh-sach-bao-mat" className="hover:text-primary transition-colors">
                                 Chính sách bảo mật

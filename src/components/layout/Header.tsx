@@ -1,5 +1,5 @@
 /**
- * BeeStudy - Header Component
+ * Khailingo - Header Component
  * Component header chính của website
  */
 
@@ -8,18 +8,17 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiMenu, FiX, FiChevronDown, FiUser } from "react-icons/fi";
+import { FiMenu, FiX, FiChevronDown, FiUser, FiLogOut } from "react-icons/fi";
 import { FcGoogle } from "react-icons/fc";
-import { cn } from "@/lib/utils";
-import { MAIN_NAV_ITEMS } from "@/lib/constants";
+import { cn } from "@/utils/cn";
+import { MAIN_NAV_ITEMS } from "@/utils/constants";
 import { Button } from "@/components/ui";
 import Logo from "../common/Logo";
+import { useAuth } from "@/contexts";
+import Image from "next/image";
 
-interface HeaderProps {
-    onOpenAuthModal?: () => void;
-}
-
-export const Header: React.FC<HeaderProps> = ({ onOpenAuthModal }) => {
+export const Header: React.FC = () => {
+    const { user, isAuthenticated, isLoading, openAuthModal, logout } = useAuth();
     // State để kiểm tra scroll
     const [isScrolled, setIsScrolled] = useState(false);
     // State menu mobile
@@ -127,21 +126,43 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAuthModal }) => {
 
                     {/* Right Actions */}
                     <div className="flex items-center gap-3">
-                        {/* Nút Đăng nhập */}
-                        <Button
-                            onClick={onOpenAuthModal}
-                            variant="outline"
-                            className="hidden sm:flex"
-                        >
-                            <FiUser className="w-4 h-4 mr-2" />
-                            Đăng nhập
-                        </Button>
-
-                        {/* Nút Đăng ký miễn phí */}
-                        <Button onClick={onOpenAuthModal} className="hidden md:flex">
-                            <FcGoogle className="w-4 h-4 mr-2" />
-                            Đăng ký miễn phí
-                        </Button>
+                        {/* User Menu hoặc Nút Đăng nhập */}
+                        {isLoading ? (
+                            <div className="hidden md:flex w-24 h-10 bg-muted rounded-lg animate-pulse" />
+                        ) : isAuthenticated && user ? (
+                            <div className="hidden md:flex items-center gap-3">
+                                <div className="flex items-center gap-2">
+                                    {user.avatar_url ? (
+                                        <Image
+                                            src={user.avatar_url}
+                                            alt={user.full_name}
+                                            width={32}
+                                            height={32}
+                                            className="w-8 h-8 rounded-full object-cover"
+                                        />
+                                    ) : (
+                                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                                            <FiUser className="w-4 h-4 text-primary" />
+                                        </div>
+                                    )}
+                                    <span className="text-sm font-medium max-w-32 truncate">
+                                        {user.full_name}
+                                    </span>
+                                </div>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={logout}
+                                    className="text-muted-foreground hover:text-foreground"
+                                >
+                                    <FiLogOut className="w-4 h-4" />
+                                </Button>
+                            </div>
+                        ) : (
+                            <Button onClick={openAuthModal} className="hidden md:flex bg-primary/80">
+                                Đăng nhập
+                            </Button>
+                        )}
 
                         {/* Mobile Menu Toggle */}
                         <button
@@ -227,16 +248,51 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAuthModal }) => {
 
                             {/* Mobile Auth Buttons */}
                             <div className="pt-4 border-t space-y-2">
-                                <Button
-                                    onClick={() => {
-                                        setIsMobileMenuOpen(false);
-                                        onOpenAuthModal?.();
-                                    }}
-                                    className="w-full"
-                                >
-                                    <FcGoogle className="w-5 h-5 mr-2" />
-                                    Đăng ký / Đăng nhập với Google
-                                </Button>
+                                {isAuthenticated && user ? (
+                                    <div className="space-y-3">
+                                        <div className="flex items-center gap-3 px-4 py-2">
+                                            {user.avatar_url ? (
+                                                <Image
+                                                    src={user.avatar_url}
+                                                    alt={user.full_name}
+                                                    width={40}
+                                                    height={40}
+                                                    className="w-10 h-10 rounded-full object-cover"
+                                                />
+                                            ) : (
+                                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                                                    <FiUser className="w-5 h-5 text-primary" />
+                                                </div>
+                                            )}
+                                            <div>
+                                                <p className="font-medium">{user.full_name}</p>
+                                                <p className="text-sm text-muted-foreground">{user.email}</p>
+                                            </div>
+                                        </div>
+                                        <Button
+                                            variant="outline"
+                                            onClick={() => {
+                                                setIsMobileMenuOpen(false);
+                                                logout();
+                                            }}
+                                            className="w-full"
+                                        >
+                                            <FiLogOut className="w-5 h-5 mr-2" />
+                                            Đăng xuất
+                                        </Button>
+                                    </div>
+                                ) : (
+                                    <Button
+                                        onClick={() => {
+                                            setIsMobileMenuOpen(false);
+                                            openAuthModal();
+                                        }}
+                                        className="w-full"
+                                    >
+                                        <FcGoogle className="w-5 h-5 mr-2" />
+                                        Đăng ký / Đăng nhập với Google
+                                    </Button>
+                                )}
                             </div>
                         </div>
                     </motion.div>

@@ -1,19 +1,18 @@
 /**
- * BeeStudy - Trang Giới Thiệu
- * Giới thiệu về BeeStudy và sứ mệnh
+ * Khailingo - Trang Giới Thiệu
+ * Giới thiệu về Khailingo và sứ mệnh
  */
 
 import { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { FiTarget, FiHeart, FiUsers, FiAward, FiArrowRight } from "react-icons/fi";
-import { Card, CardContent, Button, Badge } from "@/components/ui";
+import { Card, Button, Badge } from "@/components/ui";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
-    title: "Giới Thiệu - BeeStudy",
-    description: "BeeStudy - Nền tảng học tiếng Anh và luyện thi IELTS miễn phí hàng đầu Việt Nam.",
+    title: "Giới Thiệu - Khailingo",
+    description: "Khailingo - Nền tảng học tiếng Anh và luyện thi IELTS miễn phí hàng đầu Việt Nam.",
 };
 
 // Team members data
@@ -46,7 +45,7 @@ const teamMembers = [
 
 // Milestones data
 const milestones = [
-    { year: "2020", event: "BeeStudy được thành lập" },
+    { year: "2020", event: "Khailingo được thành lập" },
     { year: "2021", event: "Đạt 10,000 người dùng đầu tiên" },
     { year: "2022", event: "Ra mắt tính năng Flashcard và Dictation" },
     { year: "2023", event: "Đạt 100,000 người dùng" },
@@ -63,13 +62,13 @@ export default function AboutPage() {
                     <div className="container-custom">
                         <div className="text-center max-w-3xl mx-auto">
                             <Badge variant="secondary" size="lg" className="mb-4">
-                                Về BeeStudy
+                                Về Khailingo
                             </Badge>
                             <h1 className="text-4xl md:text-5xl font-bold mb-6">
                                 Sứ mệnh mang <span className="text-primary">tiếng Anh</span> đến với mọi người
                             </h1>
                             <p className="text-lg text-muted-foreground mb-8">
-                                BeeStudy được thành lập với mục tiêu giúp người Việt Nam học tiếng Anh
+                                Khailingo được thành lập với mục tiêu giúp người Việt Nam học tiếng Anh
                                 và luyện thi IELTS một cách hiệu quả và hoàn toàn miễn phí.
                             </p>
                         </div>
@@ -150,7 +149,7 @@ export default function AboutPage() {
                         <div className="max-w-3xl mx-auto text-center mb-12">
                             <h2 className="text-3xl font-bold mb-4">Câu chuyện của chúng tôi</h2>
                             <p className="text-muted-foreground">
-                                BeeStudy bắt đầu từ ước mơ đơn giản: giúp mọi người Việt Nam có thể
+                                Khailingo bắt đầu từ ước mơ đơn giản: giúp mọi người Việt Nam có thể
                                 tiếp cận nguồn tài liệu học IELTS chất lượng mà không phải lo lắng về chi phí.
                             </p>
                         </div>
@@ -182,7 +181,7 @@ export default function AboutPage() {
                         <div className="text-center mb-12">
                             <h2 className="text-3xl font-bold mb-4">Đội ngũ của chúng tôi</h2>
                             <p className="text-muted-foreground max-w-2xl mx-auto">
-                                Những người tâm huyết đằng sau BeeStudy, luôn nỗ lực mang đến
+                                Những người tâm huyết đằng sau Khailingo, luôn nỗ lực mang đến
                                 trải nghiệm học tập tốt nhất cho bạn.
                             </p>
                         </div>
@@ -211,7 +210,7 @@ export default function AboutPage() {
                                 Bắt đầu hành trình chinh phục IELTS
                             </h2>
                             <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
-                                Tham gia cùng hơn 100,000+ người học đang sử dụng BeeStudy
+                                Tham gia cùng hơn 100,000+ người học đang sử dụng Khailingo
                                 để cải thiện tiếng Anh mỗi ngày.
                             </p>
                             <Link href="/luyen-thi-ielts">

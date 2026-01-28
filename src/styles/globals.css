@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* =====================================================
-   BeeStudy - Website học tiếng Anh
+   Khailingo - Website học tiếng Anh
    Màu chủ đạo: Đỏ (#D42525) và Trắng
    ===================================================== */
 
@@ -21,7 +21,7 @@
         --popover: 0 0% 100%;
         --popover-foreground: 0 0% 10%;
 
-        /* Màu chính - Đỏ BeeStudy #D42525 */
+        /* Màu chính - Đỏ Khailingo #D42525 */
         --primary: 0 73% 49%;
         --primary-foreground: 0 0% 100%;
 
@@ -79,7 +79,7 @@
         --popover: 0 0% 12%;
         --popover-foreground: 0 0% 95%;
 
-        /* Màu chính - Đỏ BeeStudy */
+        /* Màu chính - Đỏ Khailingo */
         --primary: 0 73% 55%;
         --primary-foreground: 0 0% 100%;
 

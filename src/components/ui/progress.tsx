@@ -1,5 +1,5 @@
 /**
- * BeeStudy - Progress Component
+ * Khailingo - Progress Component
  * Component thanh tiến trình
  */
 
@@ -7,7 +7,7 @@
 
 import * as React from "react";
 import * as ProgressPrimitive from "@radix-ui/react-progress";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/cn";
 
 // Progress Bar
 const Progress = React.forwardRef<

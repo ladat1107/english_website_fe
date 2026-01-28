@@ -1,5 +1,5 @@
 /**
- * BeeStudy - Practice Section Component
+ * Khailingo - Practice Section Component
  * Section luyện tập Reading và Listening
  */
 

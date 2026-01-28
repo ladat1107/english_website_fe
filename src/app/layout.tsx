@@ -1,6 +1,7 @@
 /**
- * BeeStudy - Root Layout
- * Layout gốc của ứng dụng
+ * Khailingo - Root Layout
+ * Layout gốc của ứng dụng - Server Component
+ * Chỉ có ClientProviders là client component để tối ưu SEO
  */
 
 import '@/styles/globals.css';
@@ -8,7 +9,8 @@ import '@/styles/globals.css';
 import { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { ReactNode } from 'react';
-import { SITE_CONFIG } from '@/lib/constants';
+import { SITE_CONFIG } from '@/utils/constants';
+import { ClientProviders } from '@/components/providers';
 
 // Font chính của website
 const inter = Inter({
@@ -35,14 +37,21 @@ export const metadata: Metadata = {
     'IELTS speaking',
     'flashcard',
     'chép chính tả',
-    'BeeStudy',
+    'Khailingo',
   ],
-  authors: [{ name: 'BeeStudy Team' }],
-  creator: 'BeeStudy',
-  publisher: 'BeeStudy',
+  authors: [{ name: 'Khailingo Team' }],
+  creator: 'Khailingo',
+  publisher: 'Khailingo',
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
   openGraph: {
     type: 'website',
@@ -72,6 +81,9 @@ export const metadata: Metadata = {
     apple: '/apple-touch-icon.png',
   },
   manifest: '/site.webmanifest',
+  alternates: {
+    canonical: SITE_CONFIG.url,
+  },
 };
 
 // Viewport configuration
@@ -82,19 +94,24 @@ export const viewport: Viewport = {
   ],
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
+  maximumScale: 5,
 };
 
 interface RootLayoutProps {
   children: ReactNode;
 }
 
+/**
+ * Root Layout - Server Component thuần
+ * ClientProviders wrap children để cung cấp auth context
+ */
 const RootLayout = ({ children }: RootLayoutProps) => {
   return (
     <html lang="vi" className={inter.variable} suppressHydrationWarning>
       <body className={`${inter.className} min-h-screen antialiased`}>
-        {/* Main content */}
-        {children}
+        <ClientProviders>
+          {children}
+        </ClientProviders>
       </body>
     </html>
   );

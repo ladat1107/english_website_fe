@@ -1,12 +1,12 @@
 /**
- * BeeStudy - Trang Nghe Chép Chính Tả (Dictation)
+ * Khailingo - Trang Nghe Chép Chính Tả (Dictation)
  * Luyện nghe và ghi chép để cải thiện khả năng nghe
  */
 
 import { Metadata } from "next";
 import Link from "next/link";
 import { FiHeadphones, FiUsers, FiClock, FiPlay } from "react-icons/fi";
-import { Card, CardContent, Button, Badge, Tabs, TabsList, TabsTrigger, TabsContent, Progress } from "@/components/ui";
+import { Card, CardContent, Button, Badge, Tabs, TabsList, TabsTrigger, Progress } from "@/components/ui";
 
 export const metadata: Metadata = {
     title: "Nghe Chép Chính Tả - Luyện Nghe IELTS Hiệu Quả",

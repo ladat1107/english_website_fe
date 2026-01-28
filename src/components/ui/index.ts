@@ -1,5 +1,5 @@
 /**
- * BeeStudy - UI Components Index
+ * Khailingo - UI Components Index
  * Export tất cả UI components
  */
 

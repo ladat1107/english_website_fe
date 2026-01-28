@@ -1,12 +1,12 @@
 /**
- * BeeStudy - Trang IELTS Reading Practice
+ * Khailingo - Trang IELTS Reading Practice
  * Hiển thị danh sách các bài luyện Reading
  */
 
 import { Metadata } from "next";
 import Link from "next/link";
 import { FiArrowRight, FiBook, FiUsers, FiFilter, FiSearch } from "react-icons/fi";
-import { Card, CardContent, Button, Badge, Input, Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui";
+import { Card, CardContent, Button, Badge, Input, Tabs, TabsList, TabsTrigger } from "@/components/ui";
 
 export const metadata: Metadata = {
     title: "IELTS Reading Practice - Luyện đề Reading online",

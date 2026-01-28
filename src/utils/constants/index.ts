@@ -1,5 +1,5 @@
 /**
- * BeeStudy - Constants
+ * Khailingo - Constants
  * File chứa các hằng số dùng trong toàn bộ ứng dụng
  */
 
@@ -7,20 +7,20 @@
 // THÔNG TIN WEBSITE
 // =====================================================
 export const SITE_CONFIG = {
-    name: "BeeStudy",
+    name: "Khailingo",
     description: "Nền tảng học tiếng Anh online miễn phí và chất lượng",
     slogan: "Học tiếng Anh thông minh như chú ong chăm chỉ",
-    url: "https://beestudy.vn",
+    url: "https://khailingo.vn",
     logo: "/images/logo.svg",
-    logoText: "BeeStudy",
-    email: "support@beestudy.vn",
+    logoText: "Khailingo",
+    email: "support@khailingo.vn",
     phone: "1800 96 96 39",
     address: "TP. Hồ Chí Minh, Việt Nam",
     social: {
-        facebook: "https://facebook.com/beestudy",
-        youtube: "https://youtube.com/beestudy",
-        tiktok: "https://tiktok.com/@beestudy",
-        instagram: "https://instagram.com/beestudy",
+        facebook: "https://facebook.com/khailingo",
+        youtube: "https://youtube.com/khailingo",
+        tiktok: "https://tiktok.com/@khailingo",
+        instagram: "https://instagram.com/khailingo",
     },
 } as const;
 

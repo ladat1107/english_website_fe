@@ -1,5 +1,5 @@
 /**
- * BeeStudy - Sections Components Index
+ * Khailingo - Sections Components Index
  * Export tất cả section components
  */
 

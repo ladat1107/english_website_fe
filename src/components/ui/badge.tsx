@@ -1,11 +1,11 @@
 /**
- * BeeStudy - Badge Component
+ * Khailingo - Badge Component
  * Component nhãn/tag với nhiều biến thể
  */
 
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/cn";
 
 // Định nghĩa các biến thể của badge
 const badgeVariants = cva(
@@ -13,7 +13,7 @@ const badgeVariants = cva(
     {
         variants: {
             variant: {
-                // Mặc định - màu đỏ BeeStudy
+                // Mặc định - màu đỏ Khailingo
                 default:
                     "bg-primary text-primary-foreground hover:bg-primary/80",
                 // Phụ

@@ -1,9 +1,9 @@
 /**
- * BeeStudy - Skeleton Component
+ * Khailingo - Skeleton Component
  * Component skeleton loading
  */
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/cn";
 
 // Skeleton Base
 function Skeleton({

@@ -1,5 +1,5 @@
 /**
- * BeeStudy - Trang IELTS Listening Practice
+ * Khailingo - Trang IELTS Listening Practice
  * Hiển thị danh sách các bài luyện Listening
  */
 

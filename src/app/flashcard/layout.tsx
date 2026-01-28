@@ -1,12 +1,11 @@
 /**
- * BeeStudy - Flashcard Layout
+ * Khailingo - Flashcard Layout
  * Layout chung cho các trang Flashcard
  */
 
 import { ReactNode } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { AuthModal } from "@/components/layout/AuthModal";
 
 interface FlashcardLayoutProps {
     children: ReactNode;

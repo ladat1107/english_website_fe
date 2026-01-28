@@ -1,12 +1,12 @@
 /**
- * BeeStudy - Trang IELTS Full Test
+ * Khailingo - Trang IELTS Full Test
  * Hiển thị danh sách các bài thi đầy đủ IELTS
  */
 
 import { Metadata } from "next";
 import Link from "next/link";
 import { FiArrowRight, FiClock, FiUsers, FiHeadphones, FiBook, FiCheckCircle } from "react-icons/fi";
-import { Card, CardContent, Button, Badge, Progress } from "@/components/ui";
+import { Card, CardContent, Button, Badge } from "@/components/ui";
 
 export const metadata: Metadata = {
     title: "IELTS Full Test - Làm bài thi IELTS đầy đủ online",

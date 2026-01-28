@@ -1,5 +1,5 @@
 /**
- * BeeStudy - Samples Section Component
+ * Khailingo - Samples Section Component
  * Section hiển thị bài mẫu Writing và Speaking
  */
 
@@ -8,7 +8,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { FiArrowRight, FiPenTool, FiMic } from "react-icons/fi";
-import { Card, CardContent, Badge, Button } from "@/components/ui";
+import { Card, CardContent, Badge } from "@/components/ui";
 
 // Dữ liệu mẫu Writing
 const writingSamples = [
@@ -125,7 +125,7 @@ export const SamplesSection: React.FC = () => {
 
                         {/* Cards */}
                         <div className="space-y-4">
-                            {writingSamples.map((sample, index) => (
+                            {writingSamples.map((sample) => (
                                 <Link
                                     key={sample.id}
                                     href={`/bai-mau/writing/${sample.id}`}
@@ -188,7 +188,7 @@ export const SamplesSection: React.FC = () => {
 
                         {/* Cards */}
                         <div className="space-y-4">
-                            {speakingSamples.map((sample, index) => (
+                            {speakingSamples.map((sample) => (
                                 <Link
                                     key={sample.id}
                                     href={`/bai-mau/speaking/${sample.id}`}

@@ -7,7 +7,7 @@ module.exports = {
   ],
   theme: {
     extend: {
-      /* Màu sắc BeeStudy */
+      /* Màu sắc Khailingo */
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -42,7 +42,7 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        /* Màu bổ sung cho BeeStudy */
+        /* Màu bổ sung cho Khailingo */
         success: {
           DEFAULT: "hsl(var(--success))",
           foreground: "hsl(var(--success-foreground))",
@@ -55,7 +55,7 @@ module.exports = {
           DEFAULT: "hsl(var(--info))",
           foreground: "hsl(var(--info-foreground))",
         },
-        /* Màu đỏ BeeStudy cụ thể */
+        /* Màu đỏ Khailingo cụ thể */
         bee: {
           red: "#D42525",
           "red-dark": "#B91C1C",

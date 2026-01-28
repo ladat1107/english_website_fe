@@ -1,5 +1,5 @@
 /**
- * BeeStudy - Trang danh sách đề thi IELTS
+ * Khailingo - Trang danh sách đề thi IELTS
  * Hiển thị tất cả các bộ đề thi IELTS
  */
 

@@ -1,5 +1,5 @@
 /**
- * BeeStudy - Common Components Index
+ * Khailingo - Common Components Index
  * Export tất cả common components
  */
 

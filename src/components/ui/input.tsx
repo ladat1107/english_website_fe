@@ -1,10 +1,11 @@
 /**
- * BeeStudy - Input Component
+ * Khailingo - Input Component
  * Component input với nhiều biến thể
  */
 
+"use client";
 import * as React from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/cn";
 
 export interface InputProps
     extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -30,7 +31,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         },
         ref
     ) => {
-        const inputId = id || React.useId();
+        const generatedId = React.useId();
+        const inputId = id ?? generatedId;
+        //const inputId = id || React.useId();
 
         return (
             <div className="w-full">
@@ -107,7 +110,9 @@ export interface TextareaProps
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
     ({ className, error, label, helperText, id, ...props }, ref) => {
-        const textareaId = id || React.useId();
+        const generatedId = React.useId();
+        const textareaId = id ?? generatedId;
+        //const textareaId = id || React.useId();
 
         return (
             <div className="w-full">

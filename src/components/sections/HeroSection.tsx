@@ -1,21 +1,19 @@
 /**
- * BeeStudy - Hero Section Component
+ * Khailingo - Hero Section Component
  * Section hero chính trên trang chủ
  */
 
 "use client";
 
 import { motion } from "framer-motion";
-import { FiPlay, FiArrowRight } from "react-icons/fi";
+import { FiArrowRight } from "react-icons/fi";
 import { FcGoogle } from "react-icons/fc";
 import { Button } from "@/components/ui";
-import { ANIMATION_VARIANTS } from "@/lib/constants";
+import { ANIMATION_VARIANTS } from "@/utils/constants";
+import { useAuth } from "@/contexts";
 
-interface HeroSectionProps {
-    onOpenAuthModal: () => void;
-}
-
-export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenAuthModal }) => {
+export const HeroSection: React.FC = () => {
+    const { openAuthModal } = useAuth();
     return (
         <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-hero bee-pattern">
             {/* Decorative elements */}
@@ -98,7 +96,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenAuthModal }) => 
                             variants={ANIMATION_VARIANTS.fadeInUp}
                             className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto lg:mx-0"
                         >
-                            BeeStudy cung cấp đầy đủ nội dung chất lượng gồm IELTS Online Test,
+                            Khailingo cung cấp đầy đủ nội dung chất lượng gồm IELTS Online Test,
                             luyện đề Reading, Listening, bài mẫu Writing, Speaking kết hợp
                             nghe chép chính tả và flashcard từ vựng.
                         </motion.p>
@@ -110,20 +108,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onOpenAuthModal }) => 
                         >
                             <Button
                                 size="xl"
-                                onClick={onOpenAuthModal}
+                                onClick={openAuthModal}
                                 className="group"
                             >
                                 <FcGoogle className="w-5 h-5 mr-2" />
                                 Đăng ký miễn phí ngay
                                 <FiArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
-                            </Button>
-                            <Button
-                                variant="outline"
-                                size="xl"
-                                className="group"
-                            >
-                                <FiPlay className="w-5 h-5 mr-2" />
-                                Xem video giới thiệu
                             </Button>
                         </motion.div>
 

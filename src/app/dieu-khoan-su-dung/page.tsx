@@ -1,5 +1,5 @@
 /**
- * BeeStudy - Trang Điều Khoản Sử Dụng
+ * Khailingo - Trang Điều Khoản Sử Dụng
  * Các điều khoản và điều kiện sử dụng dịch vụ
  */
 
@@ -9,8 +9,8 @@ import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent } from "@/components/ui";
 
 export const metadata: Metadata = {
-    title: "Điều Khoản Sử Dụng - BeeStudy",
-    description: "Điều khoản và điều kiện sử dụng dịch vụ BeeStudy. Vui lòng đọc kỹ trước khi sử dụng.",
+    title: "Điều Khoản Sử Dụng - Khailingo",
+    description: "Điều khoản và điều kiện sử dụng dịch vụ Khailingo. Vui lòng đọc kỹ trước khi sử dụng.",
 };
 
 export default function TermsOfServicePage() {
@@ -33,7 +33,7 @@ export default function TermsOfServicePage() {
                             <section className="mb-8">
                                 <h2 className="text-xl font-semibold mb-4">1. Chấp nhận điều khoản</h2>
                                 <p className="text-muted-foreground mb-4">
-                                    Bằng việc truy cập và sử dụng dịch vụ BeeStudy, bạn đồng ý tuân thủ
+                                    Bằng việc truy cập và sử dụng dịch vụ Khailingo, bạn đồng ý tuân thủ
                                     và bị ràng buộc bởi các điều khoản và điều kiện này. Nếu bạn không
                                     đồng ý với bất kỳ phần nào của các điều khoản này, vui lòng không
                                     sử dụng dịch vụ của chúng tôi.
@@ -43,7 +43,7 @@ export default function TermsOfServicePage() {
                             <section className="mb-8">
                                 <h2 className="text-xl font-semibold mb-4">2. Mô tả dịch vụ</h2>
                                 <p className="text-muted-foreground mb-4">
-                                    BeeStudy là nền tảng học tiếng Anh và luyện thi IELTS trực tuyến,
+                                    Khailingo là nền tảng học tiếng Anh và luyện thi IELTS trực tuyến,
                                     cung cấp các dịch vụ bao gồm:
                                 </p>
                                 <ul className="list-disc pl-6 text-muted-foreground space-y-2">
@@ -58,7 +58,7 @@ export default function TermsOfServicePage() {
                             <section className="mb-8">
                                 <h2 className="text-xl font-semibold mb-4">3. Tài khoản người dùng</h2>
                                 <p className="text-muted-foreground mb-4">
-                                    Để sử dụng đầy đủ tính năng của BeeStudy, bạn cần tạo tài khoản.
+                                    Để sử dụng đầy đủ tính năng của Khailingo, bạn cần tạo tài khoản.
                                     Khi tạo tài khoản, bạn đồng ý:
                                 </p>
                                 <ul className="list-disc pl-6 text-muted-foreground space-y-2">
@@ -72,7 +72,7 @@ export default function TermsOfServicePage() {
                             <section className="mb-8">
                                 <h2 className="text-xl font-semibold mb-4">4. Quy tắc sử dụng</h2>
                                 <p className="text-muted-foreground mb-4">
-                                    Khi sử dụng BeeStudy, bạn cam kết không:
+                                    Khi sử dụng Khailingo, bạn cam kết không:
                                 </p>
                                 <ul className="list-disc pl-6 text-muted-foreground space-y-2">
                                     <li>Vi phạm pháp luật hoặc quyền của người khác</li>
@@ -88,26 +88,26 @@ export default function TermsOfServicePage() {
                             <section className="mb-8">
                                 <h2 className="text-xl font-semibold mb-4">5. Quyền sở hữu trí tuệ</h2>
                                 <p className="text-muted-foreground mb-4">
-                                    Tất cả nội dung trên BeeStudy, bao gồm nhưng không giới hạn văn bản,
+                                    Tất cả nội dung trên Khailingo, bao gồm nhưng không giới hạn văn bản,
                                     hình ảnh, âm thanh, video, thiết kế và mã nguồn, thuộc quyền sở hữu
-                                    của BeeStudy hoặc các nhà cung cấp nội dung được cấp phép.
+                                    của Khailingo hoặc các nhà cung cấp nội dung được cấp phép.
                                 </p>
                                 <p className="text-muted-foreground mb-4">
                                     Bạn được phép sử dụng nội dung cho mục đích học tập cá nhân.
                                     Mọi hình thức sao chép, phân phối hoặc sử dụng thương mại đều
-                                    cần có sự đồng ý bằng văn bản từ BeeStudy.
+                                    cần có sự đồng ý bằng văn bản từ Khailingo.
                                 </p>
                             </section>
 
                             <section className="mb-8">
                                 <h2 className="text-xl font-semibold mb-4">6. Nội dung người dùng</h2>
                                 <p className="text-muted-foreground mb-4">
-                                    Khi bạn tạo nội dung trên BeeStudy (như flashcard tự tạo, bình luận, v.v.),
+                                    Khi bạn tạo nội dung trên Khailingo (như flashcard tự tạo, bình luận, v.v.),
                                     bạn:
                                 </p>
                                 <ul className="list-disc pl-6 text-muted-foreground space-y-2">
                                     <li>Giữ quyền sở hữu nội dung của bạn</li>
-                                    <li>Cấp cho BeeStudy giấy phép không độc quyền để sử dụng, hiển thị
+                                    <li>Cấp cho Khailingo giấy phép không độc quyền để sử dụng, hiển thị
                                         và phân phối nội dung đó trên nền tảng</li>
                                     <li>Chịu trách nhiệm về tính hợp pháp của nội dung</li>
                                 </ul>
@@ -117,7 +117,7 @@ export default function TermsOfServicePage() {
                                 <h2 className="text-xl font-semibold mb-4">7. Miễn trừ trách nhiệm</h2>
                                 <p className="text-muted-foreground mb-4">
                                     Dịch vụ được cung cấp "nguyên trạng" mà không có bất kỳ bảo đảm nào.
-                                    BeeStudy không chịu trách nhiệm về:
+                                    Khailingo không chịu trách nhiệm về:
                                 </p>
                                 <ul className="list-disc pl-6 text-muted-foreground space-y-2">
                                     <li>Gián đoạn hoặc lỗi kỹ thuật của dịch vụ</li>
@@ -130,7 +130,7 @@ export default function TermsOfServicePage() {
                             <section className="mb-8">
                                 <h2 className="text-xl font-semibold mb-4">8. Giới hạn trách nhiệm</h2>
                                 <p className="text-muted-foreground mb-4">
-                                    Trong mọi trường hợp, BeeStudy không chịu trách nhiệm về bất kỳ
+                                    Trong mọi trường hợp, Khailingo không chịu trách nhiệm về bất kỳ
                                     thiệt hại gián tiếp, ngẫu nhiên, đặc biệt hoặc do hậu quả nào
                                     phát sinh từ việc sử dụng hoặc không thể sử dụng dịch vụ.
                                 </p>
@@ -176,7 +176,7 @@ export default function TermsOfServicePage() {
                                     Nếu bạn có câu hỏi về các điều khoản sử dụng này, vui lòng liên hệ:
                                 </p>
                                 <ul className="list-none text-muted-foreground space-y-2">
-                                    <li><strong>Email:</strong> support@beestudy.vn</li>
+                                    <li><strong>Email:</strong> support@khailingo.vn</li>
                                     <li><strong>Địa chỉ:</strong> 123 Đường ABC, Quận XYZ, TP. Hồ Chí Minh</li>
                                     <li><strong>Hotline:</strong> 1900-123-456</li>
                                 </ul>

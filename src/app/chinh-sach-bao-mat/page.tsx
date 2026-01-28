@@ -1,5 +1,5 @@
 /**
- * BeeStudy - Trang Chính Sách Bảo Mật
+ * Khailingo - Trang Chính Sách Bảo Mật
  * Thông tin về bảo mật và quyền riêng tư
  */
 
@@ -9,8 +9,8 @@ import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent } from "@/components/ui";
 
 export const metadata: Metadata = {
-    title: "Chính Sách Bảo Mật - BeeStudy",
-    description: "Chính sách bảo mật và quyền riêng tư của BeeStudy. Tìm hiểu cách chúng tôi bảo vệ thông tin của bạn.",
+    title: "Chính Sách Bảo Mật - Khailingo",
+    description: "Chính sách bảo mật và quyền riêng tư của Khailingo. Tìm hiểu cách chúng tôi bảo vệ thông tin của bạn.",
 };
 
 export default function PrivacyPolicyPage() {
@@ -33,10 +33,10 @@ export default function PrivacyPolicyPage() {
                             <section className="mb-8">
                                 <h2 className="text-xl font-semibold mb-4">1. Giới thiệu</h2>
                                 <p className="text-muted-foreground mb-4">
-                                    Chào mừng bạn đến với BeeStudy. Chúng tôi cam kết bảo vệ quyền riêng tư
+                                    Chào mừng bạn đến với Khailingo. Chúng tôi cam kết bảo vệ quyền riêng tư
                                     và thông tin cá nhân của bạn. Chính sách bảo mật này giải thích cách
                                     chúng tôi thu thập, sử dụng và bảo vệ thông tin của bạn khi sử dụng
-                                    dịch vụ của BeeStudy.
+                                    dịch vụ của Khailingo.
                                 </p>
                             </section>
 
@@ -162,7 +162,7 @@ export default function PrivacyPolicyPage() {
                                     Nếu bạn có câu hỏi về chính sách bảo mật này, vui lòng liên hệ:
                                 </p>
                                 <ul className="list-none text-muted-foreground space-y-2">
-                                    <li><strong>Email:</strong> privacy@beestudy.vn</li>
+                                    <li><strong>Email:</strong> privacy@khailingo.vn</li>
                                     <li><strong>Địa chỉ:</strong> 123 Đường ABC, Quận XYZ, TP. Hồ Chí Minh</li>
                                     <li><strong>Hotline:</strong> 1900-123-456</li>
                                 </ul>

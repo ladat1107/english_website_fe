@@ -1,5 +1,5 @@
 /**
- * BeeStudy - CTA Section Component
+ * Khailingo - CTA Section Component
  * Section call-to-action đăng ký tài khoản
  */
 
@@ -9,10 +9,7 @@ import { motion } from "framer-motion";
 import { FcGoogle } from "react-icons/fc";
 import { FiCheck, FiArrowRight } from "react-icons/fi";
 import { Button } from "@/components/ui";
-
-interface CTASectionProps {
-    onOpenAuthModal: () => void;
-}
+import { useAuth } from "@/contexts";
 
 // Danh sách lợi ích
 const benefits = [
@@ -22,7 +19,8 @@ const benefits = [
     "Nhận thông báo đề thi mới và bài mẫu cập nhật",
 ];
 
-export const CTASection: React.FC<CTASectionProps> = ({ onOpenAuthModal }) => {
+export const CTASection: React.FC = () => {
+    const { openAuthModal } = useAuth();
     return (
         <section className="py-20 bg-white overflow-hidden">
             <div className="container-custom">
@@ -51,7 +49,7 @@ export const CTASection: React.FC<CTASectionProps> = ({ onOpenAuthModal }) => {
                                 </h2>
                                 <p className="text-white/80 text-lg mb-8">
                                     Tham gia cùng hơn 100,000+ người học và bắt đầu hành trình
-                                    chinh phục IELTS của bạn với BeeStudy.
+                                    chinh phục IELTS của bạn với Khailingo.
                                 </p>
 
                                 {/* Benefits list */}
@@ -75,7 +73,7 @@ export const CTASection: React.FC<CTASectionProps> = ({ onOpenAuthModal }) => {
 
                                 {/* CTA Button */}
                                 <Button
-                                    onClick={onOpenAuthModal}
+                                    onClick={openAuthModal}
                                     size="xl"
                                     className="bg-white text-primary hover:bg-white/90 shadow-lg"
                                 >

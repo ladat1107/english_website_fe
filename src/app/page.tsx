@@ -1,12 +1,10 @@
 /**
- * BeeStudy - Trang chủ
+ * Khailingo - Trang chủ
  * Trang landing page chính của website
+ * Server Component để tối ưu SEO
  */
 
-"use client";
-
-import { useState } from "react";
-import { Header, Footer, AuthModal } from "@/components/layout";
+import { Header, Footer } from "@/components/layout";
 import {
   HeroSection,
   FeaturesSection,
@@ -17,28 +15,15 @@ import {
 } from "@/components/sections";
 
 export default function HomePage() {
-  // State quản lý modal đăng nhập
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-
-  // Hàm mở modal đăng nhập
-  const handleOpenAuthModal = () => {
-    setIsAuthModalOpen(true);
-  };
-
-  // Hàm đóng modal đăng nhập
-  const handleCloseAuthModal = () => {
-    setIsAuthModalOpen(false);
-  };
-
   return (
     <>
       {/* Header cố định */}
-      <Header onOpenAuthModal={handleOpenAuthModal} />
+      <Header />
 
       {/* Main content */}
       <main>
         {/* Hero Section - Banner chính */}
-        <HeroSection onOpenAuthModal={handleOpenAuthModal} />
+        <HeroSection />
 
         {/* Features Section - Các tính năng */}
         <FeaturesSection />
@@ -53,14 +38,11 @@ export default function HomePage() {
         <SamplesSection />
 
         {/* CTA Section - Kêu gọi đăng ký */}
-        <CTASection onOpenAuthModal={handleOpenAuthModal} />
+        <CTASection />
       </main>
 
       {/* Footer */}
       <Footer />
-
-      {/* Auth Modal - Modal đăng nhập với Google */}
-      <AuthModal isOpen={isAuthModalOpen} onClose={handleCloseAuthModal} />
     </>
   );
 }

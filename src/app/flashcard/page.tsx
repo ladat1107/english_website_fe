@@ -1,11 +1,11 @@
 /**
- * BeeStudy - Trang Flashcard
+ * Khailingo - Trang Flashcard
  * Trang học từ vựng với flashcard
  */
 
 import { Metadata } from "next";
 import Link from "next/link";
-import { FiArrowRight, FiLayers, FiUsers, FiSearch, FiPlus } from "react-icons/fi";
+import { FiLayers, FiUsers, FiSearch, FiPlus } from "react-icons/fi";
 import { Card, CardContent, Button, Badge, Input, Progress } from "@/components/ui";
 
 export const metadata: Metadata = {

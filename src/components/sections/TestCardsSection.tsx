@@ -1,5 +1,5 @@
 /**
- * BeeStudy - Test Cards Section Component
+ * Khailingo - Test Cards Section Component
  * Section hiển thị các đề thi IELTS nổi bật
  */
 
@@ -7,14 +7,12 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { FiArrowRight, FiUsers, FiClock, FiBookOpen } from "react-icons/fi";
+import { FiArrowRight, FiUsers, FiBookOpen } from "react-icons/fi";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import {
     Card,
     CardContent,
-    CardImage,
-    CardBadge,
     Button,
     Badge,
 } from "@/components/ui";

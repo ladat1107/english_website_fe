@@ -1,11 +1,11 @@
 /**
- * BeeStudy - Trang Luyện Thi IELTS Writing
+ * Khailingo - Trang Luyện Thi IELTS Writing
  * Danh sách bài mẫu và luyện tập Writing
  */
 
 import { Metadata } from "next";
 import Link from "next/link";
-import { FiEdit3, FiUsers, FiClock, FiArrowRight, FiFileText } from "react-icons/fi";
+import { FiEdit3, FiUsers, FiArrowRight, FiFileText } from "react-icons/fi";
 import { Card, CardContent, Button, Badge, Tabs, TabsList, TabsTrigger } from "@/components/ui";
 
 export const metadata: Metadata = {
