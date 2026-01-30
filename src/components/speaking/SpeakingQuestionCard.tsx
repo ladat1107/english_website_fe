@@ -63,7 +63,7 @@ export function SpeakingQuestionCard({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
         >
-            <Card 
+            <Card
                 className={cn(
                     'transition-all duration-300',
                     isActive && 'ring-2 ring-primary shadow-lg',
@@ -77,9 +77,9 @@ export function SpeakingQuestionCard({
                         {/* Question Number */}
                         <div className={cn(
                             'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0',
-                            isCompleted 
-                                ? 'bg-success text-white' 
-                                : isActive 
+                            isCompleted
+                                ? 'bg-success text-white'
+                                : isActive
                                     ? 'bg-primary text-white'
                                     : 'bg-muted text-muted-foreground'
                         )}>
@@ -141,9 +141,9 @@ export function SpeakingQuestionCard({
                     {isCompleted && audioUrl && (
                         <div className="mt-4 pt-4 border-t border-border">
                             <p className="text-sm text-muted-foreground mb-2">Bài ghi âm của bạn:</p>
-                            <audio 
-                                src={audioUrl} 
-                                controls 
+                            <audio
+                                src={audioUrl}
+                                controls
                                 className="w-full h-10 rounded-lg"
                             />
                         </div>
@@ -159,7 +159,7 @@ export function SpeakingQuestionCard({
                                 <HelpCircle className="w-4 h-4" />
                                 {showAnswer ? 'Ẩn gợi ý trả lời' : 'Xem gợi ý trả lời'}
                             </button>
-                            
+
                             {showAnswer && (
                                 <motion.div
                                     initial={{ opacity: 0, height: 0 }}
