@@ -66,10 +66,6 @@ interface NavItem {
 
 export const MAIN_NAV_ITEMS: NavItem[] = [
     {
-        title: "Trang chủ",
-        href: "/",
-    },
-    {
         title: "Luyện thi IELTS",
         href: "/luyen-thi-ielts",
         children: [
@@ -111,20 +107,9 @@ export const MAIN_NAV_ITEMS: NavItem[] = [
         description: "Học từ vựng hiệu quả với flashcard",
     },
     {
-        title: "Bài mẫu",
-        href: "/bai-mau",
-        children: [
-            {
-                title: "Writing Sample",
-                href: "/bai-mau/writing",
-                description: "Bài mẫu IELTS Writing band 8.0+",
-            },
-            {
-                title: "Speaking Sample",
-                href: "/bai-mau/speaking",
-                description: "Bài mẫu IELTS Speaking band 8.0+",
-            },
-        ],
+        title: "Giao tiếp",
+        href: "/giao-tiep",
+        description: "Luyện nói tiếng Anh theo chủ đề hàng ngày",
     },
 ] as const;
 
@@ -198,31 +183,15 @@ export const CAMBRIDGE_BOOKS = [
 // =====================================================
 // API ENDPOINTS
 // =====================================================
-export const API_ENDPOINTS = {
-    // Auth
-    AUTH: {
-        LOGIN: "/auth/login",
-        REGISTER: "/auth/register",
-        LOGOUT: "/auth/logout",
-        GOOGLE: "/auth/google",
-        REFRESH: "/auth/refresh",
+export const PATHS = {
+    ADMIN: {
+        DASHBOARD: '/quan-ly',
+        COMMMUNICATIONS: '/quan-ly/giao-tiep',
+        COMMUNICATIONS_CREATE: '/quan-ly/giao-tiep/tao-de',
     },
-    // User
-    USER: {
-        PROFILE: "/user/profile",
-        UPDATE: "/user/update",
-    },
-    // Exam
-    EXAM: {
-        LIST: "/exam",
-        DETAIL: (id: string) => `/exam/${id}`,
-        SUBMIT: "/exam/submit",
-    },
-    // Flashcard
-    FLASHCARD: {
-        DECKS: "/flashcard/decks",
-        CARDS: (deckId: string) => `/flashcard/decks/${deckId}/cards`,
-    },
+    CLIENT: {
+        HOME: '/',
+    }
 } as const;
 
 // =====================================================
@@ -268,24 +237,4 @@ export const ANIMATION_VARIANTS = {
     },
 } as const;
 
-// =====================================================
-// LOCAL STORAGE KEYS
-// =====================================================
-export const STORAGE_KEYS = {
-    TOKEN: "bee_access_token",
-    REFRESH_TOKEN: "bee_refresh_token",
-    USER: "bee_user",
-    THEME: "bee_theme",
-    LANGUAGE: "bee_language",
-} as const;
 
-// =====================================================
-// BREAKPOINTS
-// =====================================================
-export const BREAKPOINTS = {
-    sm: 640,
-    md: 768,
-    lg: 1024,
-    xl: 1280,
-    "2xl": 1536,
-} as const;

@@ -6,7 +6,46 @@ module.exports = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}'
   ],
   theme: {
+    /* ==========================================
+       MOBILE-FIRST BREAKPOINTS
+       Customized for better mobile experience
+       ========================================== */
+    screens: {
+      'xs': '375px',   // Small phones
+      'sm': '640px',   // Large phones / Small tablets
+      'md': '768px',   // Tablets
+      'lg': '1024px',  // Laptops
+      'xl': '1280px',  // Desktops
+      '2xl': '1536px', // Large desktops
+    },
     extend: {
+      /* ==========================================
+         COMPACT SPACING FOR MOBILE
+         Smaller values for mobile-first design
+         ========================================== */
+      spacing: {
+        '0.5': '0.125rem',  // 2px
+        '1.5': '0.375rem',  // 6px
+        '2.5': '0.625rem',  // 10px
+        '3.5': '0.875rem',  // 14px
+        '4.5': '1.125rem',  // 18px
+      },
+      /* ==========================================
+         COMPACT FONT SIZES
+         Slightly smaller for mobile screens
+         ========================================== */
+      fontSize: {
+        'xxs': ['0.625rem', { lineHeight: '0.875rem' }],  // 10px
+        'xs': ['0.75rem', { lineHeight: '1rem' }],       // 12px
+        'sm': ['0.8125rem', { lineHeight: '1.25rem' }],  // 13px
+        'base': ['0.875rem', { lineHeight: '1.375rem' }], // 14px (mobile default)
+        'lg': ['1rem', { lineHeight: '1.5rem' }],        // 16px
+        'xl': ['1.125rem', { lineHeight: '1.75rem' }],   // 18px
+        '2xl': ['1.25rem', { lineHeight: '1.875rem' }],  // 20px
+        '3xl': ['1.5rem', { lineHeight: '2rem' }],       // 24px
+        '4xl': ['1.875rem', { lineHeight: '2.25rem' }],  // 30px
+        '5xl': ['2.25rem', { lineHeight: '2.5rem' }],    // 36px
+      },
       /* Màu sắc Khailingo */
       colors: {
         border: "hsl(var(--border))",

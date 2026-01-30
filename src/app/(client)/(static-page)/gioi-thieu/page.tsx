@@ -7,8 +7,6 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { FiTarget, FiHeart, FiUsers, FiAward, FiArrowRight } from "react-icons/fi";
 import { Card, Button, Badge } from "@/components/ui";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
     title: "Giới Thiệu - Khailingo",
@@ -55,7 +53,6 @@ const milestones = [
 export default function AboutPage() {
     return (
         <>
-            <Header />
             <main className="min-h-screen bg-background">
                 {/* Hero Section */}
                 <section className="py-16 bg-gradient-to-br from-primary/5 via-background to-accent/5">
@@ -223,7 +220,6 @@ export default function AboutPage() {
                     </div>
                 </section>
             </main>
-            <Footer />
         </>
     );
 }

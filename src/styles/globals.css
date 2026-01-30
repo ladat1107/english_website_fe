@@ -5,10 +5,23 @@
 /* =====================================================
    Khailingo - Website học tiếng Anh
    Màu chủ đạo: Đỏ (#D42525) và Trắng
+   
+   RESPONSIVE DESIGN STRATEGY:
+   - Mobile-first approach
+   - Fluid typography: font-size scales với viewport
+   - Compact spacing cho mobile
    ===================================================== */
 
 @layer base {
     :root {
+        /* ==========================================
+           FLUID TYPOGRAPHY - Responsive Font Size
+           Mobile (320px): 14px
+           Desktop (1200px): 16px
+           Công thức: clamp(min, preferred, max)
+           ========================================== */
+        font-size: clamp(0.875rem, 0.8rem + 0.25vw, 1rem);
+
         /* Màu nền */
         --background: 0 0% 100%;
         --foreground: 0 0% 10%;
@@ -113,17 +126,38 @@
 
     html {
         scroll-behavior: smooth;
+        /* Prevent font scaling on orientation change */
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
     }
 
     body {
         @apply bg-background text-foreground antialiased;
         font-feature-settings: "rlig" 1, "calt" 1;
+        /* Minimum tap target size for mobile */
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ==========================================
+       MOBILE-OPTIMIZED TYPOGRAPHY
+       Smaller headings on mobile
+       ========================================== */
+    h1 {
+        @apply text-2xl sm:text-3xl md:text-4xl;
+    }
+
+    h2 {
+        @apply text-xl sm:text-2xl md:text-3xl;
+    }
+
+    h3 {
+        @apply text-lg sm:text-xl md:text-2xl;
     }
 
     /* Custom scrollbar */
     ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
+        width: 6px;
+        height: 6px;
     }
 
     ::-webkit-scrollbar-track {
@@ -137,13 +171,57 @@
     ::-webkit-scrollbar-thumb:hover {
         @apply bg-primary/60;
     }
+
+    /* Hide scrollbar on mobile for cleaner look */
+    @media (max-width: 640px) {
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+    }
 }
 
 @layer components {
 
-    /* Container responsive */
+    /* ==========================================
+       MOBILE-FIRST CONTAINER
+       Compact padding on mobile
+       ========================================== */
     .container-custom {
-        @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+        @apply max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8;
+    }
+
+    /* Compact container for mobile */
+    .container-compact {
+        @apply max-w-6xl mx-auto px-3 sm:px-4;
+    }
+
+    /* ==========================================
+       MOBILE-OPTIMIZED CARDS
+       Smaller padding on mobile devices
+       ========================================== */
+    .card-mobile {
+        @apply p-3 sm:p-4 md:p-6;
+    }
+
+    /* ==========================================
+       MOBILE-OPTIMIZED SPACING
+       Utility classes for responsive gaps
+       ========================================== */
+    .gap-responsive {
+        @apply gap-3 sm:gap-4 md:gap-6;
+    }
+
+    .space-y-responsive>*+* {
+        @apply mt-3 sm:mt-4 md:mt-6;
+    }
+
+    .py-responsive {
+        @apply py-4 sm:py-6 md:py-8;
+    }
+
+    .px-responsive {
+        @apply px-3 sm:px-4 md:px-6;
     }
 
     /* Gradient background */
@@ -179,6 +257,26 @@
     /* Bee pattern background */
     .bee-pattern {
         background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D42525' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    /* ==========================================
+       MOBILE TOUCH TARGETS
+       Minimum 44x44px for accessibility
+       ========================================== */
+    .touch-target {
+        @apply min-h-[44px] min-w-[44px];
+    }
+
+    /* ==========================================
+       COMPACT TEXT FOR MOBILE
+       Utility for smaller text sizes
+       ========================================== */
+    .text-compact {
+        @apply text-xs sm:text-sm;
+    }
+
+    .text-compact-base {
+        @apply text-sm sm:text-base;
     }
 }
 

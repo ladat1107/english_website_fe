@@ -18,6 +18,8 @@ import { http } from "@/lib/http";
 import { useCheckStatus } from "@/hooks/use-auth";
 import { UserType } from "@/types/user.type";
 import { logout } from "@/apiRequest";
+import { UserRole } from "@/utils/constants/enum";
+import { PATHS } from "@/utils/constants";
 
 
 
@@ -88,15 +90,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const loginStatus = searchParams.get("login");
     const userParam = searchParams.get("user");
     const errorParam = searchParams.get("error");
+    let newUrl = pathname;
 
     if (loginStatus === "success" && userParam) {
+      try {
+        const userData: UserType = JSON.parse(decodeURIComponent(userParam));
+        console.log("Login successful, user data:", userData);
+        if (userData.role === UserRole.ADMIN) {
+          router.push(PATHS.ADMIN.DASHBOARD);
+          newUrl = PATHS.ADMIN.DASHBOARD;
+        }
+      } catch (error) {
+        console.error("Error parsing user data from login callback:", error);
+      }
       // Xóa query params khỏi URL để clean
-      const newUrl = pathname;
       router.replace(newUrl, { scroll: false });
     } else if (errorParam === "login_failed") {
       console.error("Login failed");
       // Có thể hiển thị toast thông báo lỗi
-      const newUrl = pathname;
+      router.replace(newUrl, { scroll: false });
       router.replace(newUrl, { scroll: false });
     }
   }, [searchParams, pathname, router]);

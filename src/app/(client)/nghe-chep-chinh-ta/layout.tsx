@@ -4,8 +4,7 @@
  */
 
 import { ReactNode } from "react";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
+import ClientLayout from "@/components/layout/client-layout";
 
 interface DictationLayoutProps {
     children: ReactNode;
@@ -13,12 +12,6 @@ interface DictationLayoutProps {
 
 export default function DictationLayout({ children }: DictationLayoutProps) {
     return (
-        <>
-            <Header />
-            <main className="min-h-screen bg-background">
-                {children}
-            </main>
-            <Footer />
-        </>
+        <ClientLayout>{children}</ClientLayout>
     );
 }

@@ -1,19 +1,13 @@
-/**
- * Khailingo - Layout cho các trang luyện thi IELTS
- * Layout bao gồm Header và Footer
- */
-
 "use client";
 
 import { ReactNode } from "react";
 import { Header, Footer } from "@/components/layout";
 
-interface IELTSLayoutProps {
+interface ClientLayoutProps {
     children: ReactNode;
 }
 
-export default function IELTSLayout({ children }: IELTSLayoutProps) {
-
+export default function ClientLayout({ children }: ClientLayoutProps) {
     return (
         <>
             {/* Header */}

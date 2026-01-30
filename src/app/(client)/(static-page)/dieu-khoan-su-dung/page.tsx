@@ -4,8 +4,6 @@
  */
 
 import { Metadata } from "next";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent } from "@/components/ui";
 
 export const metadata: Metadata = {
@@ -16,7 +14,6 @@ export const metadata: Metadata = {
 export default function TermsOfServicePage() {
     return (
         <>
-            <Header />
             <main className="min-h-screen bg-background py-12">
                 <div className="container-custom max-w-4xl">
                     <div className="mb-10">
@@ -185,7 +182,6 @@ export default function TermsOfServicePage() {
                     </Card>
                 </div>
             </main>
-            <Footer />
         </>
     );
 }
