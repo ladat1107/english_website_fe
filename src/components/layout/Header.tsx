@@ -13,9 +13,9 @@ import { FcGoogle } from "react-icons/fc";
 import { cn } from "@/utils/cn";
 import { MAIN_NAV_ITEMS } from "@/utils/constants";
 import { Button } from "@/components/ui";
-import Logo from "../common/Logo";
 import { useAuth } from "@/contexts";
 import Image from "next/image";
+import { BookAudio, LogOut, SquareUser } from "lucide-react";
 
 export const Header: React.FC = () => {
     const { user, isAuthenticated, isLoading, openAuthModal, logout } = useAuth();
@@ -25,6 +25,7 @@ export const Header: React.FC = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     // State dropdown đang mở
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+    const [showUserMenu, setShowUserMenu] = useState(false);
 
     // Theo dõi scroll để thay đổi style header
     useEffect(() => {
@@ -60,7 +61,9 @@ export const Header: React.FC = () => {
             <div className="container-custom">
                 <nav className="flex items-center justify-between h-16 lg:h-20">
                     {/* Logo */}
-                    <Logo />
+                    <Link href={'/'} >
+                        <Image src="/logo/logo.png" alt="KhaiLingo Logo" width={120} height={40} />
+                    </Link>
 
                     {/* Desktop Navigation */}
                     <div className="hidden lg:flex items-center gap-1">
@@ -130,8 +133,10 @@ export const Header: React.FC = () => {
                         {isLoading ? (
                             <div className="hidden md:flex w-24 h-10 bg-muted rounded-lg animate-pulse" />
                         ) : isAuthenticated && user ? (
-                            <div className="hidden md:flex items-center gap-3">
-                                <div className="flex items-center gap-2">
+                            <div className="relative hidden md:flex items-center gap-3">
+                                <button className="flex items-center gap-2 cursor-pointer"
+                                    onClick={() => setShowUserMenu(!showUserMenu)}
+                                >
                                     {user.avatar_url ? (
                                         <Image
                                             src={user.avatar_url}
@@ -148,15 +153,37 @@ export const Header: React.FC = () => {
                                     <span className="text-sm font-medium max-w-32 truncate">
                                         {user.full_name}
                                     </span>
-                                </div>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={logout}
-                                    className="text-muted-foreground hover:text-foreground"
-                                >
-                                    <FiLogOut className="w-4 h-4" />
-                                </Button>
+                                </button>
+
+                                {showUserMenu && (
+                                    <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 rounded-sm shadow-xl border border-gray-200 dark:border-gray-700 z-50">
+                                        <div className="py-1">
+                                            <Link
+                                                href="/employer/account"
+                                                className="flex items-center px-4 py-2 text-sm font-semibold text-gray-900 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                                            >
+                                                <SquareUser className="h-4 w-4 mr-3" />
+                                                Thông tin cá nhân
+                                            </Link>
+                                            <Link
+                                                href="/"
+                                                onClick={() => { }}
+                                                className="flex items-center px-4 py-2 text-sm font-semibold text-gray-900 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                                            >
+                                                <BookAudio className="h-4 w-4 mr-3" />
+                                                Học tiếng Anh
+                                            </Link>
+                                            <hr className="my-1 border-gray-200 dark:border-gray-700" />
+                                            <div
+                                                onClick={logout}
+                                                className="flex items-center px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 cursor-pointer transition-colors"
+                                            >
+                                                <LogOut className="h-4 w-4 mr-3" />
+                                                Đăng xuất
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         ) : (
                             <Button onClick={openAuthModal} className="hidden md:flex bg-primary/80">

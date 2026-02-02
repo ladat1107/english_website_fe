@@ -50,26 +50,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 <div className="p-6">
                     <div className="flex items-center justify-center">
                         {/* Logo */}
-                        <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center">
-                            <svg
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                className="w-10 h-10"
-                                xmlns="http://www.w3.org/2000/svg"
-                            >
-                                <path
-                                    d="M12 2C13.1 2 14 2.9 14 4C14 4.74 13.6 5.39 13 5.73V7H14C17.31 7 20 9.69 20 13V19C20 20.1 19.1 21 18 21H6C4.9 21 4 20.1 4 19V13C4 9.69 6.69 7 10 7H11V5.73C10.4 5.39 10 4.74 10 4C10 2.9 10.9 2 12 2Z"
-                                    fill="red"
-                                />
-                                <path
-                                    d="M9 13H15M9 16H15"
-                                    stroke="#FBBF24"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                />
-                                <circle cx="9" cy="10" r="1" fill="#FBBF24" />
-                                <circle cx="15" cy="10" r="1" fill="#FBBF24" />
-                            </svg>
+                        <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center">
+                            {/* Logo */}
+                            <Image src="/logo/logo-small.png" alt="KhaiLingo Logo" width={80} height={80} priority />
                         </div>
                     </div>
                     <DialogHeader className="text-center">

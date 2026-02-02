@@ -11,7 +11,7 @@ export const SITE_CONFIG = {
     description: "Nền tảng học tiếng Anh online miễn phí và chất lượng",
     slogan: "Học tiếng Anh thông minh như chú ong chăm chỉ",
     url: "https://khailingo.vn",
-    logo: "/images/logo.svg",
+    logo: "/logo/logo-small.png",
     logoText: "Khailingo",
     email: "support@khailingo.vn",
     phone: "1800 96 96 39",

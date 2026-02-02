@@ -7,6 +7,7 @@ import Link from "next/link";
 import { FaFacebook, FaYoutube, FaTiktok, FaInstagram } from "react-icons/fa";
 import { FiMail, FiPhone, FiMapPin } from "react-icons/fi";
 import { SITE_CONFIG, FOOTER_NAV } from "@/utils/constants";
+import Image from "next/image";
 
 export const Footer: React.FC = () => {
     const currentYear = new Date().getFullYear();
@@ -40,32 +41,10 @@ export const Footer: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
                     {/* Company Info */}
                     <div className="lg:col-span-2">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center">
-                                <svg
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    className="w-8 h-8 text-white"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path
-                                        d="M12 2C13.1 2 14 2.9 14 4C14 4.74 13.6 5.39 13 5.73V7H14C17.31 7 20 9.69 20 13V19C20 20.1 19.1 21 18 21H6C4.9 21 4 20.1 4 19V13C4 9.69 6.69 7 10 7H11V5.73C10.4 5.39 10 4.74 10 4C10 2.9 10.9 2 12 2Z"
-                                        fill="currentColor"
-                                    />
-                                    <path
-                                        d="M9 13H15M9 16H15"
-                                        stroke="#FBBF24"
-                                        strokeWidth="2"
-                                        strokeLinecap="round"
-                                    />
-                                    <circle cx="9" cy="10" r="1" fill="#FBBF24" />
-                                    <circle cx="15" cy="10" r="1" fill="#FBBF24" />
-                                </svg>
-                            </div>
-                            <span className="text-2xl font-bold">
-                                <span className="text-primary">Khai</span>lingo
-                            </span>
-                        </div>
+                        {/* Logo */}
+                        <Link href={'/'} >
+                            <Image src="/logo/logo.png" alt="KhaiLingo Logo" width={240} height={80} />
+                        </Link>
                         <p className="text-white/70 mb-6 max-w-md">
                             {SITE_CONFIG.description}. Học tiếng Anh thông minh như chú ong chăm chỉ!
                         </p>

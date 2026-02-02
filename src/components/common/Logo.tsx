@@ -17,6 +17,7 @@ export const Logo: React.FC<LogoProps> = ({
     showText = true,
     size = "md",
 }) => {
+
     const sizeStyles = {
         sm: { icon: "w-8 h-8", text: "text-lg" },
         md: { icon: "w-10 h-10", text: "text-xl" },

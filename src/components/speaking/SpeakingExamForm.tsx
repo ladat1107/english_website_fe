@@ -67,8 +67,12 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { VideoPlayer, VideoScriptDisplay } from "@/components/speaking";
 import { speakingTopicOptions } from "@/utils/mock-data/speaking.mock";
+import { VideoUploader } from "@/components/upload";
+import { CloudinaryFolder } from "@/lib/cloudinary";
 import { cn } from "@/utils/cn";
 import { SpeakingTopic } from "@/types/speaking.type";
+import { SortableContainer } from "../dnd";
+import DraggableQuestionItem from "./draggable-question-item";
 
 // =====================================================
 // ZOD SCHEMA - Validation
@@ -234,118 +238,6 @@ const FormHeader = memo(function FormHeader({
     );
 });
 
-interface VideoSectionProps {
-    videoUrl: string;
-    videoTitle: string;
-    videoInputMode: VideoInputMode;
-    isUploading: boolean;
-    error?: string;
-    onVideoUrlChange: (url: string) => void;
-    setVideoInputMode: (mode: VideoInputMode) => void;
-    handleVideoUpload: (e: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
-}
-
-const VideoSection = memo(function VideoSection({
-    videoUrl,
-    videoTitle,
-    videoInputMode,
-    isUploading,
-    error,
-    onVideoUrlChange,
-    setVideoInputMode,
-    handleVideoUpload,
-}: VideoSectionProps) {
-    return (
-        <Card>
-            <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-4">
-                <CardTitle className="text-base sm:text-lg flex items-center gap-2">
-                    <Video className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-                    Video bài học
-                </CardTitle>
-            </CardHeader>
-            <CardContent className="p-3 sm:p-6 pt-0 space-y-3 sm:space-y-4">
-                <div className="flex gap-2">
-                    <Button
-                        type="button"
-                        variant={videoInputMode === "url" ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setVideoInputMode("url")}
-                        className="gap-1.5 sm:gap-2 text-xs sm:text-sm"
-                    >
-                        <LinkIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                        Nhập link
-                    </Button>
-                    <Button
-                        type="button"
-                        variant={videoInputMode === "upload" ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => setVideoInputMode("upload")}
-                        className="gap-1.5 sm:gap-2 text-xs sm:text-sm"
-                    >
-                        <Upload className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                        Upload
-                    </Button>
-                </div>
-
-                {videoInputMode === "url" && (
-                    <div className="space-y-2">
-                        <Input
-                            placeholder="Nhập link video YouTube hoặc Cloudinary"
-                            value={videoUrl}
-                            onChange={(e) => onVideoUrlChange(e.target.value)}
-                            leftIcon={<LinkIcon className="w-4 h-4" />}
-                        />
-                        {error && (
-                            <p className="text-xs sm:text-sm text-destructive flex items-center gap-1">
-                                <AlertCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                                {error}
-                            </p>
-                        )}
-                    </div>
-                )}
-
-                {videoInputMode === "upload" && (
-                    <div className="border-2 border-dashed border-border rounded-xl p-4 sm:p-8 text-center">
-                        <input
-                            type="file"
-                            accept="video/*"
-                            onChange={handleVideoUpload}
-                            className="hidden"
-                            id="video-upload"
-                            disabled={isUploading}
-                        />
-                        <label htmlFor="video-upload" className="cursor-pointer">
-                            {isUploading ? (
-                                <div className="flex flex-col items-center">
-                                    <Loader2 className="w-10 h-10 sm:w-12 sm:h-12 text-primary animate-spin mb-2 sm:mb-3" />
-                                    <p className="text-muted-foreground text-sm">Đang tải lên...</p>
-                                </div>
-                            ) : (
-                                <div className="flex flex-col items-center">
-                                    <Upload className="w-10 h-10 sm:w-12 sm:h-12 text-muted-foreground mb-2 sm:mb-3" />
-                                    <p className="text-foreground font-medium mb-1 text-sm sm:text-base">
-                                        Kéo thả hoặc click để upload
-                                    </p>
-                                    <p className="text-xs sm:text-sm text-muted-foreground">
-                                        MP4, WebM (Max 100MB)
-                                    </p>
-                                </div>
-                            )}
-                        </label>
-                    </div>
-                )}
-
-                {videoUrl && (
-                    <div className="mt-3 sm:mt-4">
-                        <p className="text-xs sm:text-sm font-medium mb-2">Xem trước:</p>
-                        <VideoPlayer src={videoUrl} title={videoTitle} />
-                    </div>
-                )}
-            </CardContent>
-        </Card>
-    );
-});
-
 interface SummarySidebarProps {
     mode: SpeakingExamFormMode;
     title: string;
@@ -497,11 +389,6 @@ export function SpeakingExamForm({
 }: SpeakingExamFormProps) {
     const router = useRouter();
 
-    // =====================================================
-    // LOCAL STATE
-    // =====================================================
-    const [videoInputMode, setVideoInputMode] = useState<VideoInputMode>("url");
-    const [isUploading, setIsUploading] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
 
     // =====================================================
@@ -520,6 +407,7 @@ export function SpeakingExamForm({
         control,
         handleSubmit,
         watch,
+        register,
         setValue,
         formState: { errors },
     } = form;
@@ -538,10 +426,12 @@ export function SpeakingExamForm({
         fields: questionFields,
         append: appendQuestion,
         remove: removeQuestion,
+        move: moveQuestion,
     } = useFieldArray({
         control,
         name: "questions",
     });
+
 
     // Watch form values for summary
     const watchedValues = watch();
@@ -550,23 +440,22 @@ export function SpeakingExamForm({
     // HANDLERS
     // =====================================================
 
-    const handleVideoUpload = useCallback(
-        async (e: React.ChangeEvent<HTMLInputElement>) => {
-            const file = e.target.files?.[0];
-            if (!file) return;
-
-            setIsUploading(true);
-            try {
-                await new Promise((resolve) => setTimeout(resolve, 2000));
-                const mockUrl = `https://res.cloudinary.com/demo/video/upload/${file.name}`;
-                setValue("video_url", mockUrl, { shouldValidate: true });
-            } catch (error) {
-                console.error("Video upload failed:", error);
-            } finally {
-                setIsUploading(false);
-            }
+    // Handler khi video upload thành công
+    const handleVideoUploadSuccess = useCallback(
+        (result: { versionedUrl: string }) => {
+            console.log("Video uploaded:", result);
+            // URL đã được cập nhật qua onChange của VideoUploader
         },
-        [setValue]
+        []
+    );
+
+    // Handler khi video upload thất bại
+    const handleVideoUploadError = useCallback(
+        (error: Error) => {
+            console.error("Video upload failed:", error);
+            // Có thể show toast notification ở đây
+        },
+        []
     );
 
     const addScript = useCallback(() => {
@@ -613,6 +502,23 @@ export function SpeakingExamForm({
     const handlePublish = useCallback(() => {
         handleSubmit((data) => onSubmit(data, true))();
     }, [handleSubmit, onSubmit]);
+
+
+    const handleQuestionsReorder = useCallback(
+        (oldIndex: number, newIndex: number) => {
+            // Di chuyển item trong mảng (useFieldArray cung cấp sẵn)
+            moveQuestion(oldIndex, newIndex);
+
+            // Cập nhật lại question_number cho tất cả câu hỏi
+            // Dùng setTimeout để đảm bảo form đã cập nhật xong
+            setTimeout(() => {
+                questionFields.forEach((_, index) => {
+                    setValue(`questions.${index}.question_number`, index + 1);
+                });
+            }, 0);
+        },
+        [moveQuestion, questionFields, setValue]
+    );
 
     // =====================================================
     // RENDER
@@ -740,22 +646,48 @@ export function SpeakingExamForm({
                                 </CardContent>
                             </Card>
 
-                            {/* Video Section */}
-                            <VideoSection
-                                videoUrl={watchedValues.video_url || ""}
-                                videoTitle={watchedValues.title || ""}
-                                videoInputMode={videoInputMode}
-                                isUploading={isUploading}
-                                error={errors.video_url?.message}
-                                onVideoUrlChange={(url) =>
-                                    setValue("video_url", url, { shouldValidate: true })
-                                }
-                                setVideoInputMode={setVideoInputMode}
-                                handleVideoUpload={handleVideoUpload}
-                            />
+
+                            {/* Video Section - Sử dụng VideoUploader mới */}
+                            <Card>
+                                <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-4">
+                                    <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+                                        <Video className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                                        Video bài học
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="p-3 sm:p-6 pt-0">
+                                    <FormField
+                                        control={control}
+                                        name="video_url"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormControl>
+                                                    <VideoUploader
+                                                        value={field.value}
+                                                        onChange={field.onChange}
+                                                        folder={CloudinaryFolder.SPEAKING_VIDEOS}
+                                                        // Tạo publicId dựa trên ID của exam để ghi đè khi edit
+                                                        publicId={
+                                                            initialData?._id
+                                                                ? `speaking_${initialData._id}`
+                                                                : undefined
+                                                        }
+                                                        label=""
+                                                        placeholder="Nhập link video YouTube hoặc Cloudinary"
+                                                        error={errors.video_url?.message}
+                                                        onUploadSuccess={handleVideoUploadSuccess}
+                                                        onUploadError={handleVideoUploadError}
+                                                    />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </CardContent>
+                            </Card>
 
                             {/* Script Section */}
-                            <Card>
+                            <Card className="hidden">
                                 <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-4 flex flex-row items-center justify-between">
                                     <CardTitle className="text-base sm:text-lg flex items-center gap-2">
                                         <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
@@ -915,6 +847,16 @@ export function SpeakingExamForm({
                                         </p>
                                     )}
 
+                                    {/* Hướng dẫn kéo thả - hiển thị khi có >= 2 câu hỏi */}
+                                    {questionFields.length >= 2 && (
+                                        <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 px-3 py-2 rounded-lg">
+                                            <GripVertical className="w-4 h-4" />
+                                            <span>
+                                                Kéo thả biểu tượng <strong>⋮⋮</strong> để sắp xếp lại thứ tự câu hỏi
+                                            </span>
+                                        </div>
+                                    )}
+
                                     {questionFields.length === 0 ? (
                                         <div className="text-center py-6 sm:py-8 text-muted-foreground">
                                             <HelpCircle className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-2 sm:mb-3 opacity-30" />
@@ -931,73 +873,26 @@ export function SpeakingExamForm({
                                             </Button>
                                         </div>
                                     ) : (
-                                        <div className="space-y-3 sm:space-y-4">
-                                            {questionFields.map((field, index) => (
-                                                <motion.div
-                                                    key={field.id}
-                                                    initial={{ opacity: 0, y: 10 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    className="p-3 sm:p-4 border border-border rounded-xl bg-muted/30"
-                                                >
-                                                    <div className="flex items-start gap-2 sm:gap-3">
-                                                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs sm:text-sm font-bold shrink-0">
-                                                            {index + 1}
-                                                        </div>
-                                                        <div className="flex-1 space-y-2 sm:space-y-3 min-w-0">
-                                                            <FormField
-                                                                control={control}
-                                                                name={`questions.${index}.question_text`}
-                                                                render={({ field }) => (
-                                                                    <FormItem>
-                                                                        <FormControl>
-                                                                            <Textarea
-                                                                                placeholder="Nội dung câu hỏi"
-                                                                                className="min-h-[60px] sm:min-h-[80px] resize-y"
-                                                                                {...field}
-                                                                            />
-                                                                        </FormControl>
-                                                                        <FormMessage />
-                                                                    </FormItem>
-                                                                )}
-                                                            />
-                                                            <FormField
-                                                                control={control}
-                                                                name={`questions.${index}.suggested_answer`}
-                                                                render={({ field }) => (
-                                                                    <FormItem>
-                                                                        <FormControl>
-                                                                            <Textarea
-                                                                                placeholder="Gợi ý trả lời (tùy chọn)"
-                                                                                className="min-h-[50px] sm:min-h-[60px] resize-y"
-                                                                                {...field}
-                                                                            />
-                                                                        </FormControl>
-                                                                        <FormMessage />
-                                                                    </FormItem>
-                                                                )}
-                                                            />
-                                                            {/* Hidden field for question_number */}
-                                                            <input
-                                                                type="hidden"
-                                                                {...form.register(
-                                                                    `questions.${index}.question_number`
-                                                                )}
-                                                                value={index + 1}
-                                                            />
-                                                        </div>
-                                                        <Button
-                                                            type="button"
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            onClick={() => removeQuestion(index)}
-                                                            className="text-destructive hover:bg-destructive/10 shrink-0"
-                                                        >
-                                                            <Trash2 className="w-4 h-4" />
-                                                        </Button>
-                                                    </div>
-                                                </motion.div>
-                                            ))}
-                                        </div>
+                                        <SortableContainer
+                                            items={questionFields}
+                                            onReorder={handleQuestionsReorder}
+                                            direction="vertical"
+                                            className="space-y-3 sm:space-y-4"
+                                        >
+                                            <div className="space-y-3 sm:space-y-4">
+                                                {questionFields.map((field, index) => (
+                                                    <DraggableQuestionItem
+                                                        id={field.id}
+                                                        key={field.id}
+                                                        index={index}
+                                                        control={control}
+                                                        register={register}
+                                                        onRemove={removeQuestion}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </SortableContainer>
+
                                     )}
                                 </CardContent>
                             </Card>

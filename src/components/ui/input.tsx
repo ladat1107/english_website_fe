@@ -65,7 +65,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                             "ring-offset-background transition-all duration-200",
                             "file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground",
                             "placeholder:text-muted-foreground",
-                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary",
+                            "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary",
                             "disabled:cursor-not-allowed disabled:opacity-50",
                             leftIcon && "pl-10",
                             rightIcon && "pr-10",
@@ -133,7 +133,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
                         "flex min-h-[100px] w-full rounded-lg border border-input bg-background px-3 py-2 text-sm",
                         "ring-offset-background transition-all duration-200 resize-none",
                         "placeholder:text-muted-foreground",
-                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:border-primary",
+                        "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary focus-visible:border-primary",
                         "disabled:cursor-not-allowed disabled:opacity-50",
                         error && "border-destructive focus-visible:ring-destructive",
                         className
