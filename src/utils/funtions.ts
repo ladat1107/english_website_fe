@@ -11,3 +11,13 @@ export function getNameAvatar(name: string): string {
         parts[0][0].toUpperCase() + parts[parts.length - 1][0].toUpperCase()
     );
 }
+
+export const buildQueryString = (params?: Record<string, any>): string => {
+    if (!params) return '';
+
+    const validParams = Object.entries(params)
+        .filter(([_, value]) => value !== undefined && value !== null && value !== '')
+        .map(([key, value]) => [key, String(value)]);
+
+    return validParams.length > 0 ? `?${new URLSearchParams(validParams).toString()}` : '';
+};

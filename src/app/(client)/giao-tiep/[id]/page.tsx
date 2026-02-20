@@ -41,16 +41,23 @@ import {
     OnlineUser
 } from '@/types/speaking.type';
 import {
-    getMockSpeakingExamById,
     mockOnlineUsers,
     mockGoogleMeetLink
 } from '@/utils/mock-data/speaking.mock';
+import { useGetSpeakingExamById } from '@/hooks/use-speaking-exam';
+import LoadingCustom from '@/components/ui/loading-custom';
+import { usePreventLeave } from '@/hooks/use-event-leave';
+import { useCreateSpeakingAttempt } from '@/hooks/use-speaking-attempt';
+import { CreateSpeakingAttempt } from '@/types/speaking-attempt.type';
+import dayjs from 'dayjs';
+import { useToast } from '@/components/ui/toaster';
 
 // =====================================================
 // TYPES
 // =====================================================
 interface QuestionAnswer {
     question_number: number;
+    question_text: string;
     audio_url?: string;
     duration_seconds: number;
     completed: boolean;
@@ -63,58 +70,51 @@ export default function SpeakingPracticeDetailPage() {
     const params = useParams();
     const router = useRouter();
     const examId = params.id as string;
-
     // States
     const [exam, setExam] = useState<SpeakingExam | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
     const [activeQuestion, setActiveQuestion] = useState(0);
     const [answers, setAnswers] = useState<QuestionAnswer[]>([]);
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [showSubmitDialog, setShowSubmitDialog] = useState(false);
     const [attemptStarted, setAttemptStarted] = useState(false);
     const [onlineUsers] = useState<OnlineUser[]>(mockOnlineUsers);
-
+    const { data: speakingExamRes, isLoading: isExamLoading } = useGetSpeakingExamById(examId);
+    const [startTime, _] = useState<string>(dayjs().toISOString());
+    const { mutate: createSpeakingAttempt, isPending: isSubmitting } = useCreateSpeakingAttempt();
+    const { addToast } = useToast();
     // =====================================================
     // LOAD EXAM DATA
     // =====================================================
+    const { allowNavigation } = usePreventLeave({ enabled: attemptStarted });
+
     useEffect(() => {
-        const loadExam = async () => {
-            setIsLoading(true);
+        if (speakingExamRes?.success) {
+            const examData: SpeakingExam = speakingExamRes.data;
+            setExam(examData);
+            // Initialize answers array
+            setAnswers(examData.questions.map(q => ({
+                question_number: q.question_number,
+                question_text: q.question_text,
+                duration_seconds: 0,
+                completed: false,
+            })));
+            return;
+        }
 
-            // Mock API call
-            setTimeout(() => {
-                const examData = getMockSpeakingExamById(examId);
-                if (examData) {
-                    setExam(examData);
-                    // Initialize answers array
-                    setAnswers(examData.questions.map(q => ({
-                        question_number: q.question_number,
-                        duration_seconds: 0,
-                        completed: false,
-                    })));
-                }
-                setIsLoading(false);
-            }, 500);
-        };
+    }, [speakingExamRes]);
 
-        loadExam();
-    }, [examId]);
 
-    // =====================================================
-    // HANDLERS
-    // =====================================================
     const handleStartAttempt = () => {
         setAttemptStarted(true);
     };
 
     const handleRecordingComplete = (questionNumber: number, audioBlob: Blob, duration: number) => {
-        console.log(`Recording completed for question ${questionNumber}`, { duration });
+        //console.log(`Recording completed for question ${questionNumber}`, { duration });
     };
 
-    const handleUploadComplete = (questionNumber: number, audioUrl: string, duration: number) => {
+    const handleUploadComplete = (questionNumber: number, questionText: string, audioUrl: string, duration: number) => {
         setAnswers(prev => prev.map(a =>
             a.question_number === questionNumber
-                ? { ...a, audio_url: audioUrl, duration_seconds: duration, completed: true }
+                ? { ...a, question_text: questionText, audio_url: audioUrl, duration_seconds: duration, completed: true }
                 : a
         ));
 
@@ -125,17 +125,36 @@ export default function SpeakingPracticeDetailPage() {
     };
 
     const handleSubmit = async () => {
-        setIsSubmitting(true);
 
         // Mock submit
-        console.log('Submitting answers:', answers);
-
-        setTimeout(() => {
-            setIsSubmitting(false);
-            setShowSubmitDialog(false);
-            // Navigate to results page
-            router.push(`/giao-tiep/ket-qua/mock-attempt-id`);
-        }, 1500);
+        const speakingAttemptPayload: CreateSpeakingAttempt = {
+            exam_id: examId,
+            started_at: startTime,
+            answers: answers.map(a => ({
+                question: {
+                    question_number: a.question_number,
+                    question_text: a.question_text
+                },
+                audio_url: a.audio_url || '',
+                duration_seconds: a.duration_seconds,
+            })),
+        }
+        console.log('Submitting speaking attempt:', speakingAttemptPayload);
+        createSpeakingAttempt(speakingAttemptPayload, {
+            onSuccess: (res) => {
+                addToast('Bài luyện đã được nộp thành công!', 'success');
+                setShowSubmitDialog(false);
+                allowNavigation();
+                // Navigate to results page
+                //router.push(`/giao-tiep/ket-qua/${res.data.attempt_id}`);
+            }
+        });
+        // setTimeout(() => {
+        //     setShowSubmitDialog(false);
+        //     allowNavigation();
+        //     // Navigate to results page
+        //     //router.push(`/giao-tiep/ket-qua/mock-attempt-id`);
+        // }, 1500);
     };
 
     // Completion stats
@@ -143,18 +162,9 @@ export default function SpeakingPracticeDetailPage() {
     const totalQuestions = exam?.questions.length || 0;
     const canSubmit = completedCount > 0;
 
-    // =====================================================
-    // LOADING STATE
-    // =====================================================
-    if (isLoading) {
-        return (
-            <div className="min-h-screen bg-background flex items-center justify-center">
-                <div className="text-center">
-                    <Loader2 className="w-12 h-12 text-primary animate-spin mx-auto mb-4" />
-                    <p className="text-muted-foreground">Đang tải bài luyện...</p>
-                </div>
-            </div>
-        );
+
+    if (isExamLoading) {
+        return (<LoadingCustom />);
     }
 
     if (!exam) {

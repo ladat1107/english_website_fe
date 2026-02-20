@@ -3,7 +3,7 @@ import {
     DeleteOptions,
     DeleteResponse,
 } from "@/lib/cloudinary";
-import { deleteFromCloudinary } from "@/lib/cloudinary/upload.server";
+import { getCloudinary } from "@/lib/cloudinary/config.server";
 
 // =====================================================
 // API ROUTE: /api/upload/delete
@@ -24,14 +24,17 @@ export async function POST(request: NextRequest): Promise<NextResponse<DeleteRes
             );
         }
 
+        const cloudinary = getCloudinary();
         // Xóa file
-        const result = await deleteFromCloudinary({
-            publicId,
-            resourceType,
+        const result = await cloudinary.uploader.destroy(publicId, {
+            resource_type: resourceType,
             invalidate,
         });
 
-        return NextResponse.json(result);
+        return NextResponse.json({
+            success: result.result === "ok",
+            result: result.result,
+        });
     } catch (error) {
         console.error("Delete API error:", error);
         return NextResponse.json(

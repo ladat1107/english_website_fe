@@ -10,13 +10,28 @@
 "use client";
 
 import React from 'react';
-import { SpeakingExamForm } from '@/components/speaking';
+import { SpeakingExamForm, SpeakingExamFormData } from '@/components/speaking';
+import { useCreateSpeakingExam } from '@/hooks/use-speaking-exam';
+import { useRouter } from 'next/navigation';
+import { PATHS } from '@/utils/constants';
 
 // =====================================================
 // ADMIN CREATE SPEAKING EXAM PAGE
 // =====================================================
 
 export default function AdminCreateSpeakingExamPage() {
+
+    const { mutate: createExam, isPending } = useCreateSpeakingExam();
+    const router = useRouter();
+    
+    const handleSave = (data: SpeakingExamFormData) => {
+        // Gọi API để tạo đề thi mới
+        createExam(data,{
+            onSuccess:()=>{
+                router.push(PATHS.ADMIN.SPEAKING_EXAM);
+            }
+        });
+    };
     return (
         <SpeakingExamForm
             mode="create"
@@ -27,12 +42,11 @@ export default function AdminCreateSpeakingExamPage() {
                 // TODO: Implement preview modal
                 console.log('Preview exam');
             }}
-            onSaveSuccess={() => {
-                console.log('Đề thi đã được tạo thành công!');
-            }}
+            onSaveSuccess={handleSave}
             onSaveError={(error) => {
                 console.error('Tạo đề thi thất bại:', error);
             }}
+            isSaving={isPending}
         />
     );
 }

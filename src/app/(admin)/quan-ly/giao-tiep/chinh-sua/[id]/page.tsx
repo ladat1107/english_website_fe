@@ -1,13 +1,3 @@
-/**
- * Khailingo - Admin Edit Speaking Exam Page
- * Trang chỉnh sửa đề giao tiếp (Admin)
- * 
- * @description
- * Page này sử dụng shared component SpeakingExamForm
- * với logic đã được tích hợp sẵn trong component.
- * Load dữ liệu đề thi từ API và populate vào form.
- */
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -16,22 +6,12 @@ import { Loader2, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui';
 import { SpeakingExamForm, SpeakingExamFormData } from '@/components/speaking';
 import { SpeakingExam } from '@/types/speaking.type';
-import { getMockSpeakingExamById } from '@/utils/mock-data/speaking.mock';
+import { useGetSpeakingExamById, useUpdateSpeakingExam } from '@/hooks/use-speaking-exam';
+import { PATHS } from '@/utils/constants';
+import LoadingCustom from '@/components/ui/loading-custom';
+import { useConfirmDialogContext } from '@/components/ui/confirm-dialog-context';
+import { useToast } from '@/components/ui/toaster';
 
-// =====================================================
-// LOADING STATE COMPONENT
-// =====================================================
-
-function LoadingState() {
-    return (
-        <div className="min-h-screen bg-background flex items-center justify-center">
-            <div className="text-center">
-                <Loader2 className="w-10 h-10 sm:w-12 sm:h-12 text-primary animate-spin mx-auto mb-3 sm:mb-4" />
-                <p className="text-muted-foreground text-sm sm:text-base">Đang tải dữ liệu...</p>
-            </div>
-        </div>
-    );
-}
 
 // =====================================================
 // NOT FOUND STATE COMPONENT
@@ -67,56 +47,64 @@ export default function AdminEditSpeakingExamPage() {
     const params = useParams();
     const examId = params.id as string;
 
+    const { data: speakingExamResponse, isLoading: isExamLoading } = useGetSpeakingExamById(examId);
+    const { mutate: updateExam, isPending: isUpdating } = useUpdateSpeakingExam(examId);
+    const { confirm } = useConfirmDialogContext();
+    const { addToast } = useToast();
     // States
     const [exam, setExam] = useState<SpeakingExam | null>(null);
     const [initialData, setInitialData] = useState<SpeakingExamFormData | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
 
     // Load exam data on mount
     useEffect(() => {
-        const loadExam = async () => {
-            setIsLoading(true);
-
-            // TODO: Replace with actual API call
-            // Simulating API delay
-            await new Promise(resolve => setTimeout(resolve, 500));
-
-            const examData = getMockSpeakingExamById(examId);
-
-            if (examData) {
-                setExam(examData);
-                // Transform exam data to form data format
-                setInitialData({
-                    _id: examData._id,
-                    title: examData.title,
-                    description: examData.description || '',
-                    topic: examData.topic,
-                    estimated_duration_minutes: examData.estimated_duration_minutes,
-                    video_url: examData.video_url,
-                    video_script: examData.video_script,
-                    questions: examData.questions.map(q => ({
-                        question_number: q.question_number,
-                        question_text: q.question_text,
-                        suggested_answer: q.suggested_answer,
-                    })),
-                    is_published: examData.is_published,
-                });
-            }
-
-            setIsLoading(false);
-        };
-
-        loadExam();
-    }, [examId]);
+        if (speakingExamResponse) {
+            setExam(speakingExamResponse.data);
+            const examData: SpeakingExam = speakingExamResponse.data;
+            setInitialData({
+                _id: examData._id,
+                title: examData.title,
+                description: examData.description || '',
+                topic: examData.topic,
+                estimated_duration_minutes: examData.estimated_duration_minutes,
+                video_url: examData.video_url,
+                video_script: examData.video_script,
+                thumbnail: examData.thumbnail || '',
+                questions: examData.questions.map(q => ({
+                    question_number: q.question_number,
+                    question_text: q.question_text,
+                    suggested_answer: q.suggested_answer,
+                })),
+                is_published: examData.is_published,
+            });
+        }
+    }, [speakingExamResponse]);
 
     // Loading state
-    if (isLoading) {
-        return <LoadingState />;
+    if (isExamLoading) {
+        return <LoadingCustom />;
     }
 
     // Not found state
     if (!exam || !initialData) {
-        return <NotFoundState onBack={() => router.push('/quan-ly/giao-tiep')} />;
+        return <NotFoundState onBack={() => router.push(PATHS.ADMIN.SPEAKING_EXAM)} />;
+    }
+
+    const handleUpdate = (data: SpeakingExamFormData) => {
+        confirm({
+            title: 'Xác nhận cập nhật đề thi',
+            description: 'Bạn có chắc chắn muốn cập nhật đề thi này không?',
+            confirmText: 'Cập nhật',
+            cancelText: 'Hủy',
+            onConfirm: () => {
+                updateExam(data, {
+                    onSuccess: () => {
+                        router.push(PATHS.ADMIN.SPEAKING_EXAM);
+                        addToast("Cập nhật đề thi thành công", "success");
+                    },
+                });
+            }
+        })
+
     }
 
     // Render form with data
@@ -126,9 +114,8 @@ export default function AdminEditSpeakingExamPage() {
             title="Chỉnh sửa đề giao tiếp"
             subtitle={exam.title}
             initialData={initialData}
-            onSaveSuccess={() => {
-                console.log('Đề thi đã được cập nhật thành công!');
-            }}
+            isSaving={isUpdating}
+            onSaveSuccess={handleUpdate}
             onSaveError={(error) => {
                 console.error('Cập nhật đề thi thất bại:', error);
             }}

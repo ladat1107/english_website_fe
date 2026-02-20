@@ -1,3 +1,4 @@
+import { buildQueryString } from "@/utils/funtions";
 import envConfig from "../utils/env-config";
 
 interface ApiConfig {
@@ -68,11 +69,23 @@ class ApiClient {
         }
 
         if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            // Parse response body để lấy error từ backend
+            const errorData = await response.json().catch(() => ({
+                success: false,
+                message: 'Unknown error',
+                statusCode: response.status,
+            }));
+
+            // Throw error với đầy đủ thông tin từ backend
+            const error: any = new Error(errorData.message || 'Request failed');
+            error.status = errorData.statusCode || response.status;
+            error.code = errorData.error?.code;
+            error.details = errorData.error?.details;
+            error.data = errorData;
+            throw error;
         }
 
         return response;
-
     }
 
     private handleUnauthorized() {
@@ -111,8 +124,9 @@ class ApiClient {
     }
 
     // Convenience methods
-    async get(endpoint: string) {
-        const response = await this.fetch(endpoint);
+    async get(endpoint: string, params?: Record<string, any>) {
+        const queryString = params ? buildQueryString(params) : '';
+        const response = await this.fetch(`${endpoint}${queryString}`, { method: 'GET' });
         return response.json();
     }
 
@@ -127,6 +141,14 @@ class ApiClient {
     async put(endpoint: string, data: any) {
         const response = await this.fetch(endpoint, {
             method: 'PUT',
+            body: JSON.stringify(data),
+        });
+        return response.json();
+    }
+
+    async patch(endpoint: string, data: any) {
+        const response = await this.fetch(endpoint, {
+            method: 'PATCH',
             body: JSON.stringify(data),
         });
         return response.json();

@@ -5,57 +5,64 @@
 
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
     Search,
     Filter,
     MessageSquare,
-    Sparkles,
-    ChevronDown
+    Sparkles
 } from 'lucide-react';
-import { Button, Input, Badge } from '@/components/ui';
+import { Input, Badge } from '@/components/ui';
 import { SpeakingExamCard } from '@/components/speaking';
-import { SpeakingTopic } from '@/types/speaking.type';
-import { getMockSpeakingExams, speakingTopicOptions } from '@/utils/mock-data/speaking.mock';
-import { cn } from '@/utils/cn';
+import { SpeakingExam, SpeakingExamParams, speakingTopicOptions } from '@/types/speaking.type';
+import { SpeakingTopic } from '@/utils/constants/enum';
+import { useGetAllSpeakingExams } from '@/hooks/use-speaking-exam';
+import { useDebounce } from '@/hooks/use-debounce';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Pagination } from '@/types';
+import LoadingCustom from '@/components/ui/loading-custom';
 
 // =====================================================
 // STUDENT SPEAKING PRACTICE PAGE
 // =====================================================
 export default function StudentSpeakingPage() {
+
     // States
     const [searchQuery, setSearchQuery] = useState('');
-    const [filterTopic, setFilterTopic] = useState<SpeakingTopic | 'all'>('all');
-    const [showFilter, setShowFilter] = useState(false);
+    const [publishedExams, setPublishedExams] = useState<SpeakingExam[] | []>([]);
+    const searchDebounce = useDebounce(searchQuery, 300);
 
-    // Chỉ lấy các đề đã xuất bản
-    const publishedExams = useMemo(() => {
-        return getMockSpeakingExams({ is_published: true });
-    }, []);
+    const [params, setParams] = useState<SpeakingExamParams>({
+        page: 1,
+        limit: 20,
+        search: searchDebounce,
+        topic: undefined
+    });
+    const { data: speakingExamRes, isLoading: isExamLoading } = useGetAllSpeakingExams(params);
+    const pagination: Pagination = speakingExamRes?.data.pagination;
+    useEffect(() => {
+        if (speakingExamRes?.success) {
+            setPublishedExams(speakingExamRes.data.items);
+        }
+    }, [speakingExamRes]);
 
-    // Filtered exams
-    const filteredExams = useMemo(() => {
-        return publishedExams.filter(exam => {
-            // Search filter
-            if (searchQuery) {
-                const query = searchQuery.toLowerCase();
-                const matchesSearch =
-                    exam.title.toLowerCase().includes(query) ||
-                    exam.description?.toLowerCase().includes(query) ||
-                    exam.topic.toLowerCase().includes(query);
-                if (!matchesSearch) return false;
-            }
 
-            // Topic filter
-            if (filterTopic !== 'all' && exam.topic !== filterTopic) {
-                return false;
-            }
+    useEffect(() => {
+        setParams(pre => ({
+            ...pre,
+            search: searchDebounce,
+        }))
+    }, [searchDebounce]);
 
-            return true;
-        });
-    }, [publishedExams, searchQuery, filterTopic]);
 
+    const setFilter = (key: keyof SpeakingExamParams, value: any) => {
+        setParams(pre => ({
+            ...pre,
+            [key]: value,
+            page: 1, // Reset page to 1 on filter change
+        }))
+    }
 
     return (
         <div className="min-h-screen bg-background">
@@ -108,59 +115,40 @@ export default function StudentSpeakingPage() {
 
                     {/* Filter Dropdown */}
                     <div className="relative">
-                        <Button
-                            variant="outline"
-                            onClick={() => setShowFilter(!showFilter)}
-                            className="gap-2 w-full sm:w-auto"
-                        >
-                            <Filter className="w-4 h-4" />
-                            {filterTopic === 'all' ? 'Tất cả chủ đề' : filterTopic}
-                            <ChevronDown className={cn(
-                                'w-4 h-4 transition-transform',
-                                showFilter && 'rotate-180'
-                            )} />
-                        </Button>
-
-                        {showFilter && (
-                            <motion.div
-                                initial={{ opacity: 0, y: -10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="absolute right-0 top-full mt-2 w-64 bg-card border border-border rounded-xl shadow-lg p-2 z-20"
+                        {/* Filter Dropdown */}
+                        <div className="relative w-full sm:w-auto">
+                            <Select
+                                value={params.topic || 'all'}
+                                onValueChange={(val) => setFilter("topic", val === 'all' ? undefined : val)}
                             >
-                                <button
-                                    onClick={() => { setFilterTopic('all'); setShowFilter(false); }}
-                                    className={cn(
-                                        'w-full text-left px-3 py-2 rounded-lg text-sm transition-colors',
-                                        filterTopic === 'all' ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'
-                                    )}
-                                >
-                                    Tất cả chủ đề
-                                </button>
-                                {speakingTopicOptions.map(topic => (
-                                    <button
-                                        key={topic.key}
-                                        onClick={() => { setFilterTopic(topic.value as SpeakingTopic); setShowFilter(false); }}
-                                        className={cn(
-                                            'w-full text-left px-3 py-2 rounded-lg text-sm transition-colors',
-                                            filterTopic === topic.value ? 'bg-primary text-primary-foreground' : 'hover:bg-muted'
-                                        )}
-                                    >
-                                        {topic.label}
-                                    </button>
-                                ))}
-                            </motion.div>
-                        )}
+                                <SelectTrigger className="w-full sm:w-64">
+                                    <Filter className="w-4 h-4 mr-2 opacity-70" />
+                                    <SelectValue placeholder="Tất cả chủ đề" />
+                                </SelectTrigger>
+
+                                <SelectContent>
+                                    <SelectItem value="all">Tất cả chủ đề</SelectItem>
+
+                                    {speakingTopicOptions.map((topic) => (
+                                        <SelectItem key={topic.key} value={topic.value}>
+                                            {topic.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+
                     </div>
                 </div>
 
                 {/* Active Filter Badge */}
-                {filterTopic !== 'all' && (
+                {params.topic !== undefined && (
                     <div className="flex items-center gap-2 mb-4">
                         <span className="text-sm text-muted-foreground">Đang lọc:</span>
                         <Badge variant="secondary" className="gap-1">
-                            {filterTopic}
+                            {speakingTopicOptions.find(opt => opt.value === params.topic)?.label}
                             <button
-                                onClick={() => setFilterTopic('all')}
+                                onClick={() => setFilter("topic", undefined)}
                                 className="ml-1 hover:text-destructive"
                             >
                                 ×
@@ -169,36 +157,40 @@ export default function StudentSpeakingPage() {
                     </div>
                 )}
 
-                {/* Results Count */}
-                <p className="text-xs sm:text-sm text-muted-foreground mb-4 sm:mb-6">
-                    {filteredExams.length} bài luyện
-                </p>
-
-                {/* Exam Grid - Compact gap on mobile */}
-                {filteredExams.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
-                        {filteredExams.map((exam, index) => (
-                            <motion.div
-                                key={exam._id}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.05 }}
-                            >
-                                <SpeakingExamCard
-                                    exam={exam}
-                                    variant="student"
-                                />
-                            </motion.div>
-                        ))}
-                    </div>
-                ) : (
-                    <div className="text-center py-10 sm:py-16">
-                        <MessageSquare className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 text-muted-foreground/30" />
-                        <h3 className="text-base sm:text-lg font-semibold mb-2">Không tìm thấy bài luyện</h3>
-                        <p className="text-sm text-muted-foreground">
-                            Thử thay đổi từ khóa hoặc bộ lọc
+                {isExamLoading ? <LoadingCustom className='min-h-[350px]' /> : (
+                    <>
+                        {/* Results Count */}
+                        <p className="text-xs sm:text-sm text-muted-foreground mb-4 sm:mb-6">
+                            {pagination?.totalItems} bài luyện
                         </p>
-                    </div>
+
+                        {/* Exam Grid - Compact gap on mobile */}
+                        {publishedExams.length > 0 ? (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
+                                {publishedExams.map((exam, index) => (
+                                    <motion.div
+                                        key={exam._id}
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: index * 0.05 }}
+                                    >
+                                        <SpeakingExamCard
+                                            exam={exam}
+                                            variant="student"
+                                        />
+                                    </motion.div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="text-center py-10 sm:py-16">
+                                <MessageSquare className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 text-muted-foreground/30" />
+                                <h3 className="text-base sm:text-lg font-semibold mb-2">Không tìm thấy bài luyện</h3>
+                                <p className="text-sm text-muted-foreground">
+                                    Thử thay đổi từ khóa hoặc bộ lọc
+                                </p>
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
         </div>

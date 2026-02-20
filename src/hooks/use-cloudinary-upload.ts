@@ -11,6 +11,7 @@ import {
 // =====================================================
 // HOOK: useCloudinaryUpload
 // Custom hook để quản lý upload với state
+// Hỗ trợ theo dõi tiến trình upload thực tế
 // =====================================================
 
 export interface UseCloudinaryUploadOptions {
@@ -37,7 +38,7 @@ export interface UseCloudinaryUploadReturn {
     // Actions
     uploadVideo: (
         file: File,
-        options?: { publicId?: string; oldUrl?: string }
+        options?: { publicId?: string; oldUrl?: string, generateThumbnail?: boolean; thumbnailTransformation?: string }
     ) => Promise<UploadResult | null>;
 
     uploadImage: (
@@ -74,29 +75,26 @@ export function useCloudinaryUpload(
         setResult(null);
     }, []);
 
-    // Upload video
+    // Upload video với progress thực tế
     const uploadVideo = useCallback(
         async (
             file: File,
-            uploadOptions?: { publicId?: string; oldUrl?: string }
+            uploadOptions?: { publicId?: string; oldUrl?: string, generateThumbnail?: boolean; thumbnailTransformation?: string }
         ): Promise<UploadResult | null> => {
             setIsUploading(true);
             setProgress(0);
             setError(null);
 
             try {
-                // Giả lập progress (vì fetch không hỗ trợ progress natively)
-                const progressInterval = setInterval(() => {
-                    setProgress((prev) => Math.min(prev + 10, 90));
-                }, 500);
-
                 const uploadResult = await uploadService.uploadVideo(file, {
-                    folder: folder || CloudinaryFolder.SPEAKING_VIDEOS,
+                    folder: folder || CloudinaryFolder.OTHER_VIDEOS,
                     publicId: uploadOptions?.publicId,
                     oldUrl: uploadOptions?.oldUrl,
+                    generateThumbnail: uploadOptions?.generateThumbnail,
+                    thumbnailTransformation: uploadOptions?.thumbnailTransformation,
+                    onProgress: setProgress, // Progress thực tế từ XHR
                 });
 
-                clearInterval(progressInterval);
                 setProgress(100);
                 setResult(uploadResult);
                 onSuccess?.(uploadResult);
@@ -114,7 +112,7 @@ export function useCloudinaryUpload(
         [folder, onSuccess, onError]
     );
 
-    // Upload image
+    // Upload image với progress thực tế
     const uploadImage = useCallback(
         async (
             file: File,
@@ -130,14 +128,13 @@ export function useCloudinaryUpload(
             setError(null);
 
             try {
-                setProgress(30);
-
                 const uploadResult = await uploadService.uploadImage(file, {
                     folder: folder || CloudinaryFolder.GENERAL_IMAGES,
                     publicId: uploadOptions?.publicId,
                     oldUrl: uploadOptions?.oldUrl,
                     width: uploadOptions?.width,
                     height: uploadOptions?.height,
+                    onProgress: setProgress, // Progress thực tế từ XHR
                 });
 
                 setProgress(100);
@@ -157,7 +154,7 @@ export function useCloudinaryUpload(
         [folder, onSuccess, onError]
     );
 
-    // Upload audio
+    // Upload audio với progress thực tế
     const uploadAudio = useCallback(
         async (
             file: File | Blob,
@@ -168,13 +165,12 @@ export function useCloudinaryUpload(
             setError(null);
 
             try {
-                setProgress(30);
-
                 const uploadResult = await uploadService.uploadAudio(file, {
                     folder: folder || CloudinaryFolder.USER_RECORDINGS,
                     publicId: uploadOptions?.publicId,
                     oldUrl: uploadOptions?.oldUrl,
                     fileName: uploadOptions?.fileName,
+                    onProgress: setProgress, // Progress thực tế từ XHR
                 });
 
                 setProgress(100);
@@ -194,7 +190,7 @@ export function useCloudinaryUpload(
         [folder, onSuccess, onError]
     );
 
-    // Upload multiple files
+    // Upload nhiều file
     const uploadMultiple = useCallback(
         async (files: File[]): Promise<UploadResult[]> => {
             setIsUploading(true);
@@ -205,6 +201,13 @@ export function useCloudinaryUpload(
                 const uploadResult = await uploadService.uploadMultiple(files, {
                     folder: folder || CloudinaryFolder.GENERAL_FILES,
                     resourceType,
+                    onProgress: (fileIndex, fileProgress) => {
+                        // Tính progress tổng thể dựa trên số file
+                        const overallProgress = Math.round(
+                            ((fileIndex + fileProgress / 100) / files.length) * 100
+                        );
+                        setProgress(overallProgress);
+                    },
                 });
 
                 setProgress(100);

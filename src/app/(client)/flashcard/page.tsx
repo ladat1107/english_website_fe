@@ -113,6 +113,7 @@ const levelColors = {
 };
 
 export default function FlashcardPage() {
+  
     return (
         <div className="py-8">
             <div className="container-custom">

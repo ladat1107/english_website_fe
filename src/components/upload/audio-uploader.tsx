@@ -14,37 +14,16 @@ import { CloudinaryFolder, UploadResult } from "@/lib/cloudinary";
 // =====================================================
 
 export interface AudioUploaderProps {
-    // Giá trị hiện tại (URL)
     value?: string;
-
-    // Callback khi có URL mới
     onChange: (url: string) => void;
-
-    // Folder lưu trữ
     folder?: CloudinaryFolder | string;
-
-    // Public ID để ghi đè
     publicId?: string;
-
-    // Cho phép ghi âm
     allowRecording?: boolean;
-
-    // Label
     label?: string;
-
-    // Error message
     error?: string;
-
-    // Disabled
     disabled?: boolean;
-
-    // Class name
     className?: string;
-
-    // Callback khi upload thành công
     onUploadSuccess?: (result: UploadResult) => void;
-
-    // Callback khi upload thất bại
     onUploadError?: (error: Error) => void;
 }
 

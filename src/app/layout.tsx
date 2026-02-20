@@ -110,6 +110,7 @@ const RootLayout = ({ children }: RootLayoutProps) => {
     <html lang="vi" className={inter.variable} suppressHydrationWarning>
       <body className={`${inter.className} min-h-screen antialiased`}>
         <ClientProviders>
+          
           {children}
         </ClientProviders>
       </body>

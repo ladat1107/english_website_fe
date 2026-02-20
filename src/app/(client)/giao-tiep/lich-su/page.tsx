@@ -36,7 +36,8 @@ import {
     formatDuration,
     formatDate
 } from "@/utils/mock-data/speaking.mock";
-import { SpeakingSubmission, ExamAttemptStatus, SpeakingTopic, SPEAKING_TOPIC_LABELS } from "@/types/speaking.type";
+import { SpeakingSubmission, ExamAttemptStatus, SPEAKING_TOPIC_LABELS } from "@/types/speaking.type";
+import { SpeakingTopic } from "@/utils/constants/enum";
 
 // Group submissions by exam
 interface GroupedSubmission {

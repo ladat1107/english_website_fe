@@ -69,6 +69,7 @@ export default function FlashcardDetailPage() {
     const currentCard = sampleCards[currentIndex];
     const progress = ((currentIndex + 1) / sampleCards.length) * 100;
 
+   
     // Xử lý lật thẻ
     const handleFlip = () => {
         setIsFlipped(!isFlipped);

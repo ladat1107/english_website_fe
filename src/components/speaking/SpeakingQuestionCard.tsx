@@ -12,6 +12,7 @@ import { cn } from '@/utils/cn';
 import { SpeakingQuestion } from '@/types/speaking.type';
 import { Card, CardContent, Badge } from '@/components/ui';
 import { AudioRecorder } from './AudioRecorder';
+import { AudioUploader } from '../upload';
 
 // =====================================================
 // TYPES
@@ -24,7 +25,7 @@ interface SpeakingQuestionCardProps {
     audioUrl?: string;
     duration?: number;
     onRecordingComplete?: (questionNumber: number, audioBlob: Blob, duration: number) => void;
-    onUploadComplete?: (questionNumber: number, audioUrl: string, duration: number) => void;
+    onUploadComplete?: (questionNumber: number, questionText: string, audioUrl: string, duration: number) => void;
     onClick?: () => void;
     showSuggestedAnswer?: boolean;
     disabled?: boolean;
@@ -124,16 +125,18 @@ export function SpeakingQuestionCard({
                     {isActive && !disabled && (
                         <div className="mt-6 pt-4 border-t border-border">
                             <AudioRecorder
-                                maxDuration={120}
+                                maxDuration={300}
                                 onRecordingComplete={(blob, dur) => {
                                     onRecordingComplete?.(question.question_number, blob, dur);
                                 }}
                                 onUploadComplete={(url, dur) => {
-                                    onUploadComplete?.(question.question_number, url, dur);
+                                    onUploadComplete?.(question.question_number, question.question_text, url, dur);
                                 }}
                                 showUploadButton={true}
                                 disabled={disabled}
                             />
+
+
                         </div>
                     )}
 

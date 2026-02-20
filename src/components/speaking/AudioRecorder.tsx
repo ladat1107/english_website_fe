@@ -11,6 +11,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Mic, Square, Play, Pause, RotateCcw, Upload, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui';
 import { cn } from '@/utils/cn';
+import useCloudinaryUpload from '@/hooks/use-cloudinary-upload';
+import { CloudinaryFolder } from '@/lib/cloudinary';
 
 // =====================================================
 // TYPES
@@ -27,11 +29,6 @@ interface AudioRecorderProps {
 
 type RecordingState = 'idle' | 'recording' | 'paused' | 'stopped';
 
-// =====================================================
-// CLOUDINARY CONFIG (Mock - cần config thật trong env)
-// =====================================================
-const CLOUDINARY_UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'speaking_audio';
-const CLOUDINARY_CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'demo';
 
 // =====================================================
 // AUDIO RECORDER COMPONENT
@@ -39,7 +36,7 @@ const CLOUDINARY_CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || '
 export function AudioRecorder({
     onRecordingComplete,
     onUploadComplete,
-    maxDuration = 120, // 2 phút mặc định
+    maxDuration = 300, // 5 phút mặc định
     disabled = false,
     className,
     showUploadButton = true,
@@ -51,7 +48,6 @@ export function AudioRecorder({
     const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
     const [audioUrl, setAudioUrl] = useState<string | null>(null);
     const [isPlaying, setIsPlaying] = useState(false);
-    const [isUploading, setIsUploading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [audioLevel, setAudioLevel] = useState(0);
 
@@ -62,6 +58,22 @@ export function AudioRecorder({
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const analyserRef = useRef<AnalyserNode | null>(null);
     const animationFrameRef = useRef<number | null>(null);
+
+    const {
+        isUploading,
+        progress,
+        error: uploadError,
+        uploadAudio,
+    } = useCloudinaryUpload({
+        folder: CloudinaryFolder.SPEAKING_AUDIO,
+        onSuccess: (result) => {
+            onUploadComplete?.(result.secureUrl, duration);
+        },
+        onError: (err) => {
+            console.error('Upload error:', err);
+            setError('Không thể upload audio. Vui lòng thử lại.');
+        }
+    });
 
     // =====================================================
     // CLEANUP
@@ -238,35 +250,38 @@ export function AudioRecorder({
         const audioToUpload = blob || audioBlob;
         if (!audioToUpload) return;
 
-        setIsUploading(true);
         setError(null);
 
         try {
-            const formData = new FormData();
-            formData.append('file', audioToUpload);
-            formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-            formData.append('resource_type', 'video'); // Cloudinary uses 'video' for audio
+            // const formData = new FormData();
+            // formData.append('file', audioToUpload);
+            // formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+            // formData.append('resource_type', 'video'); // Cloudinary uses 'video' for audio
 
-            const response = await fetch(
-                `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/video/upload`,
-                {
-                    method: 'POST',
-                    body: formData,
-                }
-            );
+            // const response = await fetch(
+            //     `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/video/upload`,
+            //     {
+            //         method: 'POST',
+            //         body: formData,
+            //     }
+            // );
 
-            if (!response.ok) {
-                throw new Error('Upload failed');
-            }
+            // if (!response.ok) {
+            //     throw new Error('Upload failed');
+            // }
 
-            const data = await response.json();
-            onUploadComplete?.(data.secure_url, duration);
+            // const data = await response.json();
+            // onUploadComplete?.(data.secure_url, duration);
+
+            await uploadAudio(audioToUpload, {
+                fileName: `recording_${Date.now()}.webm`,
+            });
 
         } catch (err) {
             console.error('Upload error:', err);
             setError('Không thể upload audio. Vui lòng thử lại.');
         } finally {
-            setIsUploading(false);
+            //setIsUploading(false);
         }
     };
 

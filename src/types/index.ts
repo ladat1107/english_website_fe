@@ -245,16 +245,19 @@ export interface ApiResponse<T> {
     path: string;              // Đường dẫn API được gọi
     statusCode?: number;       // HTTP status code
 }
+export interface Pagination {
+    currentPage: number;
+    limit: number;
+    totalItems: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+}
 
 export interface PaginatedResponse<T> {
     success: boolean;
     data: T[];
-    pagination: {
-        page: number;
-        limit: number;
-        total: number;
-        totalPages: number;
-    };
+    pagination: Pagination;
 }
 
 // =====================================================
@@ -269,56 +272,8 @@ export interface NavItem {
     disabled?: boolean;
 }
 
-export interface BreadcrumbItem {
-    title: string;
-    href?: string;
-}
-
-export interface SelectOption {
-    value: string;
-    label: string;
-    disabled?: boolean;
-}
-
-export interface TabItem {
-    value: string;
-    label: string;
-    content: React.ReactNode;
-    disabled?: boolean;
-}
-
-// =====================================================
-// FORM TYPES
-// =====================================================
-export interface LoginFormData {
-    email: string;
-    password: string;
-}
-
-export interface RegisterFormData {
-    name: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-}
-
-// =====================================================
-// STATISTICS TYPES
-// =====================================================
-export interface UserStatistics {
-    totalExams: number;
-    completedExams: number;
-    averageScore: number;
-    totalStudyTime: number; // phút
-    flashcardsLearned: number;
-    dictationsCompleted: number;
-    streakDays: number;
-}
-
-export interface ExamStatistics {
-    totalAttempts: number;
-    averageScore: number;
-    highestScore: number;
-    lowestScore: number;
-    averageTime: number; // phút
+export interface ParamBasic {
+    page?: number;
+    limit?: number;
+    search?: string;
 }

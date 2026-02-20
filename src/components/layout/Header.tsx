@@ -11,11 +11,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FiMenu, FiX, FiChevronDown, FiUser, FiLogOut } from "react-icons/fi";
 import { FcGoogle } from "react-icons/fc";
 import { cn } from "@/utils/cn";
-import { MAIN_NAV_ITEMS } from "@/utils/constants";
+import { MAIN_NAV_ITEMS, PATHS } from "@/utils/constants";
 import { Button } from "@/components/ui";
 import { useAuth } from "@/contexts";
 import Image from "next/image";
-import { BookAudio, LogOut, SquareUser } from "lucide-react";
+import { BookAudio, LogOut, MonitorCog, SquareUser } from "lucide-react";
+import { UserRole } from "@/utils/constants/enum";
 
 export const Header: React.FC = () => {
     const { user, isAuthenticated, isLoading, openAuthModal, logout } = useAuth();
@@ -173,6 +174,16 @@ export const Header: React.FC = () => {
                                                 <BookAudio className="h-4 w-4 mr-3" />
                                                 Học tiếng Anh
                                             </Link>
+                                            {user.role === UserRole.ADMIN && (
+                                                <Link
+                                                    href={PATHS.ADMIN.DASHBOARD}
+                                                    onClick={() => { }}
+                                                    className="flex items-center px-4 py-2 text-sm font-semibold text-gray-900 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                                                >
+                                                    <MonitorCog className="h-4 w-4 mr-3" />
+                                                    Trang quản lý
+                                                </Link>
+                                            )}
                                             <hr className="my-1 border-gray-200 dark:border-gray-700" />
                                             <div
                                                 onClick={logout}

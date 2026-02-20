@@ -23,6 +23,7 @@ import {
     SheetTrigger,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 interface AdminLayoutProps {
     children: ReactNode;
@@ -185,10 +186,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 {/* Logo */}
                 <div className="flex h-14 items-center border-b px-3">
                     <Link href="/quan-ly" className="flex items-center gap-2">
-                        <div className="h-7 w-7 rounded-lg bg-primary flex items-center justify-center">
-                            <span className="text-white font-bold text-xs">K</span>
-                        </div>
-                        <span className="font-bold text-base">Khailingo</span>
+                        <Image
+                            src="/logo/logo.png"
+                            alt="Khailingo Logo"
+                            width={100}
+                            height={28}
+                        />
                     </Link>
                 </div>
 
@@ -219,10 +222,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     <SheetContent side="left" className="w-64 p-0">
                         <SheetHeader className="border-b px-3 py-3">
                             <SheetTitle className="flex items-center gap-2">
-                                <div className="h-7 w-7 rounded-lg bg-primary flex items-center justify-center">
-                                    <span className="text-white font-bold text-xs">K</span>
-                                </div>
-                                <span className="font-bold text-base">Khailingo</span>
+                                <Image
+                                    src="/logo/logo.png"
+                                    alt="Khailingo Logo"
+                                    width={100}
+                                    height={28}
+                                />
                             </SheetTitle>
                         </SheetHeader>
                         <div className="flex-1 overflow-y-auto py-2">

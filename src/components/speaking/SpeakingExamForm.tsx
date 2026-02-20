@@ -1,21 +1,3 @@
-/**
- * Khailingo - SpeakingExamForm Component
- * Form tạo/chỉnh sửa đề Speaking sử dụng React Hook Form + Zod + Shadcn UI
- *
- * @description
- * Component này sử dụng:
- * - React Hook Form để quản lý form state
- * - Zod để validation
- * - Shadcn UI Form components
- *
- * Features:
- * - Responsive layout (mobile-first)
- * - Real-time validation với Zod
- * - Video upload/URL input
- * - Dynamic script & question management
- * - Summary sidebar
- */
-
 "use client";
 
 import React, { memo, useState, useCallback } from "react";
@@ -32,8 +14,6 @@ import {
     Trash2,
     GripVertical,
     Video,
-    Upload,
-    Link as LinkIcon,
     MessageCircle,
     HelpCircle,
     CheckCircle,
@@ -65,14 +45,17 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { VideoPlayer, VideoScriptDisplay } from "@/components/speaking";
-import { speakingTopicOptions } from "@/utils/mock-data/speaking.mock";
+import { VideoScriptDisplay } from "@/components/speaking";
 import { VideoUploader } from "@/components/upload";
 import { CloudinaryFolder } from "@/lib/cloudinary";
 import { cn } from "@/utils/cn";
-import { SpeakingTopic } from "@/types/speaking.type";
 import { SortableContainer } from "../dnd";
 import DraggableQuestionItem from "./draggable-question-item";
+import { SpeakingTopic } from "@/utils/constants/enum";
+import { Switch } from "../ui/switch";
+import { PATHS } from "@/utils/constants";
+import { speakingTopicOptions } from "@/types/speaking.type";
+import Link from "next/link";
 
 // =====================================================
 // ZOD SCHEMA - Validation
@@ -94,8 +77,9 @@ const speakingExamFormSchema = z.object({
     title: z.string().min(1, "Vui lòng nhập tiêu đề"),
     description: z.string().optional(),
     topic: z.nativeEnum(SpeakingTopic),
-    estimated_duration_minutes: z.number().min(1).max(60),
+    estimated_duration_minutes: z.number().min(1).max(60, "Thời gian không được vượt quá 60 phút"),
     video_url: z.string().min(1, "Vui lòng thêm video"),
+    thumbnail: z.string().optional(),
     video_script: z.array(videoScriptSchema),
     questions: z.array(questionSchema).min(1, "Vui lòng thêm ít nhất 1 câu hỏi"),
     is_published: z.boolean(),
@@ -121,8 +105,9 @@ export interface SpeakingExamFormProps {
     subtitle?: string;
     initialData?: Partial<SpeakingExamFormValues>;
     showPreview?: boolean;
+    isSaving: boolean;
     onPreview?: () => void;
-    onSaveSuccess?: () => void;
+    onSaveSuccess?: (data: SpeakingExamFormData) => void;
     onSaveError?: (error: Error) => void;
     className?: string;
 }
@@ -137,6 +122,7 @@ const DEFAULT_FORM_VALUES: SpeakingExamFormValues = {
     topic: SpeakingTopic.DAILY_LIFE,
     estimated_duration_minutes: 10,
     video_url: "",
+    thumbnail: "",
     video_script: [],
     questions: [],
     is_published: false,
@@ -152,10 +138,8 @@ interface FormHeaderProps {
     mode: SpeakingExamFormMode;
     isSaving: boolean;
     showPreview?: boolean;
-    onBack: () => void;
     onPreview?: () => void;
     onSaveDraft: () => void;
-    onPublish: () => void;
 }
 
 const FormHeader = memo(function FormHeader({
@@ -164,19 +148,18 @@ const FormHeader = memo(function FormHeader({
     mode,
     isSaving,
     showPreview,
-    onBack,
     onPreview,
     onSaveDraft,
-    onPublish,
 }: FormHeaderProps) {
+    const router = useRouter();
     return (
-        <div className="bg-card border-b border-border sticky top-0 z-10">
-            <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
+        <div className="bg-card border-b border-border  z-10">
+            <div className="container mx-auto px-3 sm:px-4 py-2 sm:py-3">
                 <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2 sm:gap-4 min-w-0">
-                        <Button variant="ghost" size="icon" onClick={onBack} className="shrink-0">
+                        <Link href={PATHS.ADMIN.SPEAKING_EXAM} className="shrink-0">
                             <ArrowLeft className="w-5 h-5" />
-                        </Button>
+                        </Link>
                         <div className="min-w-0">
                             <h1 className="text-lg sm:text-xl font-bold text-foreground truncate">
                                 {title}
@@ -202,22 +185,10 @@ const FormHeader = memo(function FormHeader({
                                 Xem trước
                             </Button>
                         )}
+
                         <Button
                             type="button"
-                            variant="outline"
                             onClick={onSaveDraft}
-                            disabled={isSaving}
-                            className="gap-1.5 sm:gap-2"
-                            size="sm"
-                        >
-                            <Save className="w-4 h-4" />
-                            <span className="hidden sm:inline">
-                                {mode === "create" ? "Lưu nháp" : "Lưu"}
-                            </span>
-                        </Button>
-                        <Button
-                            type="button"
-                            onClick={onPublish}
                             disabled={isSaving}
                             className="gap-1.5 sm:gap-2"
                             size="sm"
@@ -228,7 +199,7 @@ const FormHeader = memo(function FormHeader({
                                 <CheckCircle className="w-4 h-4" />
                             )}
                             <span className="hidden xs:inline">
-                                {mode === "create" ? "Xuất bản" : "Cập nhật"}
+                                {mode === "create" ? "Lưu nháp" : "Lưu"}
                             </span>
                         </Button>
                     </div>
@@ -265,9 +236,10 @@ const SummarySidebar = memo(function SummarySidebar({
     onSaveDraft,
     onPublish,
 }: SummarySidebarProps) {
+    const disabled = isSaving || title.trim() === "" || videoUrl.trim() === "" || questionsCount === 0;
     return (
         <div className="space-y-4 sm:space-y-6">
-            <Card className="sticky top-20 sm:top-24">
+            <Card className="sticky top-12 sm:top-16">
                 <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-4">
                     <CardTitle className="text-base sm:text-lg">Tóm tắt</CardTitle>
                 </CardHeader>
@@ -314,60 +286,33 @@ const SummarySidebar = memo(function SummarySidebar({
                     </div>
 
                     <div className="pt-3 sm:pt-4 border-t border-border space-y-2">
-                        <Button
-                            type="button"
-                            className="w-full gap-2 h-9 sm:h-10 text-sm"
-                            onClick={onPublish}
-                            disabled={isSaving}
-                        >
-                            {isSaving ? (
-                                <Loader2 className="w-4 h-4 animate-spin" />
-                            ) : (
-                                <CheckCircle className="w-4 h-4" />
-                            )}
-                            {mode === "create" ? "Xuất bản đề thi" : "Cập nhật & Xuất bản"}
-                        </Button>
+                        {/* Switch Xuất bản */}
+                        {mode === "edit" && (
+                            <div className="flex items-center justify-between">
+                                <div className="text-sm font-medium">
+                                    {"Xuất bản đề thi"}
+                                </div>
+
+                                <Switch
+                                    checked={isPublished}          // bạn cần truyền state này
+                                    onCheckedChange={onPublish}    // toggle → publish
+                                    disabled={isSaving}
+                                />
+                            </div>
+                        )}
                         <Button
                             type="button"
                             variant="outline"
                             className="w-full gap-2 h-9 sm:h-10 text-sm"
                             onClick={onSaveDraft}
-                            disabled={isSaving}
+                            disabled={disabled}
                         >
-                            <Save className="w-4 h-4" />
+                            {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                             {mode === "create" ? "Lưu bản nháp" : "Lưu thay đổi"}
                         </Button>
                     </div>
                 </CardContent>
             </Card>
-
-            {mode === "create" && (
-                <Card className="hidden lg:block">
-                    <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-4">
-                        <CardTitle className="text-sm sm:text-base">💡 Mẹo tạo đề tốt</CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-3 sm:p-6 pt-0">
-                        <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-muted-foreground">
-                            <li className="flex items-start gap-2">
-                                <span className="text-primary mt-0.5">•</span>
-                                Video nên có độ dài 3-5 phút
-                            </li>
-                            <li className="flex items-start gap-2">
-                                <span className="text-primary mt-0.5">•</span>
-                                Thêm kịch bản để học viên đọc theo
-                            </li>
-                            <li className="flex items-start gap-2">
-                                <span className="text-primary mt-0.5">•</span>
-                                Nên có 3-5 câu hỏi mỗi đề
-                            </li>
-                            <li className="flex items-start gap-2">
-                                <span className="text-primary mt-0.5">•</span>
-                                Câu hỏi nên thực tế, gần gũi
-                            </li>
-                        </ul>
-                    </CardContent>
-                </Card>
-            )}
         </div>
     );
 });
@@ -382,14 +327,13 @@ export function SpeakingExamForm({
     subtitle,
     initialData,
     showPreview = false,
+    isSaving,
     onPreview,
     onSaveSuccess,
     onSaveError,
     className,
 }: SpeakingExamFormProps) {
     const router = useRouter();
-
-    const [isSaving, setIsSaving] = useState(false);
 
     // =====================================================
     // FORM SETUP
@@ -443,7 +387,7 @@ export function SpeakingExamForm({
     // Handler khi video upload thành công
     const handleVideoUploadSuccess = useCallback(
         (result: { versionedUrl: string }) => {
-            console.log("Video uploaded:", result);
+            //console.log("Video uploaded:", result);
             // URL đã được cập nhật qua onChange của VideoUploader
         },
         []
@@ -475,33 +419,20 @@ export function SpeakingExamForm({
     }, [appendQuestion, questionFields.length]);
 
     const onSubmit = useCallback(
-        async (data: SpeakingExamFormValues, publish: boolean) => {
-            setIsSaving(true);
-            try {
-                const dataToSave = { ...data, is_published: publish };
-                console.log(`${mode === "create" ? "Creating" : "Updating"} exam:`, dataToSave);
-
-                await new Promise((resolve) => setTimeout(resolve, 1500));
-
-                onSaveSuccess?.();
-                router.push("/quan-ly/giao-tiep");
-            } catch (error) {
-                console.error("Save failed:", error);
-                onSaveError?.(error as Error);
-            } finally {
-                setIsSaving(false);
-            }
+        async (data: SpeakingExamFormValues) => {
+            const dataToSave = { ...data, is_published: mode === "create" ? false : watchedValues.is_published };
+            onSaveSuccess?.(dataToSave);
         },
-        [mode, onSaveSuccess, onSaveError, router]
+        [mode, onSaveSuccess, onSaveError, router, watchedValues.is_published]
     );
 
     const handleSaveDraft = useCallback(() => {
-        handleSubmit((data) => onSubmit(data, false))();
+        handleSubmit((data: SpeakingExamFormValues) => onSubmit(data))();
     }, [handleSubmit, onSubmit]);
 
     const handlePublish = useCallback(() => {
-        handleSubmit((data) => onSubmit(data, true))();
-    }, [handleSubmit, onSubmit]);
+        setValue("is_published", !watchedValues.is_published); // Cập nhật giá trị is_published trong form
+    }, [setValue, watchedValues.is_published]);
 
 
     const handleQuestionsReorder = useCallback(
@@ -520,9 +451,6 @@ export function SpeakingExamForm({
         [moveQuestion, questionFields, setValue]
     );
 
-    // =====================================================
-    // RENDER
-    // =====================================================
 
     return (
         <Form {...form}>
@@ -534,10 +462,8 @@ export function SpeakingExamForm({
                     mode={mode}
                     isSaving={isSaving}
                     showPreview={showPreview}
-                    onBack={() => router.back()}
                     onPreview={onPreview}
                     onSaveDraft={handleSaveDraft}
-                    onPublish={handlePublish}
                 />
 
                 {/* Main Content */}
@@ -664,7 +590,11 @@ export function SpeakingExamForm({
                                                 <FormControl>
                                                     <VideoUploader
                                                         value={field.value}
-                                                        onChange={field.onChange}
+                                                        thumbnailUrl={watchedValues.thumbnail}
+                                                        onChange={(url, thumbnailUrl) => {
+                                                            field.onChange(url);
+                                                            setValue("thumbnail", thumbnailUrl);
+                                                        }}
                                                         folder={CloudinaryFolder.SPEAKING_VIDEOS}
                                                         // Tạo publicId dựa trên ID của exam để ghi đè khi edit
                                                         publicId={
@@ -679,7 +609,7 @@ export function SpeakingExamForm({
                                                         onUploadError={handleVideoUploadError}
                                                     />
                                                 </FormControl>
-                                                <FormMessage />
+                                                {/* <FormMessage /> */}
                                             </FormItem>
                                         )}
                                     />

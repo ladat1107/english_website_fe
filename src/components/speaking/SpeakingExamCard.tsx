@@ -21,7 +21,7 @@ import {
     XCircle
 } from 'lucide-react';
 import { cn } from '@/utils/cn';
-import { SpeakingExam, SpeakingTopic } from '@/types/speaking.type';
+import { SpeakingExam } from '@/types/speaking.type';
 import {
     Card,
     CardHeader,
@@ -32,6 +32,8 @@ import {
     Button,
     Badge
 } from '@/components/ui';
+import { SpeakingTopic } from '@/utils/constants/enum';
+import Image from 'next/image';
 
 // =====================================================
 // TYPES
@@ -96,9 +98,17 @@ export function SpeakingExamCard({
                 {/* Video Thumbnail */}
                 <div className="relative aspect-video bg-muted overflow-hidden">
                     {/* Thumbnail - có thể lấy từ video_url hoặc placeholder */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
-                        <Play className="w-10 h-10 sm:w-12 sm:h-12 text-primary/50" />
-                    </div>
+                    {exam.thumbnail ?
+                        <Image
+                            src={exam.thumbnail}
+                            alt={exam.title}
+                            fill
+                            className="object-cover"
+                        /> :
+                        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+                            <Play className="w-10 h-10 sm:w-12 sm:h-12 text-primary/50" />
+                        </div>
+                    }
 
                     {/* Duration Badge */}
                     <div className="absolute bottom-1.5 sm:bottom-2 right-1.5 sm:right-2">
@@ -128,30 +138,36 @@ export function SpeakingExamCard({
 
                 {/* Content - Compact padding on mobile */}
                 <CardHeader className="p-3 sm:p-4 pb-1.5 sm:pb-2">
-                    {/* Topic Tag */}
-                    <div className="flex items-center gap-2 mb-1.5 sm:mb-2">
-                        <Badge
-                            variant="outline"
-                            className={cn('gap-1 text-xs', topicColor.bg, topicColor.text, 'border-none')}
-                        >
-                            <Tag className="w-3 h-3" />
-                            {exam.topic}
-                        </Badge>
+                    <div className='flex justify-between'>
+                        {/* Topic Tag */}
+                        <div className="flex items-center gap-2 mb-1.5 sm:mb-2">
+                            <Badge
+                                variant="outline"
+                                className={cn('gap-1 text-xs', topicColor.bg, topicColor.text, 'border-none')}
+                            >
+                                <Tag className="w-3 h-3" />
+                                {exam.topic}
+                            </Badge>
+                        </div>
+                        <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground" >
+                            <HelpCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                            <span>{exam.questions.length} câu hỏi</span>
+                        </div>
                     </div>
 
-                    <CardTitle className="text-base sm:text-lg line-clamp-2">
+
+                    <CardTitle className="text-base sm:text-lg line-clamp-1 min-h-[1.5rem] sm:min-h-[1.75rem]">
                         {exam.title}
                     </CardTitle>
 
-                    {exam.description && (
-                        <CardDescription className="line-clamp-2 mt-1 text-xs sm:text-sm">
+                    {exam.description ? (
+                        <CardDescription className="line-clamp-2 mt-1 text-xs sm:text-sm min-h-[2.5rem] sm:min-h-[2.8rem]">
                             {exam.description}
                         </CardDescription>
-                    )}
+                    ) : <div className="mt-1 text-xs sm:text-sm min-h-[2.5rem] sm:min-h-[2.8rem]"></div>}
                 </CardHeader>
 
-                <CardContent className="flex-1 p-3 sm:p-4 pt-0 pb-3 sm:pb-4">
-                    {/* Stats */}
+                {/* <CardContent className="flex-1 p-3 sm:p-4 pt-0 pb-3 sm:pb-4">
                     <div className="flex items-center gap-3 sm:gap-4 text-xs sm:text-sm text-muted-foreground">
                         <div className="flex items-center gap-1">
                             <HelpCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -162,10 +178,10 @@ export function SpeakingExamCard({
                             <span>{exam.video_script.length} đoạn</span>
                         </div>
                     </div>
-                </CardContent>
+                </CardContent> */}
 
                 {/* Footer Actions - Compact on mobile */}
-                <CardFooter className="p-3 sm:p-4 pt-0 gap-2">
+                <CardFooter className="p-3 sm:p-4 !pt-0 gap-2">
                     {variant === 'student' ? (
                         // Student Actions
                         <Link href={`/giao-tiep/${exam._id}`} className="w-full">

@@ -3,6 +3,7 @@
  * File chứa các hằng số dùng trong toàn bộ ứng dụng
  */
 
+
 // =====================================================
 // THÔNG TIN WEBSITE
 // =====================================================
@@ -186,8 +187,9 @@ export const CAMBRIDGE_BOOKS = [
 export const PATHS = {
     ADMIN: {
         DASHBOARD: '/quan-ly',
-        COMMMUNICATIONS: '/quan-ly/giao-tiep',
-        COMMUNICATIONS_CREATE: '/quan-ly/giao-tiep/tao-de',
+        SPEAKING_EXAM: '/quan-ly/giao-tiep',
+        SPEAKING_EXAM_CREATE: '/quan-ly/giao-tiep/tao-de',
+        SPEAKING_EXAM_EDIT: (examId: string) => `/quan-ly/giao-tiep/chinh-sua/${examId}`,
     },
     CLIENT: {
         HOME: '/',

@@ -3,21 +3,15 @@
  * Types cho module Luyện giao tiếp - khớp với BE schemas
  */
 
-// =====================================================
-// SPEAKING TOPIC ENUM - Các chủ đề giao tiếp
-// =====================================================
-export enum SpeakingTopic {
-    DAILY_LIFE = 'Daily Life',
-    EDUCATION = 'Education',
-    TECHNOLOGY = 'Technology',
-    ENVIRONMENT = 'Environment',
-    HEALTH = 'Health',
-    CULTURE = 'Culture',
-    TRAVEL = 'Travel',
-    WORK_AND_CAREER = 'Work and Career',
-    SOCIAL_ISSUES = 'Social Issues',
-    HOBBIES_AND_INTERESTS = 'Hobbies and Interests',
-}
+import { SpeakingTopic } from "@/utils/constants/enum";
+import { ParamBasic } from ".";
+
+export const speakingTopicOptions = Object.entries(SpeakingTopic).map(([key, value]) => ({
+    value: value,
+    label: value,
+    key: key,
+}));
+
 
 // =====================================================
 // SPEAKING EXAM STATUS
@@ -82,13 +76,19 @@ export interface SpeakingExam {
     description?: string;                   // Mô tả
     topic: SpeakingTopic;                   // Chủ đề
     estimated_duration_minutes: number;     // Thời gian ước tính (phút)
-    video_url: string;                      // Link video Cloudinary/Youtube
+    video_url: string;     
+    thumbnail?: string;                 // Link video Cloudinary/Youtube
     video_script: VideoScript[];            // Kịch bản hội thoại
     questions: SpeakingQuestion[];          // Danh sách câu hỏi
     is_published: boolean;                  // Đã xuất bản chưa
     created_by: string;                     // ID người tạo
     createdAt: string;
     updatedAt: string;
+}
+
+export interface SpeakingExamParams extends ParamBasic {
+    topic?: SpeakingTopic;
+    is_published?: boolean;
 }
 
 // =====================================================

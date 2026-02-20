@@ -11,6 +11,8 @@ import { AuthProvider } from "@/contexts";
 import { AuthModal } from "@/components/layout";
 import { useAuth } from "@/contexts";
 import { ReactQueryProvider } from "./react-query-provider";
+import { ConfirmDialogProvider } from "@/components/ui/confirm-dialog-context";
+import { ToastProvider } from "@/components/ui/toaster";
 
 /**
  * AuthModalWrapper - Component riêng để render AuthModal
@@ -33,12 +35,16 @@ interface ClientProvidersProps {
 export const ClientProviders: React.FC<ClientProvidersProps> = ({ children }) => {
   return (
     <Suspense fallback={null}>
-      <ReactQueryProvider>
-        <AuthProvider>
-          {children}
-          <AuthModalWrapper />
-        </AuthProvider>
-      </ReactQueryProvider>
+      <ToastProvider>
+        <ConfirmDialogProvider>
+          <ReactQueryProvider>
+            <AuthProvider>
+              {children}
+              <AuthModalWrapper />
+            </AuthProvider>
+          </ReactQueryProvider>
+        </ConfirmDialogProvider>
+      </ToastProvider>
     </Suspense>
   );
 };

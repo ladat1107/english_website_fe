@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { useCloudinaryUpload } from "@/hooks/use-cloudinary-upload";
 import { CloudinaryFolder, UploadResult } from "@/lib/cloudinary";
+import Image from "next/image";
 
 // =====================================================
 // COMPONENT: VideoUploader
@@ -17,42 +18,23 @@ import { CloudinaryFolder, UploadResult } from "@/lib/cloudinary";
 export type VideoInputMode = "url" | "upload";
 
 export interface VideoUploaderProps {
-    // Giá trị hiện tại (URL)
     value?: string;
-
-    // Callback khi có URL mới
-    onChange: (url: string) => void;
-
-    // Folder lưu trữ
+    thumbnailUrl?: string;
+    onChange: (url: string, thumbnailUrl?: string) => void;
     folder?: CloudinaryFolder | string;
-
-    // Public ID để ghi đè
     publicId?: string;
-
-    // Label
     label?: string;
-
-    // Placeholder
     placeholder?: string;
-
-    // Error message
     error?: string;
-
-    // Disabled
     disabled?: boolean;
-
-    // Class name
     className?: string;
-
-    // Callback khi upload thành công
     onUploadSuccess?: (result: UploadResult) => void;
-
-    // Callback khi upload thất bại
     onUploadError?: (error: Error) => void;
 }
 
 export function VideoUploader({
     value,
+    thumbnailUrl,
     onChange,
     folder = CloudinaryFolder.SPEAKING_VIDEOS,
     publicId,
@@ -68,6 +50,7 @@ export function VideoUploader({
     const [inputMode, setInputMode] = useState<VideoInputMode>("url");
     const [urlInput, setUrlInput] = useState(value || "");
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const thumbnailInputRef = useRef<HTMLInputElement>(null);
 
     // Hook upload
     const {
@@ -78,8 +61,20 @@ export function VideoUploader({
     } = useCloudinaryUpload({
         folder,
         onSuccess: (result) => {
-            onChange(result.versionedUrl);
+            onChange(result.versionedUrl, result.thumbnailUrl);
             onUploadSuccess?.(result);
+        },
+        onError: onUploadError,
+    });
+
+    const {
+        isUploading: isUploadingThumbnail,
+        error: uploadErrorThumbnail,
+        uploadImage,
+    } = useCloudinaryUpload({
+        folder: CloudinaryFolder.SPEAKING_THUMBNAILS,
+        onSuccess: (result) => {
+            onChange(value || "", result.versionedUrl);
         },
         onError: onUploadError,
     });
@@ -100,6 +95,8 @@ export function VideoUploader({
             await uploadVideo(file, {
                 publicId,
                 oldUrl: value, // Ghi đè file cũ
+                generateThumbnail: true,
+                thumbnailTransformation: "c_fill,g_auto,h_300,w_400/jpg"
             });
 
             // Reset input
@@ -108,6 +105,23 @@ export function VideoUploader({
             }
         },
         [uploadVideo, publicId, value]
+    );
+
+    const handleThumbnailSelect = useCallback(
+        async (e: React.ChangeEvent<HTMLInputElement>) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+
+            await uploadImage(file, {
+                publicId: publicId ? `${publicId}_thumbnail` : undefined,
+            });
+
+            // Reset input
+            if (thumbnailInputRef.current) {
+                thumbnailInputRef.current.value = "";
+            }
+        },
+        [uploadImage, publicId, onChange, value]
     );
 
     // Handle drag & drop
@@ -119,6 +133,8 @@ export function VideoUploader({
                 await uploadVideo(file, {
                     publicId,
                     oldUrl: value,
+                    generateThumbnail: true,
+                    thumbnailTransformation: "c_fill,g_auto,h_300,w_400/jpg"
                 });
             }
         },
@@ -135,7 +151,7 @@ export function VideoUploader({
         onChange("");
     }, [onChange]);
 
-    const displayError = error || uploadError;
+    const displayError = error || uploadError || uploadErrorThumbnail;
 
     return (
         <div className={cn("space-y-3", className)}>
@@ -252,21 +268,71 @@ export function VideoUploader({
 
             {/* Preview */}
             {value && !isUploading && (
-                <div className="mt-3 relative rounded-lg overflow-hidden bg-black">
-                    <video
-                        src={value}
-                        controls
-                        className="w-full max-h-[300px] object-contain"
-                    />
-                    <Button
-                        type="button"
-                        variant="destructive"
-                        size="icon"
-                        className="absolute top-2 right-2"
-                        onClick={handleClear}
-                    >
-                        <X className="w-4 h-4" />
-                    </Button>
+                <div className="flex flex-col md:flex-row gap-2 ">
+                    <div className="flex-1 mt-3 relative rounded-sm overflow-hidden bg-black">
+                        <video
+                            src={value}
+                            controls
+                            className="w-full max-h-[300px] object-contain"
+                        />
+                        <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            className="absolute top-2 right-2"
+                            onClick={handleClear}
+                        >
+                            <X className="w-4 h-4" />
+                        </Button>
+                    </div>
+                    {/* THUMBNAIL UPLOAD + PREVIEW */}
+                    <div className="mt-3 relative group w-42">
+                        <p className="text-sm font-medium mb-1">Thumbnail preview</p>
+
+                        {/* Hidden file input */}
+                        <input
+                            ref={thumbnailInputRef}
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={handleThumbnailSelect}
+                        />
+
+                        {/* Thumbnail Box */}
+                        <div className="relative w-42 h-24 rounded-md overflow-hidden border">
+
+                            {isUploadingThumbnail ? (
+                                <div className="flex items-center justify-center w-full h-full bg-muted">
+                                    <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                                </div>
+                            ) : (
+                                <Image
+                                    src={thumbnailUrl || "/image/speaking_exam/default.png"}
+                                    alt="Video Thumbnail"
+                                    width={168}
+                                    height={96}
+                                    className="object-cover w-full h-full"
+                                />
+                            )}
+
+                            {/* hover overlay */}
+                            {!isUploadingThumbnail && (
+                                <div
+                                    className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 
+                    flex items-center justify-center transition cursor-pointer"
+                                    onClick={() => thumbnailInputRef.current?.click()}
+                                >
+                                    <Upload className="w-6 h-6 text-white" />
+                                </div>
+                            )}
+                        </div>
+
+                        {/* hint text */}
+                        <p className="text-xs text-muted-foreground mt-1">
+                            Hover để thay đổi thumbnail
+                        </p>
+                    </div>
+
                 </div>
             )}
         </div>

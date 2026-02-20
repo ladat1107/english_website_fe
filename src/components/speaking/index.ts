@@ -6,7 +6,6 @@
 // Audio Recorder - Ghi âm
 export { AudioRecorder } from './AudioRecorder';
 
-// Video Player - Phát video
 export { VideoPlayer } from './VideoPlayer';
 
 // Video Script Display - Hiển thị kịch bản hội thoại

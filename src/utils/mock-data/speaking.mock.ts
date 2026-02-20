@@ -8,12 +8,12 @@ import {
     SpeakingExam,
     SpeakingAttempt,
     SpeakingAnswer,
-    SpeakingTopic,
     SpeakingAttemptStatus,
     OnlineUser,
     SpeakingSubmission,
     ExamAttemptStatus,
 } from '@/types/speaking.type';
+import { SpeakingTopic } from '../constants/enum';
 
 // =====================================================
 // MOCK SPEAKING EXAMS - Đề giao tiếp mẫu
@@ -481,11 +481,7 @@ export const mockGoogleMeetLink = 'https://meet.google.com/rjd-vvqv-xzs';
 // =====================================================
 // TOPIC OPTIONS - Dùng cho Select dropdown
 // =====================================================
-export const speakingTopicOptions = Object.entries(SpeakingTopic).map(([key, value]) => ({
-    value: value,
-    label: value,
-    key: key,
-}));
+
 
 // =====================================================
 // HELPER FUNCTIONS - Các hàm tiện ích mock

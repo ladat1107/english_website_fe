@@ -12,27 +12,32 @@ export type CloudinaryResourceType = "image" | "video" | "raw" | "auto";
  */
 export enum CloudinaryFolder {
     // Speaking module
-    SPEAKING_VIDEOS = "english_website/speaking/videos",
-    SPEAKING_THUMBNAILS = "english_website/speaking/thumbnails",
-    SPEAKING_AUDIO = "english_website/speaking/audio",
+    SPEAKING_VIDEOS = "speaking/videos",
+    SPEAKING_THUMBNAILS = "speaking/thumbnails",
+    SPEAKING_AUDIO = "speaking/audio",
 
     // Listening module
-    LISTENING_AUDIO = "english_website/listening/audio",
-    LISTENING_IMAGES = "english_website/listening/images",
+    LISTENING_AUDIO = "listening/audio",
+    LISTENING_IMAGES = "listening/images",
 
     // Reading module
-    READING_IMAGES = "english_website/reading/images",
-
+    READING_IMAGES = "reading/images",
     // Writing module
-    WRITING_IMAGES = "english_website/writing/images",
+    WRITING_IMAGES = "writing/images",
 
     // User content
-    USER_AVATARS = "english_website/users/avatars",
-    USER_RECORDINGS = "english_website/users/recordings",
+    USER_AVATARS = "users/avatars",
+    USER_RECORDINGS = "users/recordings",
 
     // General
-    GENERAL_IMAGES = "english_website/general/images",
-    GENERAL_FILES = "english_website/general/files",
+    GENERAL_IMAGES = "general/images",
+    GENERAL_FILES = "general/files",
+
+    // default
+    OTHER_VIDEOS = "other/videos",
+    OTHER_IMAGES = "other/images",
+    OTHER_FILES = "other/files",
+    OTHER_VOICE = "other/voice",
 }
 
 
@@ -101,6 +106,8 @@ export interface UploadResult {
 
     // URL với version để bypass cache
     versionedUrl: string;
+
+    thumbnailUrl?: string;
 }
 
 /**
@@ -142,4 +149,103 @@ export interface DeleteResponse {
     success: boolean;
     result?: string;
     error?: string;
+}
+
+export interface SignatureData {
+    signature: string;
+    timestamp: number;
+    cloudName: string;
+    apiKey: string;
+    folder: string;
+    publicId?: string;
+    resourceType: CloudinaryResourceType;
+    tags: string[];
+    eager?: string;
+}
+
+/**
+ * Response từ API signature
+ */
+export interface SignatureResponse {
+    success: boolean;
+    data?: SignatureData;
+    error?: string;
+}
+
+/**
+ * Request body để xin chữ ký
+ */
+export interface SignatureRequest {
+    folder: CloudinaryFolder | string;
+    publicId?: string;
+    resourceType?: CloudinaryResourceType;
+    tags?: string[];
+    transformation?: string;
+    eager?: string;
+}
+
+/**
+ * Options cho upload phía client
+ */
+export interface ClientUploadOptions {
+    // Folder lưu trữ
+    folder: CloudinaryFolder | string;
+
+    // Public ID tùy chỉnh
+    publicId?: string;
+
+    // Loại resource
+    resourceType?: CloudinaryResourceType;
+
+    // Tags
+    tags?: string[];
+
+    // URL cũ cần xóa (nếu thay thế)
+    oldUrl?: string;
+
+    // Callback theo dõi tiến trình upload
+    onProgress?: (progress: number) => void;
+
+    // Transformation (cho image)
+    transformation?: {
+        w?: number;
+        h?: number;
+        c?: string;
+        q?: string | number;
+        f?: string;
+    };
+    // Eager transformation để tạo thumbnail
+    eager?: string;
+}
+
+/**
+ * Response từ Cloudinary khi upload trực tiếp
+ */
+export interface CloudinaryUploadResponse {
+    public_id: string;
+    version: number;
+    signature: string;
+    width?: number;
+    height?: number;
+    format: string;
+    resource_type: string;
+    created_at: string;
+    bytes: number;
+    type: string;
+    url: string;
+    secure_url: string;
+    duration?: number;
+    // eager là trả về kết quả có thumbnail nếu có cấu hình
+    eager?: Array<{
+        transformation: string;
+        width: number;
+        height: number;
+        bytes: number;
+        format: string;
+        url: string;
+        secure_url: string;
+    }>;
+    error?: {
+        message: string;
+    };
 }
