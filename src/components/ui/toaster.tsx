@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 import { CheckCircleIcon, XCircleIcon, AlertCircleIcon, InfoIcon, XIcon } from "lucide-react";
 
 type ToastType = "success" | "error" | "warning" | "info";

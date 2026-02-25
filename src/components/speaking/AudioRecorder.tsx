@@ -61,7 +61,6 @@ export function AudioRecorder({
 
     const {
         isUploading,
-        progress,
         error: uploadError,
         uploadAudio,
     } = useCloudinaryUpload({

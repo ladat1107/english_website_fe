@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo, useState, useCallback } from "react";
+import React, { memo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -151,7 +151,6 @@ const FormHeader = memo(function FormHeader({
     onPreview,
     onSaveDraft,
 }: FormHeaderProps) {
-    const router = useRouter();
     return (
         <div className="bg-card border-b border-border  z-10">
             <div className="container mx-auto px-3 sm:px-4 py-2 sm:py-3">

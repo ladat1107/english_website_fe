@@ -15,7 +15,6 @@ import {
     Eye,
     Edit,
     Trash2,
-    MessageCircle,
     Tag,
     CheckCircle,
     XCircle
@@ -27,7 +26,6 @@ import {
     CardHeader,
     CardTitle,
     CardDescription,
-    CardContent,
     CardFooter,
     Button,
     Badge

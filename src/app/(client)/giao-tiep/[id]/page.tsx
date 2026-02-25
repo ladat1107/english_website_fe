@@ -47,10 +47,10 @@ import {
 import { useGetSpeakingExamById } from '@/hooks/use-speaking-exam';
 import LoadingCustom from '@/components/ui/loading-custom';
 import { usePreventLeave } from '@/hooks/use-event-leave';
-import { useCreateSpeakingAttempt } from '@/hooks/use-speaking-attempt';
-import { CreateSpeakingAttempt } from '@/types/speaking-attempt.type';
-import dayjs from 'dayjs';
+import { useCreateSpeakingAttempt, useSubmitSpeakingAttempt } from '@/hooks/use-speaking-attempt';
 import { useToast } from '@/components/ui/toaster';
+import { SpeakingAttemptResponse } from '@/types/speaking-attempt.type';
+import { useCreateSpeakingAnswer } from '@/hooks/use-speaking-answer';
 
 // =====================================================
 // TYPES
@@ -71,6 +71,8 @@ export default function SpeakingPracticeDetailPage() {
     const router = useRouter();
     const examId = params.id as string;
     // States
+    const [attemptId, setAttemptId] = useState<string | null>(null);
+
     const [exam, setExam] = useState<SpeakingExam | null>(null);
     const [activeQuestion, setActiveQuestion] = useState(0);
     const [answers, setAnswers] = useState<QuestionAnswer[]>([]);
@@ -78,8 +80,9 @@ export default function SpeakingPracticeDetailPage() {
     const [attemptStarted, setAttemptStarted] = useState(false);
     const [onlineUsers] = useState<OnlineUser[]>(mockOnlineUsers);
     const { data: speakingExamRes, isLoading: isExamLoading } = useGetSpeakingExamById(examId);
-    const [startTime, _] = useState<string>(dayjs().toISOString());
-    const { mutate: createSpeakingAttempt, isPending: isSubmitting } = useCreateSpeakingAttempt();
+    const { mutate: createSpeakingAttempt, isPending: isCreating } = useCreateSpeakingAttempt();
+    const { mutate: submitSpeakingAttempt, isPending: isSubmitting } = useSubmitSpeakingAttempt();
+    const { mutate: createSpeakingAnswer } = useCreateSpeakingAnswer();
     const { addToast } = useToast();
     // =====================================================
     // LOAD EXAM DATA
@@ -104,57 +107,90 @@ export default function SpeakingPracticeDetailPage() {
 
 
     const handleStartAttempt = () => {
-        setAttemptStarted(true);
+        createSpeakingAttempt({
+            exam_id: examId
+        }, {
+            onSuccess: (res) => {
+                console.log('Speaking attempt created with ID:', res);
+                const resData: SpeakingAttemptResponse = res.data;
+                setAttemptId(resData.attempt._id);
+
+                if (resData.answers.length > 0) {
+                    const mappedAnswers = resData.answers.map(a => {
+                        const savedAnswer = resData.answers.find(ans => ans.question.question_number === a.question.question_number)
+                        if (savedAnswer) {
+                            return {
+                                question_number: a.question.question_number,
+                                question_text: a.question.question_text,
+                                audio_url: savedAnswer.audio_url,
+                                duration_seconds: savedAnswer.duration_seconds,
+                                completed: !!savedAnswer.audio_url,
+                            };
+                        }
+                        return {
+                            question_number: a.question.question_number,
+                            question_text: a.question.question_text,
+                            duration_seconds: 0,
+                            completed: false,
+                        };
+                    });
+                    setAnswers(mappedAnswers);
+
+                    // Tìm câu hỏi chưa làm đầu tiên
+                    const firstIncompleteIndex = mappedAnswers.findIndex(a => !a.completed);
+                    if (firstIncompleteIndex !== -1) {
+                        setActiveQuestion(firstIncompleteIndex);
+                    }
+                }
+
+                setAttemptStarted(true);
+            },
+        })
     };
 
     const handleRecordingComplete = (questionNumber: number, audioBlob: Blob, duration: number) => {
-        //console.log(`Recording completed for question ${questionNumber}`, { duration });
+        
     };
 
     const handleUploadComplete = (questionNumber: number, questionText: string, audioUrl: string, duration: number) => {
-        setAnswers(prev => prev.map(a =>
-            a.question_number === questionNumber
-                ? { ...a, question_text: questionText, audio_url: audioUrl, duration_seconds: duration, completed: true }
-                : a
-        ));
+        createSpeakingAnswer({
+            attempt_id: attemptId,
+            question: {
+                question_number: questionNumber,
+                question_text: questionText
+            },
+            audio_url: audioUrl,
+            duration_seconds: duration
+        }, {
+            onSuccess: () => {
+                setAnswers(prev => prev.map(a =>
+                    a.question_number === questionNumber
+                        ? { ...a, question_text: questionText, audio_url: audioUrl, duration_seconds: duration, completed: true }
+                        : a
+                ));
 
-        // Move to next question if not last
-        if (exam && questionNumber < exam.questions.length) {
-            setActiveQuestion(questionNumber); // question_number is 1-indexed
-        }
+                // Move to next question if not last
+                if (exam && questionNumber < exam.questions.length) {
+                    setActiveQuestion(questionNumber); // question_number is 1-indexed
+                }
+            }
+        })
     };
 
     const handleSubmit = async () => {
-
-        // Mock submit
-        const speakingAttemptPayload: CreateSpeakingAttempt = {
-            exam_id: examId,
-            started_at: startTime,
-            answers: answers.map(a => ({
-                question: {
-                    question_number: a.question_number,
-                    question_text: a.question_text
-                },
-                audio_url: a.audio_url || '',
-                duration_seconds: a.duration_seconds,
-            })),
+        if (!attemptId) {
+            addToast('Không tìm thấy thông tin bài làm', 'error');
+            return;
         }
-        console.log('Submitting speaking attempt:', speakingAttemptPayload);
-        createSpeakingAttempt(speakingAttemptPayload, {
-            onSuccess: (res) => {
+        // Gọi API submit
+        submitSpeakingAttempt(attemptId, {
+            onSuccess: () => {
                 addToast('Bài luyện đã được nộp thành công!', 'success');
                 setShowSubmitDialog(false);
                 allowNavigation();
-                // Navigate to results page
-                //router.push(`/giao-tiep/ket-qua/${res.data.attempt_id}`);
+                router.push(`/giao-tiep/ket-qua/${attemptId}`);
             }
         });
-        // setTimeout(() => {
-        //     setShowSubmitDialog(false);
-        //     allowNavigation();
-        //     // Navigate to results page
-        //     //router.push(`/giao-tiep/ket-qua/mock-attempt-id`);
-        // }, 1500);
     };
 
     // Completion stats
@@ -259,8 +295,9 @@ export default function SpeakingPracticeDetailPage() {
                                 size="lg"
                                 className="w-full gap-2"
                                 onClick={handleStartAttempt}
+                                disabled={isCreating}
                             >
-                                <Play className="w-5 h-5" />
+                                {isCreating ? <Loader2 className="w-5 h-5 animate-spin" /> : <Play className="w-5 h-5" />}
                                 Bắt đầu luyện tập
                             </Button>
                         </CardContent>

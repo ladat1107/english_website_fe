@@ -130,7 +130,7 @@ class ApiClient {
         return response.json();
     }
 
-    async post(endpoint: string, data: any) {
+    async post(endpoint: string, data?: any) {
         const response = await this.fetch(endpoint, {
             method: 'POST',
             body: JSON.stringify(data),
@@ -138,7 +138,7 @@ class ApiClient {
         return response.json();
     }
 
-    async put(endpoint: string, data: any) {
+    async put(endpoint: string, data?: any) {
         const response = await this.fetch(endpoint, {
             method: 'PUT',
             body: JSON.stringify(data),
@@ -146,7 +146,7 @@ class ApiClient {
         return response.json();
     }
 
-    async patch(endpoint: string, data: any) {
+    async patch(endpoint: string, data?: any) {
         const response = await this.fetch(endpoint, {
             method: 'PATCH',
             body: JSON.stringify(data),

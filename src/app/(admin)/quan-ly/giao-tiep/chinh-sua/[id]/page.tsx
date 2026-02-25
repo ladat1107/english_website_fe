@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { Loader2, AlertCircle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui';
 import { SpeakingExamForm, SpeakingExamFormData } from '@/components/speaking';
 import { SpeakingExam } from '@/types/speaking.type';

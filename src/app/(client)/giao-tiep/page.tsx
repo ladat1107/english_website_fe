@@ -16,7 +16,6 @@ import {
 import { Input, Badge } from '@/components/ui';
 import { SpeakingExamCard } from '@/components/speaking';
 import { SpeakingExam, SpeakingExamParams, speakingTopicOptions } from '@/types/speaking.type';
-import { SpeakingTopic } from '@/utils/constants/enum';
 import { useGetAllSpeakingExams } from '@/hooks/use-speaking-exam';
 import { useDebounce } from '@/hooks/use-debounce';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';

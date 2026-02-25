@@ -7,7 +7,7 @@ import {
     UploadResult,
     CloudinaryUploadResponse,
 } from "./types";
-import { addVersionToUrl, extractPublicIdFromUrl } from "./utils";
+import { addVersionToUrl } from "./utils";
 
 // =====================================================
 // CLOUDINARY UPLOAD CLIENT
@@ -211,17 +211,6 @@ export async function uploadImageClient(
         optimize = true,
         onProgress,
     } = options;
-
-    // Tạo transformation nếu cần optimize
-    // const transformation = optimize
-    //     ? {
-    //         ...(width && { w: width }),
-    //         ...(height && { h: height }),
-    //         ...(width || height ? { c: "fill" } : {}),
-    //         q: "auto",
-    //         f: "auto",
-    //     }
-    //     : undefined;
 
     return uploadToCloudinaryClient(file, {
         folder,

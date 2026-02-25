@@ -12,13 +12,14 @@ const prefix = '/speaking-attempt';
 
 // Mutation hook  
 export const useCreateSpeakingAttempt = () => {
-    const queryClient = useQueryClient();
-
     return useMutation({
         mutationFn: (attemptData: any) => http.post(`${prefix}`, attemptData),
-        onSuccess: () => {
-            //queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.speakingAttempt.getAll] });
-        },
+    });
+};
+
+export const useSubmitSpeakingAttempt = () => {
+    return useMutation({
+        mutationFn: (attemptId: string) => http.patch(`${prefix}/${attemptId}/submit`)
     });
 };
 
