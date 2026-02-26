@@ -21,8 +21,6 @@ import { logout } from "@/apiRequest";
 import { UserRole } from "@/utils/constants/enum";
 import { PATHS } from "@/utils/constants";
 
-
-
 /**
  * Interface định nghĩa Auth Context
  */
@@ -46,6 +44,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface AuthProviderProps {
   children: ReactNode;
+  navigateTo?: string; // Optional prop để điều hướng sau khi login/logout
 }
 
 /**
@@ -95,7 +94,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     if (loginStatus === "success" && userParam) {
       try {
         const userData: UserType = JSON.parse(decodeURIComponent(userParam));
-        console.log("Login successful, user data:", userData);
         if (userData.role === UserRole.ADMIN) {
           router.push(PATHS.ADMIN.DASHBOARD);
           newUrl = PATHS.ADMIN.DASHBOARD;

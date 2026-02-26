@@ -17,7 +17,8 @@ import {
     Trash2,
     Tag,
     CheckCircle,
-    XCircle
+    XCircle,
+    History
 } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { SpeakingExam } from '@/types/speaking.type';
@@ -32,6 +33,7 @@ import {
 } from '@/components/ui';
 import { SpeakingTopic } from '@/utils/constants/enum';
 import Image from 'next/image';
+import { useAuth } from '@/contexts';
 
 // =====================================================
 // TYPES
@@ -77,6 +79,7 @@ export function SpeakingExamCard({
     className,
 }: SpeakingExamCardProps) {
     const topicColor = getTopicColor(exam.topic);
+    const { isAuthenticated, openAuthModal } = useAuth();
 
     return (
         <motion.div
@@ -182,12 +185,26 @@ export function SpeakingExamCard({
                 <CardFooter className="p-3 sm:p-4 !pt-0 gap-2">
                     {variant === 'student' ? (
                         // Student Actions
-                        <Link href={`/giao-tiep/${exam._id}`} className="w-full">
-                            <Button variant="default" className="w-full gap-2 h-9 sm:h-10 text-sm">
+                        isAuthenticated ?
+                            <>
+                                <Link href={`/giao-tiep/${exam._id}`} className="flex-1">
+                                    <Button variant="default" className="w-full gap-2 h-9 sm:h-10 text-sm">
+                                        <Play className="w-4 h-4" />
+                                        Luyện tập
+                                    </Button>
+                                </Link>
+                                <Link href={`/giao-tiep/lich-su/${exam._id}`}>
+                                    <Button variant="outline" size="icon" className="h-9 w-9 sm:h-10 sm:w-10">
+                                        <History className="w-4 h-4" />
+                                    </Button>
+                                </Link>
+                            </> 
+                            :
+                            <Button variant="default" className="w-full gap-2 h-9 sm:h-10 text-sm" onClick={openAuthModal}>
                                 <Play className="w-4 h-4" />
-                                Bắt đầu luyện tập
+                                Luyện tập
                             </Button>
-                        </Link>
+
                     ) : (
                         // Admin Actions
                         <>

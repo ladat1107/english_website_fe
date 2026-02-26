@@ -1,14 +1,25 @@
 import { http } from '@/lib/http';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { QUERY_KEYS } from '@/utils/constants/querykey';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 const prefix = '/speaking-attempt';
-// Query hook
-// export const useGetAllSpeakingAttempts = (params: SpeakingAttemptParams) => {
-//     return useQuery({
-//         queryKey: [QUERY_KEYS.speakingAttempt.getAll, { ...params }],
-//         queryFn: () => http.get(`${prefix}`, params),
-//     });
-// };
+
+// Query hooks
+export const useGetSpeakingAttemptHistory = (examId: string) => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.speakingAttempt.history, examId],
+        queryFn: () => http.get(`${prefix}/history/${examId}`),
+        enabled: !!examId,
+    });
+};
+
+export const useGetSpeakingAttemptDetail = (attemptId: string) => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.speakingAttempt.detail, attemptId],
+        queryFn: () => http.get(`${prefix}/detail/${attemptId}`),
+        enabled: !!attemptId,
+    });
+};
 
 // Mutation hook  
 export const useCreateSpeakingAttempt = () => {
@@ -24,23 +35,10 @@ export const useSubmitSpeakingAttempt = () => {
 };
 
 export const useUpdateSpeakingAttempt = (id: string) => {
-    const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (attemptData: any) => http.patch(`${prefix}/${id}`, attemptData),
-        onSuccess: () => {
-            //queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.speakingAttempt.getAll] });
-            //queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.speakingAttempt.findOne, id] });
-        },
     });
 }
-
-// export const useGetSpeakingAttemptById = (id: string) => {
-//     return useQuery({
-//         queryKey: [QUERY_KEYS.speakingAttempt.findOne, id],
-//         queryFn: () => http.get(`${prefix}/${id}`),
-//         enabled: !!id,
-//     });
-// }
 
 // Delete hook
 export const useDeleteSpeakingAttempt = () => {

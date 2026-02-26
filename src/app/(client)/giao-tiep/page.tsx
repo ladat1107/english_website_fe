@@ -26,7 +26,6 @@ import LoadingCustom from '@/components/ui/loading-custom';
 // STUDENT SPEAKING PRACTICE PAGE
 // =====================================================
 export default function StudentSpeakingPage() {
-
     // States
     const [searchQuery, setSearchQuery] = useState('');
     const [publishedExams, setPublishedExams] = useState<SpeakingExam[] | []>([]);

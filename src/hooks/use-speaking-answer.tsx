@@ -9,3 +9,9 @@ export const useCreateSpeakingAnswer = () => {
         mutationFn: (answerData: any) => http.post(`${prefix}`, answerData),
     });
 };
+
+export const useUpdateAIAnalysis = () => {
+    return useMutation({
+        mutationFn: (id: string) => http.patch(`${prefix}/${id}/ai-analysis`)
+    });
+}
