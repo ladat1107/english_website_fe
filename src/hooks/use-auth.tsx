@@ -1,5 +1,5 @@
 import { http } from '@/lib/http';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/utils/constants/querykey';
 import { AuthStatusResponse } from '@/types/auth.type';
 
@@ -13,14 +13,3 @@ export const useCheckStatus = () => {
     });
 };
 
-// Mutation hook  
-export const useCreateUser = () => {
-    const queryClient = useQueryClient();
-
-    return useMutation({
-        mutationFn: (userData: any) => http.post('/users', userData),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['users'] });
-        },
-    });
-};

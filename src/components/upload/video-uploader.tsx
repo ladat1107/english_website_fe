@@ -121,7 +121,7 @@ export function VideoUploader({
                 thumbnailInputRef.current.value = "";
             }
         },
-        [uploadImage, publicId, onChange, value]
+        [uploadImage, publicId]
     );
 
     // Handle drag & drop

@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { useCloudinaryUpload } from "@/hooks/use-cloudinary-upload";
 import { CloudinaryFolder, UploadResult } from "@/lib/cloudinary";
+import Image from "next/image";
 
 // =====================================================
 // COMPONENT: ImageUploader
@@ -167,11 +168,13 @@ export function ImageUploader({
                 {value && !isUploading ? (
                     // Preview image
                     <div className="relative w-full h-full">
-                        <img
+                        <Image
                             src={value}
                             alt="Preview"
-                            className="w-full h-full object-cover"
+                            fill
+                            className="object-cover"
                         />
+
                         <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                             <label
                                 htmlFor="image-upload"

@@ -148,7 +148,7 @@ export default function SpeakingPracticeDetailPage() {
         })
     };
 
-    const handleRecordingComplete = (questionNumber: number, audioBlob: Blob, duration: number) => {
+    const handleRecordingComplete = (_questionNumber: number, _audioBlob: Blob, _duration: number) => {
 
     };
 
@@ -394,7 +394,6 @@ export default function SpeakingPracticeDetailPage() {
                                             isActive={activeQuestion === index}
                                             isCompleted={answer?.completed || false}
                                             audioUrl={answer?.audio_url}
-                                            duration={answer?.duration_seconds}
                                             onRecordingComplete={handleRecordingComplete}
                                             onUploadComplete={handleUploadComplete}
                                             onClick={() => setActiveQuestion(index)}

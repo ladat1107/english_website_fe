@@ -22,7 +22,6 @@ interface SpeakingQuestionCardProps {
     isActive?: boolean;
     isCompleted?: boolean;
     audioUrl?: string;
-    duration?: number;
     onRecordingComplete?: (questionNumber: number, audioBlob: Blob, duration: number) => void;
     onUploadComplete?: (questionNumber: number, questionText: string, audioUrl: string, duration: number) => void;
     onClick?: () => void;
@@ -39,7 +38,6 @@ export function SpeakingQuestionCard({
     isActive = false,
     isCompleted = false,
     audioUrl,
-    duration,
     onRecordingComplete,
     onUploadComplete,
     onClick,

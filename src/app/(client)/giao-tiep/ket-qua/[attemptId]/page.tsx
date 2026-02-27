@@ -154,14 +154,17 @@ function AnswerCard({ answer, index }: AnswerCardProps) {
     const queryClient = useQueryClient();
 
     useEffect(() => {
+        const audio = audioRef.current;
+
         return () => {
-            if (audioRef.current) {
-                audioRef.current.pause();
-                audioRef.current.currentTime = 0;
+            if (audio) {
+                audio.pause();
+                audio.currentTime = 0;
             }
-            window.speechSynthesis.cancel(); // Dừng mọi âm thanh đang phát khi component unmount
-        }
-    }, [audioRef]);
+
+            window.speechSynthesis.cancel();
+        };
+    }, []);
 
     const handleRequestAI = (answerId: string) => {
         updatedAnswer(answerId, {

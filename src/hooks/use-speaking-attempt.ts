@@ -1,7 +1,7 @@
 import { http } from '@/lib/http';
 import { SpeakingAttemptParams } from '@/types/speaking-attempt.type';
 import { QUERY_KEYS } from '@/utils/constants/querykey';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 const prefix = '/speaking-attempt';
 

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { memo, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -329,11 +328,8 @@ export function SpeakingExamForm({
     isSaving,
     onPreview,
     onSaveSuccess,
-    onSaveError,
     className,
 }: SpeakingExamFormProps) {
-    const router = useRouter();
-
     // =====================================================
     // FORM SETUP
     // =====================================================
@@ -385,7 +381,7 @@ export function SpeakingExamForm({
 
     // Handler khi video upload thành công
     const handleVideoUploadSuccess = useCallback(
-        (result: { versionedUrl: string }) => {
+        (_result: { versionedUrl: string }) => { // dấu _ là để tạm tránh lỗi build
             //console.log("Video uploaded:", result);
             // URL đã được cập nhật qua onChange của VideoUploader
         },
@@ -422,7 +418,7 @@ export function SpeakingExamForm({
             const dataToSave = { ...data, is_published: mode === "create" ? false : watchedValues.is_published };
             onSaveSuccess?.(dataToSave);
         },
-        [mode, onSaveSuccess, onSaveError, router, watchedValues.is_published]
+        [mode, onSaveSuccess, watchedValues.is_published]
     );
 
     const handleSaveDraft = useCallback(() => {

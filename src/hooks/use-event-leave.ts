@@ -61,7 +61,7 @@ export function usePreventLeave({
         // ========================
         // 3. Back / Forward
         // ========================
-        const handlePopState = (e: PopStateEvent) => {
+        const handlePopState = (_e: PopStateEvent) => {
             // Nếu đã cho phép navigation, không làm gì cả
             if (allowNavigationRef.current) {
                 return;

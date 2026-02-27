@@ -299,4 +299,19 @@
     .text-balance {
         text-wrap: balance;
     }
+
+    /* Shine animation for achievements */
+    @keyframes shine {
+        0% {
+            transform: translateX(-200%) skewX(-12deg);
+        }
+
+        100% {
+            transform: translateX(200%) skewX(-12deg);
+        }
+    }
+
+    .animate-shine {
+        animation: shine 3s infinite;
+    }
 }

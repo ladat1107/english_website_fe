@@ -155,14 +155,17 @@ function AnswerGradingCard({ answer, index, onGradeSuccess }: AnswerGradingCardP
     const audioRef = useRef<HTMLAudioElement>(null);
 
     useEffect(() => {
+        const audio = audioRef.current;
+
         return () => {
-            if (audioRef.current) {
-                audioRef.current.pause();
-                audioRef.current.currentTime = 0;
+            if (audio) {
+                audio.pause();
+                audio.currentTime = 0;
             }
-            window.speechSynthesis.cancel(); // Dừng tất cả các giọng nói đang phát nếu có khi component unmount
+
+            window.speechSynthesis.cancel();
         };
-    }, [audioRef])
+    }, []);
 
     const hasAIAnalysis = !!answer.ai_analysis;
     const hasTeacherFeedback = !!answer.teacher_feedback;

@@ -195,6 +195,9 @@ export const PATHS = {
     },
     CLIENT: {
         HOME: '/',
+        PROFILE: '/profile',
+        FLASHCARD: '/flashcard',
+        SPEAKING: '/giao-tiep',
     }
 } as const;
 

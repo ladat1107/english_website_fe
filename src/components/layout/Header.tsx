@@ -160,7 +160,7 @@ export const Header: React.FC = () => {
                                     <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 rounded-sm shadow-xl border border-gray-200 dark:border-gray-700 z-50">
                                         <div className="py-1">
                                             <Link
-                                                href="/employer/account"
+                                                href="/profile"
                                                 className="flex items-center px-4 py-2 text-sm font-semibold text-gray-900 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                                             >
                                                 <SquareUser className="h-4 w-4 mr-3" />

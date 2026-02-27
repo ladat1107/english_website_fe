@@ -11,5 +11,10 @@ export const QUERY_KEYS = {
         history: "speaking-attempt-history",
         detail: "speaking-attempt-detail",
         getById: "speaking-attempt-get-by-id",
+    },
+    user: {
+        profileStatus: "profileStatus",
+        examAttemptRecent: "examAttemptRecent",
+        speakingRecent: "speakingRecent"
     }
 }

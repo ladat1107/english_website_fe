@@ -206,9 +206,6 @@ export async function uploadImageClient(
     const {
         folder = CloudinaryFolder.GENERAL_IMAGES,
         publicId,
-        width,
-        height,
-        optimize = true,
         onProgress,
     } = options;
 
@@ -239,7 +236,6 @@ export async function uploadVideoClient(
     const {
         folder = CloudinaryFolder.OTHER_VIDEOS,
         publicId,
-        optimize = true,
         onProgress,
         generateThumbnail = true,
         thumbnailTransformation = DEFAULT_VIDEO_THUMBNAIL_EAGER,

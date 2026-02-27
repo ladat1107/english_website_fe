@@ -115,7 +115,7 @@ export function AudioUploader({
 
             // Timer
             const startTime = Date.now();
-            const timer = setInterval(() => {
+            const _timer = setInterval(() => {
                 setRecordingTime(Math.floor((Date.now() - startTime) / 1000));
             }, 1000);
 

@@ -61,7 +61,6 @@ export function AudioRecorder({
 
     const {
         isUploading,
-        error: uploadError,
         uploadAudio,
     } = useCloudinaryUpload({
         folder: CloudinaryFolder.SPEAKING_AUDIO,

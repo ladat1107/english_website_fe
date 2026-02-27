@@ -14,3 +14,6 @@ export * from "./common";
 
 // Section Components
 export * from "./sections";
+
+// Profile Components
+export * from "./profile";

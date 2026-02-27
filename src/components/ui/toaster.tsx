@@ -35,7 +35,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
         const toast: Toast = { id, message, type, duration };
 
         //setToasts((prev) => [...prev, toast]);
-        setToasts((prev) => {
+        setToasts(() => {
             return [toast];
         });
         if (duration > 0) {

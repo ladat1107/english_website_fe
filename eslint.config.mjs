@@ -16,6 +16,13 @@ const eslintConfig = [
     rules: {
       "react/no-unescaped-entities": "off", // Cho phép dùng "" trong JSX
       '@typescript-eslint/no-explicit-any': 'off', // Cho phép sử dụng type 'any'
+      "@typescript-eslint/no-unused-vars": [  // Bỏ qua bắt lỗi các biến có _ phía trước không dùng
+        "error",
+        {
+          "argsIgnorePattern": "^_",
+          "varsIgnorePattern": "^_"
+        }
+      ]
     },
   },
 ];
