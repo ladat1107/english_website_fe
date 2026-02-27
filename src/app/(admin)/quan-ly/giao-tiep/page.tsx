@@ -14,7 +14,8 @@ import {
     Search,
     Filter,
     MessageSquare,
-    ChevronDown
+    ChevronDown,
+    ClipboardCheck
 } from 'lucide-react';
 import {
     Button,
@@ -56,7 +57,10 @@ export default function AdminSpeakingManagementPage() {
         is_published: undefined,
         topic: undefined,
     });
-    const { data: speakingExamRes, isLoading: isExamLoading } = useGetAllSpeakingExams(params);
+    const { data: speakingExamRes, isLoading: isExamLoading } = useGetAllSpeakingExams({
+        ...params,
+        search: searchDebounce,
+    });
     const pagination: Pagination = speakingExamRes?.data?.pagination || {};
 
     const { mutate: deleteSpeakingExam } = useDeleteSpeakingExam();
@@ -121,24 +125,32 @@ export default function AdminSpeakingManagementPage() {
         <div className="min-h-screen bg-background">
             {/* Header */}
             <div className="bg-card border-b border-border sticky top-0 z-10">
-                <div className="container mx-auto px-4 py-4">
+                <div className="container mx-auto px-4 py-3">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div>
-                            <h2 className="font-bold text-foreground flex items-center gap-2">
-                                <MessageSquare className="w-7 h-7 text-primary" />
+                            <h1 className="text-lg sm:text-xl font-bold text-foreground flex items-center gap-2">
+                                <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                                 Quản lý đề giao tiếp
-                            </h2>
+                            </h1>
                             <p className="text-muted-foreground text-sm mt-1">
                                 Quản lý tất cả bài luyện giao tiếp tiếng Anh
                             </p>
                         </div>
 
-                        <Link href="/quan-ly/giao-tiep/tao-de">
-                            <Button className="gap-2 w-full sm:w-auto">
-                                <Plus className="w-4 h-4" />
-                                Tạo đề mới
-                            </Button>
-                        </Link>
+                        <div className="flex flex-wrap gap-2">
+                            <Link href="/quan-ly/giao-tiep/cham-bai">
+                                <Button variant="outline" size='sm' className="gap-2 w-full sm:w-auto">
+                                    <ClipboardCheck className="w-4 h-4" />
+                                    Chấm bài
+                                </Button>
+                            </Link>
+                            <Link href="/quan-ly/giao-tiep/tao-de">
+                                <Button size={"sm"} className="gap-2 w-full sm:w-auto">
+                                    <Plus className="w-4 h-4" />
+                                    Tạo đề mới
+                                </Button>
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -1,3 +1,4 @@
+// Hàm lấy tên viết tắt cho avatar từ tên đầy đủ ================================================================================   
 export function getNameAvatar(name: string): string {
     if (!name) return '';
 
@@ -12,6 +13,8 @@ export function getNameAvatar(name: string): string {
     );
 }
 
+
+// Hàm xây dựng query string từ object params, bỏ qua các giá trị undefined/null/empty ============================================================
 export const buildQueryString = (params?: Record<string, any>): string => {
     if (!params) return '';
 
@@ -22,8 +25,17 @@ export const buildQueryString = (params?: Record<string, any>): string => {
     return validParams.length > 0 ? `?${new URLSearchParams(validParams).toString()}` : '';
 };
 
+
+// Hàm định dạng thời gian từ giây sang định dạng mm:ss =========================================================================
 export const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
+};
+
+// Hàm lấy màu sắc tương ứng với điểm số (điểm 0-100) =================================================================================================
+export const getScoreBadgeVariant = (score: number): 'success' | 'warning' | 'destructive' => {
+    if (score >= 80) return 'success';
+    if (score >= 60) return 'warning';
+    return 'destructive';
 };

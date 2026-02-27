@@ -60,7 +60,7 @@ export const Header: React.FC = () => {
             )}
         >
             <div className="container-custom">
-                <nav className="flex items-center justify-between h-16 lg:h-20">
+                <nav className="flex items-center justify-between h-14">
                     {/* Logo */}
                     <Link href={'/'} >
                         <Image src="/logo/logo.png" alt="KhaiLingo Logo" width={120} height={40} />

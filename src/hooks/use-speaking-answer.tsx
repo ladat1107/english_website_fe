@@ -15,3 +15,14 @@ export const useUpdateAIAnalysis = () => {
         mutationFn: (id: string) => http.patch(`${prefix}/${id}/ai-analysis`)
     });
 }
+
+// =====================================================
+// ADMIN GRADING HOOKS
+// =====================================================
+
+export const useUpdateSpeakingAnswer = () => {
+    return useMutation({
+        mutationFn: ({ answerId, data }: { answerId: string; data: any }) =>
+            http.patch(`${prefix}/${answerId}`, data),
+    });
+}

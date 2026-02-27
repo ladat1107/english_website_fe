@@ -51,7 +51,6 @@ import { useCreateSpeakingAttempt, useSubmitSpeakingAttempt } from '@/hooks/use-
 import { useToast } from '@/components/ui/toaster';
 import { SpeakingAttemptResponse } from '@/types/speaking-attempt.type';
 import { useCreateSpeakingAnswer } from '@/hooks/use-speaking-answer';
-import { useAuth } from '@/contexts';
 
 // =====================================================
 // TYPES
@@ -68,7 +67,6 @@ interface QuestionAnswer {
 // SPEAKING PRACTICE DETAIL PAGE
 // =====================================================
 export default function SpeakingPracticeDetailPage() {
-    const { isAuthenticated, openAuthModal, isLoading } = useAuth();
     const params = useParams();
     const router = useRouter();
     const examId = params.id as string;
@@ -90,12 +88,6 @@ export default function SpeakingPracticeDetailPage() {
     // LOAD EXAM DATA
     // =====================================================
     const { allowNavigation } = usePreventLeave({ enabled: attemptStarted });
-
-    useEffect(() => {
-        if (!isLoading && !isAuthenticated) {
-            openAuthModal();
-        }
-    }, [isLoading, isAuthenticated, openAuthModal]);
 
     useEffect(() => {
         if (speakingExamRes?.success) {

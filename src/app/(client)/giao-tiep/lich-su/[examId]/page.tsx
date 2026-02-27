@@ -29,21 +29,16 @@ import {
 import { useGetSpeakingAttemptHistory } from '@/hooks/use-speaking-attempt';
 import { useGetSpeakingExamById } from '@/hooks/use-speaking-exam';
 import LoadingCustom from '@/components/ui/loading-custom';
-import { SpeakingAttemptHistoryItem } from '@/types/speaking-attempt.type';
+import { SpeakingAttemptAvg } from '@/types/speaking-attempt.type';
 import dayjs from 'dayjs';
+import { getScoreBadgeVariant } from '@/utils/funtions';
 
-
-const getScoreBadgeVariant = (score: number): 'success' | 'warning' | 'destructive' => {
-    if (score >= 80) return 'success';
-    if (score >= 60) return 'warning';
-    return 'destructive';
-};
 
 // =====================================================
 // ATTEMPT HISTORY CARD COMPONENT
 // =====================================================
 interface AttemptHistoryCardProps {
-    attempt: SpeakingAttemptHistoryItem;
+    attempt: SpeakingAttemptAvg;
     index: number;
 }
 
@@ -85,7 +80,7 @@ function AttemptHistoryCard({ attempt, index }: AttemptHistoryCardProps) {
                                 </div>
                                 <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
                                     <MessageSquare className="w-3 h-3" />
-                                    <span>{attempt.answered_count}/{attempt.total_questions} câu đã trả lời</span>
+                                    <span>{attempt.answered_count}/{attempt.exam.questions.length} câu đã trả lời</span>
                                 </div>
                             </div>
                         </div>
@@ -120,7 +115,7 @@ export default function SpeakingHistoryPage() {
     const { data: historyRes, isLoading: isHistoryLoading } = useGetSpeakingAttemptHistory(examId);
 
     const exam = examRes?.data;
-    const attempts: SpeakingAttemptHistoryItem[] = historyRes?.data || [];
+    const attempts: SpeakingAttemptAvg[] = historyRes?.data || [];
 
     const isLoading = isExamLoading || isHistoryLoading;
 

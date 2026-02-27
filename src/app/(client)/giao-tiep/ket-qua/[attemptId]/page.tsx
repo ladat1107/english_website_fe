@@ -33,9 +33,9 @@ import {
 } from '@/components/ui';
 import { useGetSpeakingAttemptDetail } from '@/hooks/use-speaking-attempt';
 import LoadingCustom from '@/components/ui/loading-custom';
-import { SpeakingAttemptDetailResponse, SpeakingAttemptDetailAnswer } from '@/types/speaking-attempt.type';
+import { SpeakingAttemptDetailResponse, SpeakingAnswerType } from '@/types/speaking-attempt.type';
 import dayjs from 'dayjs';
-import { formatDuration } from '@/utils/funtions';
+import { formatDuration, getScoreBadgeVariant } from '@/utils/funtions';
 import { useUpdateAIAnalysis } from '@/hooks/use-speaking-answer';
 import { useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/utils/constants/querykey';
@@ -46,11 +46,6 @@ const getScoreColor = (score: number) => {
     return 'text-red-600';
 };
 
-const getScoreBadgeVariant = (score: number): 'success' | 'warning' | 'destructive' => {
-    if (score >= 80) return 'success';
-    if (score >= 60) return 'warning';
-    return 'destructive';
-};
 
 const getScoreBgClass = (score: number) => {
     if (score >= 80) return 'bg-green-50 border-green-200';
@@ -140,7 +135,7 @@ const AnalysisSection = ({ title, icon, items, color, defaultExpanded = true }: 
 // ANSWER CARD COMPONENT
 // =====================================================
 interface AnswerCardProps {
-    answer: SpeakingAttemptDetailAnswer;
+    answer: SpeakingAnswerType;
     index: number;
 }
 
@@ -166,7 +161,7 @@ function AnswerCard({ answer, index }: AnswerCardProps) {
             }
             window.speechSynthesis.cancel(); // Dừng mọi âm thanh đang phát khi component unmount
         }
-    }, []);
+    }, [audioRef]);
 
     const handleRequestAI = (answerId: string) => {
         updatedAnswer(answerId, {
@@ -536,7 +531,7 @@ export default function SpeakingResultPage() {
                                     </span>
                                     <span className="flex items-center gap-1">
                                         <MessageSquare className="w-3 h-3" />
-                                        {answeredCount}/{answers.length} câu
+                                        {answeredCount}/{attempt.exam.questions.length} câu
                                     </span>
                                 </div>
                             </div>

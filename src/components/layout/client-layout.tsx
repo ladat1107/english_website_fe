@@ -14,7 +14,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
             <Header />
 
             {/* Main content với padding top cho header fixed */}
-            <main className="pt-16 lg:pt-20 min-h-screen">
+            <main className="pt-14 min-h-screen">
                 {children}
             </main>
 

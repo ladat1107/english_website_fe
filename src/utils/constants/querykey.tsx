@@ -10,5 +10,6 @@ export const QUERY_KEYS = {
         getAll: "speaking-attempts",
         history: "speaking-attempt-history",
         detail: "speaking-attempt-detail",
+        getById: "speaking-attempt-get-by-id",
     }
 }

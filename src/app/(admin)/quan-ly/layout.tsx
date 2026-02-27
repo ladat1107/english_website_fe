@@ -53,7 +53,6 @@ const sidebarItems: SidebarItem[] = [
         icon: Mic,
         children: [
             { title: "Danh sách đề", href: "/quan-ly/giao-tiep" },
-            { title: "Tạo đề mới", href: "/quan-ly/giao-tiep/tao-de" },
             { title: "Chấm bài", href: "/quan-ly/giao-tiep/cham-bai" },
         ],
     },

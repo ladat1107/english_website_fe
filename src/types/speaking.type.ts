@@ -32,21 +32,6 @@ export enum ExamAttemptStatus {
     ABANDONED = 'abandoned',
 }
 
-// =====================================================
-// SPEAKING TOPIC LABELS - Nhãn tiếng Việt cho các chủ đề
-// =====================================================
-export const SPEAKING_TOPIC_LABELS: Record<SpeakingTopic, string> = {
-    [SpeakingTopic.DAILY_LIFE]: 'Đời sống hàng ngày',
-    [SpeakingTopic.EDUCATION]: 'Giáo dục',
-    [SpeakingTopic.TECHNOLOGY]: 'Công nghệ',
-    [SpeakingTopic.ENVIRONMENT]: 'Môi trường',
-    [SpeakingTopic.HEALTH]: 'Sức khỏe',
-    [SpeakingTopic.CULTURE]: 'Văn hóa',
-    [SpeakingTopic.TRAVEL]: 'Du lịch',
-    [SpeakingTopic.WORK_AND_CAREER]: 'Công việc & Sự nghiệp',
-    [SpeakingTopic.SOCIAL_ISSUES]: 'Vấn đề xã hội',
-    [SpeakingTopic.HOBBIES_AND_INTERESTS]: 'Sở thích',
-};
 
 // =====================================================
 // VIDEO SCRIPT - Kịch bản video

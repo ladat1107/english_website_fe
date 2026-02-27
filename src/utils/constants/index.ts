@@ -190,6 +190,8 @@ export const PATHS = {
         SPEAKING_EXAM: '/quan-ly/giao-tiep',
         SPEAKING_EXAM_CREATE: '/quan-ly/giao-tiep/tao-de',
         SPEAKING_EXAM_EDIT: (examId: string) => `/quan-ly/giao-tiep/chinh-sua/${examId}`,
+        SPEAKING_GRADING: '/quan-ly/giao-tiep/cham-bai',
+        SPEAKING_GRADING_DETAIL: (attemptId: string) => `/quan-ly/giao-tiep/cham-bai/${attemptId}`,
     },
     CLIENT: {
         HOME: '/',

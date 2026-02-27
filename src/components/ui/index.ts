@@ -82,3 +82,6 @@ export {
     SheetTitle,
     SheetDescription,
 } from "./sheet";
+
+// Pagination
+export { Pagination, SimplePagination } from "./pagination";

@@ -1,6 +1,7 @@
 import { http } from '@/lib/http';
+import { SpeakingAttemptParams } from '@/types/speaking-attempt.type';
 import { QUERY_KEYS } from '@/utils/constants/querykey';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 const prefix = '/speaking-attempt';
 
@@ -17,6 +18,21 @@ export const useGetSpeakingAttemptDetail = (attemptId: string) => {
     return useQuery({
         queryKey: [QUERY_KEYS.speakingAttempt.detail, attemptId],
         queryFn: () => http.get(`${prefix}/detail/${attemptId}`),
+        enabled: !!attemptId,
+    });
+};
+
+export const useGetAllSpeakingAttempts = (params: SpeakingAttemptParams) => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.speakingAttempt.getAll, params],
+        queryFn: () => http.get(`${prefix}`, params),
+    });
+};
+
+export const useGetSpeakingAttemptById = (attemptId: string) => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.speakingAttempt.getById, attemptId],
+        queryFn: () => http.get(`${prefix}/${attemptId}`),
         enabled: !!attemptId,
     });
 };

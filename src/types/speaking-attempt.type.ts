@@ -1,4 +1,5 @@
 import { AIAnalysis, SpeakingExam } from "./speaking.type";
+import { UserType } from "./user.type";
 
 export interface SpeakingAttemptResponse {
     attempt: {
@@ -21,30 +22,29 @@ export interface SpeakingAttemptResponse {
     is_resumed: boolean;
 }
 
-// Lịch sử làm bài
-export interface SpeakingAttemptHistoryItem {
+export interface SpeakingAttemptType {
     _id: string;
     exam_id: string;
     user_id: string;
     status: string;
     started_at: string;
-    completed_at?: string;
+    submitted_at?: string;
+    has_teacher_feedback: boolean;
     createdAt: string;
     updatedAt: string;
-    exam: {
-        _id: string;
-        title: string;
-        topic: string;
-        estimated_duration_minutes: number;
-        thumbnail?: string;
-    };
+    exam: SpeakingExam;
+    answers: SpeakingAnswerType[];
+    user: UserType;
+}
+
+// Lịch sử làm bài
+export interface SpeakingAttemptAvg extends SpeakingAttemptType {
     average_score: number;
     answered_count: number;
-    total_questions: number;
 }
 
 // Chi tiết lần làm bài
-export interface SpeakingAttemptDetailAnswer {
+export interface SpeakingAnswerType {
     _id: string;
     attempt_id: string;
     question: {
@@ -61,17 +61,23 @@ export interface SpeakingAttemptDetailAnswer {
 }
 
 export interface SpeakingAttemptDetailResponse {
-    attempt: {
-        _id: string;
-        exam_id: string;
-        user_id: string;
-        status: string;
-        started_at: string;
-        completed_at?: string;
-        createdAt: string;
-        updatedAt: string;
-        exam: SpeakingExam;
-        answers: SpeakingAttemptDetailAnswer[];
-    };
+    attempt: SpeakingAttemptType;
     average_score: number;
 }
+
+// Chi tiết bài làm cho admin chấm
+export interface GradingAttemptDetail {
+    attempt: SpeakingAttemptType;
+    average_score: number;
+    history: SpeakingAttemptAvg[];
+}
+
+// Query params cho danh sách chấm bài
+export interface SpeakingAttemptParams {
+    page?: number;
+    limit?: number;
+    search?: string;
+    topic?: string;
+    has_teacher_feedback?: boolean;
+}
+
