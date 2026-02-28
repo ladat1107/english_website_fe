@@ -11,6 +11,7 @@ import { Inter } from 'next/font/google';
 import { ReactNode } from 'react';
 import { SITE_CONFIG } from '@/utils/constants';
 import { ClientProviders } from '@/components/providers';
+import envConfig from '@/utils/env-config';
 
 // Font chính của website
 const inter = Inter({
@@ -21,6 +22,7 @@ const inter = Inter({
 
 // Metadata cho SEO
 export const metadata: Metadata = {
+  metadataBase: new URL(envConfig.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000"),
   title: {
     default: `${SITE_CONFIG.name} - ${SITE_CONFIG.description}`,
     template: `%s | ${SITE_CONFIG.name}`,
@@ -110,7 +112,7 @@ const RootLayout = ({ children }: RootLayoutProps) => {
     <html lang="vi" className={inter.variable} suppressHydrationWarning>
       <body className={`${inter.className} min-h-screen antialiased`}>
         <ClientProviders>
-          
+
           {children}
         </ClientProviders>
       </body>
