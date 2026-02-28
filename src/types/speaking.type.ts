@@ -5,6 +5,25 @@
 
 import { SpeakingTopic } from "@/utils/constants/enum";
 import { ParamBasic } from ".";
+import { UserType } from "./user.type";
+
+export interface OnlineUser {
+    count: number;
+    topic: SpeakingTopic;
+    users: UserType[];
+}
+export const speakingGoogleMeetLink = {
+    [SpeakingTopic.DAILY_LIFE]: "https://meet.google.com/rjd-vvqv-xzs",
+    [SpeakingTopic.WORK_AND_CAREER]: "https://meet.google.com/ybh-knbh-boo",
+    [SpeakingTopic.EDUCATION]: "https://meet.google.com/seb-fiwy-scs",
+    [SpeakingTopic.HEALTH]: "https://meet.google.com/yjj-xkxr-wmb",
+    [SpeakingTopic.TRAVEL]: "https://meet.google.com/ofe-xzdo-myv",
+    [SpeakingTopic.CULTURE]: "https://meet.google.com/spd-vdcw-jnv",
+    [SpeakingTopic.HOBBIES_AND_INTERESTS]: "https://meet.google.com/tkh-ihpz-ydv",
+    [SpeakingTopic.SOCIAL_ISSUES]: "https://meet.google.com/nox-qsab-who",
+    [SpeakingTopic.ENVIRONMENT]: "https://meet.google.com/hhg-oubq-ani",
+    [SpeakingTopic.TECHNOLOGY]: "https://meet.google.com/nfr-dvec-tjm",
+};
 
 export const speakingTopicOptions = Object.entries(SpeakingTopic).map(([key, value]) => ({
     value: value,
@@ -61,7 +80,7 @@ export interface SpeakingExam {
     description?: string;                   // Mô tả
     topic: SpeakingTopic;                   // Chủ đề
     estimated_duration_minutes: number;     // Thời gian ước tính (phút)
-    video_url: string;     
+    video_url: string;
     thumbnail?: string;                 // Link video Cloudinary/Youtube
     video_script: VideoScript[];            // Kịch bản hội thoại
     questions: SpeakingQuestion[];          // Danh sách câu hỏi
@@ -181,21 +200,6 @@ export interface SpeakingAttemptFilter {
     limit?: number;
 }
 
-// =====================================================
-// REALTIME TYPES - Cho tính năng hiển thị người đang làm cùng
-// =====================================================
-export interface OnlineUser {
-    user_id: string;
-    user_name: string;
-    avatar_url?: string;
-    joined_at: string;
-}
-
-export interface SpeakingRoom {
-    exam_id: string;
-    online_users: OnlineUser[];
-    google_meet_link?: string;
-}
 
 // =====================================================
 // PAGINATION RESPONSE

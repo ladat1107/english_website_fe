@@ -7,7 +7,7 @@
 "use client";
 
 import { Suspense, ReactNode } from "react";
-import { AuthProvider } from "@/contexts";
+import { AuthProvider, SocketProvider } from "@/contexts";
 import { AuthModal } from "@/components/layout";
 import { useAuth } from "@/contexts";
 import { ReactQueryProvider } from "./react-query-provider";
@@ -39,8 +39,10 @@ export const ClientProviders: React.FC<ClientProvidersProps> = ({ children }) =>
         <ConfirmDialogProvider>
           <ReactQueryProvider>
             <AuthProvider>
-              {children}
-              <AuthModalWrapper />
+              <SocketProvider>
+                {children}
+                <AuthModalWrapper />
+              </SocketProvider>
             </AuthProvider>
           </ReactQueryProvider>
         </ConfirmDialogProvider>

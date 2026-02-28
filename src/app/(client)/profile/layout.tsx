@@ -6,8 +6,10 @@
 import { ReactNode } from "react";
 import ClientLayout from "@/components/layout/client-layout";
 import { Metadata } from "next";
+import envConfig from "@/utils/env-config";
 
 export const metadata: Metadata = {
+    metadataBase: new URL(envConfig.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000"),
     title: "Thông tin cá nhân | Khailingo",
     description: "Xem và quản lý thông tin cá nhân, theo dõi tiến độ học tập trên Khailingo",
     openGraph: {

@@ -9,15 +9,15 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, Video, Copy, Check, ExternalLink, Wifi } from 'lucide-react';
 import { cn } from '@/utils/cn';
-import { OnlineUser } from '@/types/speaking.type';
 import { Button, Card, CardHeader, CardTitle, CardContent, Badge } from '@/components/ui';
 import Image from 'next/image';
+import { UserType } from '@/types/user.type';
 
 // =====================================================
 // TYPES
 // =====================================================
 interface OnlineUsersPanelProps {
-    users: OnlineUser[];
+    users: UserType[] | [];
     googleMeetLink?: string;
     className?: string;
     isCollapsible?: boolean;
@@ -94,7 +94,7 @@ export function OnlineUsersPanel({
                                 <div className="space-y-3 mb-4">
                                     {users.map((user, index) => (
                                         <motion.div
-                                            key={user.user_id}
+                                            key={user._id}
                                             initial={{ opacity: 0, x: -10 }}
                                             animate={{ opacity: 1, x: 0 }}
                                             transition={{ delay: index * 0.1 }}
@@ -106,7 +106,7 @@ export function OnlineUsersPanel({
                                                     {user.avatar_url ? (
                                                         <Image
                                                             src={user.avatar_url}
-                                                            alt={user.user_name}
+                                                            alt={user.full_name}
                                                             width={40}
                                                             height={40}
                                                             className="w-full h-full object-cover"
@@ -114,7 +114,7 @@ export function OnlineUsersPanel({
                                                         />
                                                     ) : (
                                                         <div className="w-full h-full flex items-center justify-center text-sm font-semibold text-muted-foreground">
-                                                            {user.user_name.charAt(0).toUpperCase()}
+                                                            {user.full_name.charAt(0).toUpperCase()}
                                                         </div>
                                                     )}
                                                 </div>
@@ -133,7 +133,7 @@ export function OnlineUsersPanel({
                                             {/* User Info */}
                                             <div className="flex-1 min-w-0">
                                                 <p className="text-sm font-medium text-foreground truncate">
-                                                    {user.user_name}
+                                                    {user.full_name}
                                                 </p>
                                                 <p className="text-xs text-muted-foreground">
                                                     Đang luyện tập

@@ -4,3 +4,4 @@
  */
 
 export { AuthProvider, useAuth } from "./auth-context";
+export { SocketProvider, useSockets } from "./socket-context";

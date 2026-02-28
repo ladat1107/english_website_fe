@@ -3,6 +3,7 @@ import { z } from "zod";
 const configSchema = z.object({
     NEXT_PUBLIC_BACKEND_URL: z.string(),
     NEXT_PUBLIC_FRONTEND_URL: z.string(),
+    NEXT_PUBLIC_SOCKET_URL: z.string(),
 
     // Cloudinary config
     NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: z.string().nonempty(),
@@ -15,6 +16,7 @@ const configSchema = z.object({
 const configProject = configSchema.safeParse({
     NEXT_PUBLIC_BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL,
     NEXT_PUBLIC_FRONTEND_URL: process.env.NEXT_PUBLIC_FRONTEND_URL,
+    NEXT_PUBLIC_SOCKET_URL: process.env.NEXT_PUBLIC_SOCKET_URL,
 
     // Cloudinary config
     NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,

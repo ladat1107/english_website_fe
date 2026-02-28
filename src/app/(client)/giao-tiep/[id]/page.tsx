@@ -38,12 +38,8 @@ import {
 } from '@/components/speaking';
 import {
     SpeakingExam,
-    OnlineUser
+    speakingGoogleMeetLink
 } from '@/types/speaking.type';
-import {
-    mockOnlineUsers,
-    mockGoogleMeetLink
-} from '@/utils/mock-data/speaking.mock';
 import { useGetSpeakingExamById } from '@/hooks/use-speaking-exam';
 import LoadingCustom from '@/components/ui/loading-custom';
 import { usePreventLeave } from '@/hooks/use-event-leave';
@@ -51,6 +47,7 @@ import { useCreateSpeakingAttempt, useSubmitSpeakingAttempt } from '@/hooks/use-
 import { useToast } from '@/components/ui/toaster';
 import { SpeakingAttemptResponse } from '@/types/speaking-attempt.type';
 import { useCreateSpeakingAnswer } from '@/hooks/use-speaking-answer';
+import { useSockets } from '@/contexts/socket-context';
 
 // =====================================================
 // TYPES
@@ -78,13 +75,23 @@ export default function SpeakingPracticeDetailPage() {
     const [answers, setAnswers] = useState<QuestionAnswer[]>([]);
     const [showSubmitDialog, setShowSubmitDialog] = useState(false);
     const [attemptStarted, setAttemptStarted] = useState(false);
-    const [onlineUsers] = useState<OnlineUser[]>(mockOnlineUsers);
+
     const { data: speakingExamRes, isLoading: isExamLoading } = useGetSpeakingExamById(examId);
     const { mutate: createSpeakingAttempt, isPending: isCreating } = useCreateSpeakingAttempt();
     const { mutate: submitSpeakingAttempt, isPending: isSubmitting } = useSubmitSpeakingAttempt();
     const { mutate: createSpeakingAnswer } = useCreateSpeakingAnswer();
     const { addToast } = useToast();
-    // =====================================================
+
+    const { speakingSocket, } = useSockets();
+    const { onlineUsers } = speakingSocket;
+
+    useEffect(() => {
+        if (!exam?.topic || !examId || !speakingSocket) return;
+        speakingSocket.joinRoom(exam.topic, examId);
+
+        return () => speakingSocket.leaveRoom(exam.topic);
+    }, [exam, examId]);
+
     // LOAD EXAM DATA
     // =====================================================
     const { allowNavigation } = usePreventLeave({ enabled: attemptStarted });
@@ -111,7 +118,6 @@ export default function SpeakingPracticeDetailPage() {
             exam_id: examId
         }, {
             onSuccess: (res) => {
-                console.log('Speaking attempt created with ID:', res);
                 const resData: SpeakingAttemptResponse = res.data;
                 setAttemptId(resData.attempt._id);
 
@@ -188,6 +194,8 @@ export default function SpeakingPracticeDetailPage() {
                 addToast('Bài luyện đã được nộp thành công!', 'success');
                 setShowSubmitDialog(false);
                 allowNavigation();
+                // Rời khỏi room trước khi chuyển trang
+                //leaveRoom();
                 router.push(`/giao-tiep/ket-qua/${attemptId}`);
             }
         });
@@ -409,7 +417,7 @@ export default function SpeakingPracticeDetailPage() {
                         {/* Online Users */}
                         <OnlineUsersPanel
                             users={onlineUsers}
-                            googleMeetLink={mockGoogleMeetLink}
+                            googleMeetLink={speakingGoogleMeetLink[exam.topic as keyof typeof speakingGoogleMeetLink]}
                         />
                     </div>
                 </div>
