@@ -3,6 +3,8 @@
  * File chứa các hằng số dùng trong toàn bộ ứng dụng
  */
 
+import envConfig from "../env-config";
+
 
 // =====================================================
 // THÔNG TIN WEBSITE
@@ -11,7 +13,7 @@ export const SITE_CONFIG = {
     name: "Khailingo",
     description: "Nền tảng học tiếng Anh online miễn phí và chất lượng",
     slogan: "Học tiếng Anh thông minh như chú ong chăm chỉ",
-    url: "https://khailingo.vn",
+    url: envConfig.NEXT_PUBLIC_FRONTEND_URL,
     logo: "/logo/logo-small.png",
     logoText: "Khailingo",
     email: "support@khailingo.vn",
