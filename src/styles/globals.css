@@ -136,6 +136,10 @@
         font-feature-settings: "rlig" 1, "calt" 1;
         /* Minimum tap target size for mobile */
         -webkit-tap-highlight-color: transparent;
+
+        /* Đảm bảo cho giao diện không giật khi mất scrollbar */
+        overflow-y: scroll;
+        scrollbar-gutter: inherit;
     }
 
     /* ==========================================

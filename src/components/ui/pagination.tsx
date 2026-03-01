@@ -19,7 +19,8 @@ export interface PaginationProps {
     onPageChange: (page: number) => void;
     className?: string;
     showInfo?: boolean;
-    size?: "sm" | "default";
+    size?: "xs" | "sm" | "default";
+    variant?: "default" | "compact" | "minimal";
 }
 
 // =====================================================
@@ -31,28 +32,26 @@ export function Pagination({
     className,
     showInfo = true,
     size = "default",
+    variant = "default",
 }: PaginationProps) {
     const { currentPage, totalPages, totalItems, hasNextPage, hasPreviousPage } = pagination;
 
     // Tính toán các trang hiển thị
     const getPageNumbers = () => {
         const pages: (number | "ellipsis")[] = [];
-        const maxVisiblePages = 5;
+        const maxVisiblePages = variant === "compact" ? 3 : 5;
 
         if (totalPages <= maxVisiblePages) {
-            // Hiển thị tất cả nếu ít trang
             for (let i = 1; i <= totalPages; i++) {
                 pages.push(i);
             }
         } else {
-            // Luôn hiển thị trang đầu
             pages.push(1);
 
             if (currentPage > 3) {
                 pages.push("ellipsis");
             }
 
-            // Các trang xung quanh trang hiện tại
             const start = Math.max(2, currentPage - 1);
             const end = Math.min(totalPages - 1, currentPage + 1);
 
@@ -64,7 +63,6 @@ export function Pagination({
                 pages.push("ellipsis");
             }
 
-            // Luôn hiển thị trang cuối
             pages.push(totalPages);
         }
 
@@ -73,43 +71,185 @@ export function Pagination({
 
     const pageNumbers = getPageNumbers();
 
-    const buttonSize = size === "sm" ? "icon-sm" : "icon";
-    const textSize = size === "sm" ? "text-xs" : "text-sm";
+    // Size configurations
+    const sizeConfig = {
+        xs: {
+            buttonSize: "icon-sm" as const,
+            buttonClass: "h-7 w-7",
+            textSize: "text-[11px]",
+            iconSize: "h-3 w-3",
+            gap: "gap-0.5",
+            pageButtonClass: "h-7 min-w-[28px] px-2",
+        },
+        sm: {
+            buttonSize: "icon-sm" as const,
+            buttonClass: "h-8 w-8",
+            textSize: "text-xs",
+            iconSize: "h-3.5 w-3.5",
+            gap: "gap-1",
+            pageButtonClass: "h-8 min-w-[32px] px-2.5",
+        },
+        default: {
+            buttonSize: "icon" as const,
+            buttonClass: "h-9 w-9",
+            textSize: "text-sm",
+            iconSize: "h-4 w-4",
+            gap: "gap-1",
+            pageButtonClass: "h-9 min-w-[36px] px-3",
+        },
+    };
+
+    const config = sizeConfig[size];
 
     if (totalPages <= 1) {
         return showInfo ? (
             <div className={cn("flex items-center justify-center", className)}>
-                <p className={cn("text-muted-foreground", textSize)}>
-                    Hiển thị {totalItems} kết quả
+                <p className={cn("text-muted-foreground", config.textSize)}>
+                    {totalItems} kết quả
                 </p>
             </div>
         ) : null;
     }
 
+    // Minimal variant - chỉ hiển thị prev/next với số trang
+    if (variant === "minimal") {
+        return (
+            <div className={cn("flex items-center justify-between", config.gap, className)}>
+                {showInfo && (
+                    <span className={cn("text-muted-foreground", config.textSize)}>
+                        {totalItems} kết quả
+                    </span>
+                )}
+                <div className={cn("flex items-center", config.gap)}>
+                    <Button
+                        variant="ghost"
+                        size={config.buttonSize}
+                        onClick={() => onPageChange(currentPage - 1)}
+                        disabled={!hasPreviousPage}
+                        className={cn(config.buttonClass, "hover:bg-muted")}
+                    >
+                        <ChevronLeft className={config.iconSize} />
+                    </Button>
+                    <span className={cn("px-2 font-medium text-foreground tabular-nums", config.textSize)}>
+                        {currentPage} / {totalPages}
+                    </span>
+                    <Button
+                        variant="ghost"
+                        size={config.buttonSize}
+                        onClick={() => onPageChange(currentPage + 1)}
+                        disabled={!hasNextPage}
+                        className={cn(config.buttonClass, "hover:bg-muted")}
+                    >
+                        <ChevronRight className={config.iconSize} />
+                    </Button>
+                </div>
+            </div>
+        );
+    }
+
+    // Compact variant - gọn hơn, có số trang nhưng nhỏ hơn
+    if (variant === "compact") {
+        return (
+            <div className={cn("flex items-center justify-between", className)}>
+                {showInfo && (
+                    <span className={cn("text-muted-foreground hidden sm:block", config.textSize)}>
+                        {totalItems} kết quả
+                    </span>
+                )}
+                <div className={cn("flex items-center", config.gap, !showInfo && "w-full justify-center")}>
+
+                    {/* Previous button */}
+                    <Button
+                        variant="ghost"
+                        size={config.buttonSize}
+                        onClick={() => onPageChange(currentPage - 1)}
+                        disabled={!hasPreviousPage}
+                        className={cn(config.buttonClass, "hover:bg-muted")}
+                    >
+                        <ChevronLeft className={config.iconSize} />
+                    </Button>
+
+                    {/* Page numbers - desktop */}
+                    <div className={cn("hidden sm:flex items-center", config.gap)}>
+                        {pageNumbers.map((page, index) => {
+                            if (page === "ellipsis") {
+                                return (
+                                    <div
+                                        key={`ellipsis-${index}`}
+                                        className={cn(
+                                            "flex items-center justify-center text-muted-foreground w-6",
+                                            config.textSize
+                                        )}
+                                    >
+                                        <MoreHorizontal className={config.iconSize} />
+                                    </div>
+                                );
+                            }
+
+                            const isActive = currentPage === page;
+                            return (
+                                <button
+                                    key={page}
+                                    onClick={() => onPageChange(page)}
+                                    className={cn(
+                                        "rounded-md font-medium transition-all duration-150",
+                                        config.pageButtonClass,
+                                        config.textSize,
+                                        isActive
+                                            ? "bg-primary text-primary-foreground shadow-sm"
+                                            : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                                    )}
+                                >
+                                    {page}
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    {/* Mobile: Current/Total */}
+                    <span className={cn(
+                        "sm:hidden px-3 font-medium text-foreground tabular-nums",
+                        config.textSize
+                    )}>
+                        {currentPage} / {totalPages}
+                    </span>
+
+                    {/* Next button */}
+                    <Button
+                        variant="ghost"
+                        size={config.buttonSize}
+                        onClick={() => onPageChange(currentPage + 1)}
+                        disabled={!hasNextPage}
+                        className={cn(config.buttonClass, "hover:bg-muted")}
+                    >
+                        <ChevronRight className={config.iconSize} />
+                    </Button>
+                </div>
+            </div>
+        );
+    }
+
+    // Default variant
     return (
         <div className={cn("flex flex-col sm:flex-row items-center justify-between gap-3", className)}>
-            {/* Thông tin phân trang */}
             {showInfo && (
-                <p className={cn("text-muted-foreground order-2 sm:order-1", textSize)}>
+                <p className={cn("text-muted-foreground order-2 sm:order-1", config.textSize)}>
                     Trang {currentPage} / {totalPages} ({totalItems} kết quả)
                 </p>
             )}
 
-            {/* Các nút pagination */}
-            <div className="flex items-center gap-1 order-1 sm:order-2">
-                {/* Nút Previous */}
+            <div className={cn("flex items-center order-1 sm:order-2", config.gap)}>
                 <Button
                     variant="outline"
-                    size={buttonSize}
+                    size={config.buttonSize}
                     onClick={() => onPageChange(currentPage - 1)}
                     disabled={!hasPreviousPage}
-                    className="border-border"
+                    className={cn(config.buttonClass, "border-border")}
                 >
-                    <ChevronLeft className={size === "sm" ? "h-3 w-3" : "h-4 w-4"} />
+                    <ChevronLeft className={config.iconSize} />
                 </Button>
 
-                {/* Các số trang - ẩn trên mobile, hiện trên tablet+ */}
-                <div className="hidden sm:flex items-center gap-1">
+                <div className={cn("hidden sm:flex items-center", config.gap)}>
                     {pageNumbers.map((page, index) => {
                         if (page === "ellipsis") {
                             return (
@@ -117,10 +257,10 @@ export function Pagination({
                                     key={`ellipsis-${index}`}
                                     className={cn(
                                         "flex items-center justify-center text-muted-foreground",
-                                        size === "sm" ? "w-7 h-7" : "w-9 h-9"
+                                        config.buttonClass
                                     )}
                                 >
-                                    <MoreHorizontal className={size === "sm" ? "h-3 w-3" : "h-4 w-4"} />
+                                    <MoreHorizontal className={config.iconSize} />
                                 </div>
                             );
                         }
@@ -129,37 +269,36 @@ export function Pagination({
                             <Button
                                 key={page}
                                 variant={currentPage === page ? "default" : "outline"}
-                                size={buttonSize}
+                                size={config.buttonSize}
                                 onClick={() => onPageChange(page)}
                                 className={cn(
+                                    config.buttonClass,
                                     currentPage === page
                                         ? ""
                                         : "border-border hover:bg-primary/10 hover:text-primary hover:border-primary/30"
                                 )}
                             >
-                                <span className={textSize}>{page}</span>
+                                <span className={config.textSize}>{page}</span>
                             </Button>
                         );
                     })}
                 </div>
 
-                {/* Hiển thị trang hiện tại trên mobile */}
                 <div className={cn(
                     "flex sm:hidden items-center justify-center px-3 font-medium text-foreground",
-                    textSize
+                    config.textSize
                 )}>
                     {currentPage} / {totalPages}
                 </div>
 
-                {/* Nút Next */}
                 <Button
                     variant="outline"
-                    size={buttonSize}
+                    size={config.buttonSize}
                     onClick={() => onPageChange(currentPage + 1)}
                     disabled={!hasNextPage}
-                    className="border-border"
+                    className={cn(config.buttonClass, "border-border")}
                 >
-                    <ChevronRight className={size === "sm" ? "h-3 w-3" : "h-4 w-4"} />
+                    <ChevronRight className={config.iconSize} />
                 </Button>
             </div>
         </div>

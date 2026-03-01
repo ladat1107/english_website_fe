@@ -64,7 +64,7 @@ export const metadata: Metadata = {
     description: SITE_CONFIG.description,
     images: [
       {
-        url: '/images/og-image.png',
+        url: '/image/og-image.png',
         width: 1200,
         height: 630,
         alt: SITE_CONFIG.name,
@@ -75,14 +75,14 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: SITE_CONFIG.name,
     description: SITE_CONFIG.description,
-    images: ['/images/og-image.png'],
+    images: ['/image/og-image.png'],
   },
   icons: {
     icon: '/favicon.ico',
     shortcut: '/favicon-16x16.png',
     apple: '/apple-touch-icon.png',
   },
-  manifest: '/site.webmanifest',
+  //manifest: '/site.webmanifest',
   alternates: {
     canonical: SITE_CONFIG.url,
   },
@@ -112,7 +112,6 @@ const RootLayout = ({ children }: RootLayoutProps) => {
     <html lang="vi" className={inter.variable} suppressHydrationWarning>
       <body className={`${inter.className} min-h-screen antialiased`}>
         <ClientProviders>
-
           {children}
         </ClientProviders>
       </body>

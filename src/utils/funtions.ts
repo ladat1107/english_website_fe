@@ -39,3 +39,14 @@ export const getScoreBadgeVariant = (score: number): 'success' | 'warning' | 'de
     if (score >= 60) return 'warning';
     return 'destructive';
 };
+
+// Hàm chuyển link youtube sang dạng nhúng (embed) =================================================================================================
+export const getYoutubeEmbedUrl = (url: string) => {
+    const regExp =
+        /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/;
+    const match = url.match(regExp);
+
+    return match
+        ? `https://www.youtube.com/embed/${match[1]}`
+        : null;
+};

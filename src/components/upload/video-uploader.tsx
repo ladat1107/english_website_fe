@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { useCloudinaryUpload } from "@/hooks/use-cloudinary-upload";
 import { CloudinaryFolder, UploadResult } from "@/lib/cloudinary";
 import Image from "next/image";
+import { getYoutubeEmbedUrl } from "@/utils/funtions";
 
 // =====================================================
 // COMPONENT: VideoUploader
@@ -152,6 +153,7 @@ export function VideoUploader({
     }, [onChange]);
 
     const displayError = error || uploadError || uploadErrorThumbnail;
+    const embedUrl = getYoutubeEmbedUrl(value || "");
 
     return (
         <div className={cn("space-y-3", className)}>
@@ -270,11 +272,19 @@ export function VideoUploader({
             {value && !isUploading && (
                 <div className="flex flex-col md:flex-row gap-2 ">
                     <div className="flex-1 mt-3 relative rounded-sm overflow-hidden bg-black">
-                        <video
-                            src={value}
-                            controls
-                            className="w-full max-h-[300px] object-contain"
-                        />
+                        {embedUrl ? (
+                            <iframe
+                                src={embedUrl}
+                                className="w-full aspect-video"
+                                allowFullScreen
+                            />
+                        ) : (
+                            <video
+                                src={value}
+                                controls
+                                className="w-full max-h-[300px] object-contain"
+                            />
+                        )}
                         <Button
                             type="button"
                             variant="destructive"

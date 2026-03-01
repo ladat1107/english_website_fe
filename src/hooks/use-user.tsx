@@ -1,25 +1,55 @@
 import { http } from '@/lib/http';
 import { Achievement, LearningStats, RecentExamAttempt, RecentSpeakingAttempt, SkillProgress, UpdateProfileForm } from '@/types/profile.type';
+import { UserParams } from '@/types/user.type';
 import { QUERY_KEYS } from '@/utils/constants/querykey';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
+const prefix = '/users';
 // Query hook
-export const useGetUsers = () => {
+export const useGetAllUsers = (param: UserParams) => {
     return useQuery({
-        queryKey: ['users'],
-        queryFn: () => http.get('/users'),
-        staleTime: 5 * 60 * 1000, // 5 minutes
+        queryKey: [QUERY_KEYS.user.getAll, param],
+        queryFn: () => http.get(`${prefix}`, param),
     });
 };
+
+export const useGetUserById = (id: string) => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.user.getById, id],
+        queryFn: () => http.get(`${prefix}/${id}`),
+    });
+}
 
 // Mutation hook  
 export const useCreateUser = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (userData: any) => http.post('/users', userData),
+        mutationFn: (userData: any) => http.post(prefix, userData),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['users'] });
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.user.getAll] });
+        },
+    });
+};
+
+export const useUpdateUser = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ id, data }: { id: string; data: any }) => http.patch(`${prefix}/${id}`, data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.user.getAll] });
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.user.getById] });
+        },
+    });
+}
+
+export const useDeleteUser = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (id: string) => http.delete(`${prefix}/${id}`),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.user.getAll] });
         },
     });
 };

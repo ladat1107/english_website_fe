@@ -13,6 +13,8 @@ export const QUERY_KEYS = {
         getById: "speaking-attempt-get-by-id",
     },
     user: {
+        getAll: "get-all-users",
+        getById: "get-user-by-id",
         profileStatus: "profileStatus",
         examAttemptRecent: "examAttemptRecent",
         speakingRecent: "speakingRecent"

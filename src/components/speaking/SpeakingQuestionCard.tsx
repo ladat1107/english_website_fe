@@ -110,11 +110,6 @@ export function SpeakingQuestionCard({
                                     )}
                                     aria-label="Xem gợi ý"
                                 >
-                                    {/* <Lightbulb className={cn(
-                                        'w-5 h-5 text-amber-500 dark:text-amber-400',
-                                        'group-hover:scale-110 transition-transform duration-200',
-                                        'drop-shadow-sm'
-                                    )} /> */}
                                     💡
                                 </button>
 
@@ -127,7 +122,7 @@ export function SpeakingQuestionCard({
                                             exit={{ opacity: 0, scale: 0.95, y: -4 }}
                                             transition={{ duration: 0.15 }}
                                             onClick={(e) => e.stopPropagation()}
-                                            className="absolute right-0 top-full mt-2 w-72 max-w-[calc(100vw-2rem)] z-50"
+                                            className="absolute right-0 top-full mt-2 w-max max-w-[calc(100vw-2rem)] md:max-w-[700px] z-50"
                                         >
                                             <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/90 dark:to-orange-950/90 rounded-xl shadow-xl border border-amber-200/50 dark:border-amber-800/50 p-4 backdrop-blur-sm">
                                                 {/* Arrow */}

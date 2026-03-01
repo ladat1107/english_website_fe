@@ -258,6 +258,7 @@ export interface PaginatedResponse<T> {
     success: boolean;
     data: T[];
     pagination: Pagination;
+    statistics?: T; // Thống kê bổ sung (nếu có)
 }
 
 // =====================================================
