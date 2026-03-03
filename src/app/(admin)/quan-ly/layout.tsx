@@ -12,7 +12,8 @@ import {
     Menu,
     Mic,
     LogOut,
-    Bell
+    Bell,
+    Calendar
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,7 +23,7 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils";
 import Image from "next/image";
 
 interface AdminLayoutProps {
@@ -46,6 +47,11 @@ const sidebarItems: SidebarItem[] = [
         title: "Tổng quan",
         href: "/quan-ly",
         icon: LayoutDashboard,
+    },
+    {
+        title: "Lịch học",
+        href: "/quan-ly/lich-hoc",
+        icon: Calendar,
     },
     {
         title: "Giao tiếp",

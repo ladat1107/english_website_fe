@@ -4,7 +4,7 @@ import { useCallback, useRef } from "react";
 import { Upload, ImageIcon, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils";
 import { useCloudinaryUpload } from "@/hooks/use-cloudinary-upload";
 import { CloudinaryFolder, UploadResult } from "@/lib/cloudinary";
 import Image from "next/image";

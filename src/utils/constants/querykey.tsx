@@ -18,5 +18,15 @@ export const QUERY_KEYS = {
         profileStatus: "profileStatus",
         examAttemptRecent: "examAttemptRecent",
         speakingRecent: "speakingRecent"
+    },
+    classSession: {
+        getAll: "class-sessions",
+        getById: "class-session",
+        getMySessions:"my-class-sessions",
+        getByMonth: "class-sessions-by-month",
+    },
+    participant: {
+        getBySession: "participants-by-session",
+        getByUser: "participants-by-user",
     }
 }

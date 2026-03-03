@@ -62,5 +62,10 @@ export enum SpeakingTopic {
     WORK_AND_CAREER = 'Work and Career',
     SOCIAL_ISSUES = 'Social Issues',
     HOBBIES_AND_INTERESTS = 'Hobbies and Interests',
+}
 
+export enum RegistrationStatus {
+    REGISTERED = 'REGISTERED',
+    ATTENDED = 'ATTENDED',
+    ABSENT = 'ABSENT',
 }

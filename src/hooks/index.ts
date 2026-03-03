@@ -12,4 +12,4 @@ export * from './use-speaking-attempt';
 export * from './use-speaking-answer';
 export * from './use-event-leave';
 export * from './use-speaking-socket';
-
+export * from './use-class-session';

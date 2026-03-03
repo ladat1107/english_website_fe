@@ -6,6 +6,7 @@ export interface UserType {
     _id: string;
     email: string;
     full_name: string;
+    phone?: string;
     avatar_url?: string;
     googleId?: string;
     role: UserRole;

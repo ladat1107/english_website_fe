@@ -114,6 +114,11 @@ export const MAIN_NAV_ITEMS: NavItem[] = [
         href: "/giao-tiep",
         description: "Luyện nói tiếng Anh theo chủ đề hàng ngày",
     },
+    {
+        title: "Lịch học",
+        href: "/lich-hoc",
+        description: "Xem lịch học và đăng ký tham gia các buổi học trực tuyến",
+    },
 ] as const;
 
 // =====================================================
@@ -194,12 +199,16 @@ export const PATHS = {
         SPEAKING_EXAM_EDIT: (examId: string) => `/quan-ly/giao-tiep/chinh-sua/${examId}`,
         SPEAKING_GRADING: '/quan-ly/giao-tiep/cham-bai',
         SPEAKING_GRADING_DETAIL: (attemptId: string) => `/quan-ly/giao-tiep/cham-bai/${attemptId}`,
+        CLASS_SCHEDULE: '/quan-ly/lich-hoc',
+        CLASS_SESSION_DETAIL: (sessionId: string) => `/quan-ly/lich-hoc/${sessionId}`,
     },
     CLIENT: {
         HOME: '/',
         PROFILE: '/profile',
         FLASHCARD: '/flashcard',
         SPEAKING: '/giao-tiep',
+        CLASS_SCHEDULE: '/lich-hoc',
+        CLASS_SESSION_DETAIL: (sessionId: string) => `/lich-hoc/${sessionId}`,
     }
 } as const;
 

@@ -93,6 +93,7 @@ export interface ProfileStatsResponse {
 export interface UpdateProfileForm {
     full_name?: string;
     avatar_url?: string;
+    phone?: string;
     target_exam?: ExamType;
     target_score?: number;
     current_level?: ProficiencyLevel;
