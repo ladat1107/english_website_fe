@@ -56,7 +56,7 @@ export function OnlineUsersPanel({
     };
 
     return (
-        <Card className={cn('overflow-hidden sticky top-28 ', className)}>
+        <Card className={cn('min-w-64', className)}>
             {/* Header */}
             <CardHeader
                 className={cn(

@@ -54,6 +54,20 @@ export const useDeleteUser = () => {
     });
 };
 
+export const useUpdateProfile = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (data: UpdateProfileForm) => {
+            return http.patch(`${prefix}/profile`, data);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.auth.checkStatus] });
+            ;
+        },
+    });
+};
+
 /**
  * Hook lấy thống kê học tập của user
  */
@@ -113,40 +127,4 @@ export const useGetAchievements = () => {
     });
 };
 
-/**
- * Hook cập nhật thông tin profile
- */
-export const useUpdateProfile = () => {
-    const queryClient = useQueryClient();
 
-    return useMutation({
-        mutationFn: async (data: UpdateProfileForm) => {
-            const response = await http.patch('/users/me', data);
-            return response.data;
-        },
-        onSuccess: () => {
-            // Invalidate tất cả queries liên quan đến profile
-            queryClient.invalidateQueries({ queryKey: ['profile'] });
-            // Cũng cần refresh auth status để cập nhật user info
-            queryClient.invalidateQueries({ queryKey: ['auth'] });
-        },
-    });
-};
-
-/**
- * Hook upload avatar
- */
-export const useUploadAvatar = () => {
-    const queryClient = useQueryClient();
-
-    return useMutation({
-        mutationFn: async (avatarUrl: string) => {
-            const response = await http.patch('/users/me', { avatar_url: avatarUrl });
-            return response.data;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['profile'] });
-            queryClient.invalidateQueries({ queryKey: ['auth'] });
-        },
-    });
-};

@@ -18,6 +18,8 @@ export {
     CardBadge,
 } from "./card";
 
+export { Label } from "./label";
+
 // Input
 export { Input, Textarea } from "./input";
 

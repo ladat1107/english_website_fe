@@ -1,0 +1,156 @@
+.admin-calendar {
+    /* Ẩn border mặc định của FullCalendar (bo qua bằng màu trong suốt) */
+    /* --fc-border-color: hsl(var(--border)); */
+    --fc-border-color: transparent;
+
+    /* Màu nền của ngày hôm nay (today) */
+    --fc-today-bg-color: hsl(var(--primary) / 0.095);
+
+    /* Màu nền tổng thể của Calendar (trong suốt để blend với UI) */
+    --fc-page-bg-color: transparent;
+
+    /* Màu nền neutral cho background cell */
+    --fc-neutral-bg-color: hsl(var(--muted) / 0.3);
+}
+
+/* Đồng bộ font với website */
+.admin-calendar .fc {
+    font-family: inherit;
+}
+
+/* ============================================
+   BORDER CỦA Ô NGÀY & Ô HEADER
+=============================================== */
+.admin-calendar .fc-theme-standard td,
+.admin-calendar .fc-theme-standard th {
+    /* Border màu nhẹ theo hệ màu Shadcn */
+    border-color: hsl(var(--border));
+}
+
+/* Bo góc trái phía trên của header (Sun/Mon/Tue…) */
+.admin-calendar .fc-col-header-cell:first-child {
+    border-top-left-radius: 8px;
+}
+
+/* Bo góc phải phía trên của header */
+.admin-calendar .fc-col-header-cell:last-child {
+    border-top-right-radius: 8px;
+}
+
+.admin-calendar .fc-theme-standard td {
+    border-width: 0.5px;
+    border-style: solid;
+    border-color: hsl(var(--border));
+}
+
+/* Style cho header của tuần (Mon, Tue…) */
+.admin-calendar .fc-col-header-cell {
+    background: hsl(var(--primary));
+    /* nền màu đỏ chủ đạo */
+    padding: 0.5rem 0;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: hsl(var(--primary-foreground));
+    /* chữ màu trắng */
+}
+
+/* Đảm bảo ô ngày cao đúng chuẩn Desktop */
+.admin-calendar .fc-daygrid-day {
+    min-height: 80px;
+}
+
+/* ============================================
+   RESPONSIVE – MOBILE <= 640px
+=============================================== */
+@media (max-width: 640px) {
+
+    /* Cell thấp hơn trong mobile */
+    .admin-calendar .fc-daygrid-day {
+        min-height: 60px;
+    }
+
+    /* Header nhỏ hơn */
+    .admin-calendar .fc-col-header-cell {
+        font-size: 0.65rem;
+        padding: 0.25rem 0;
+    }
+
+    /* Số ngày nhỏ + gọn hơn */
+    .admin-calendar .fc-daygrid-day-number {
+        font-size: 0.75rem;
+        padding: 0.25rem;
+    }
+}
+
+/* ============================================
+   NGÀY TRONG LỊCH (NUMBER)
+=============================================== */
+.admin-calendar .fc-daygrid-day-number {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: hsl(var(--foreground));
+    padding: 0.5rem;
+}
+
+/* Style của ngày hôm nay (TODAY) – làm tròn + nổi bật */
+.admin-calendar .fc-day-today .fc-daygrid-day-number {
+    background: hsl(var(--primary));
+    /* nền đỏ */
+    color: hsl(var(--primary-foreground));
+    /* chữ trắng */
+    border-radius: 9999px;
+    /* hình tròn */
+    width: 1.75rem;
+    height: 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ============================================
+   EVENT TRONG NGÀY
+=============================================== */
+.admin-calendar .fc-daygrid-event {
+    border-radius: 0.375rem;
+    margin: 1px 2px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+/* Hover event cho đẹp và nổi */
+.admin-calendar .fc-daygrid-event:hover {
+    transform: translateY(-2px);
+    background-color: transparent;
+    opacity: 0.95;
+}
+
+/* Nút "xem thêm (more...)" khi có nhiều event */
+.admin-calendar .fc-more-link {
+    font-size: 0.75rem;
+    color: hsl(var(--primary));
+    font-weight: 500;
+}
+
+/* ============================================
+   NGÀY KHÔNG THUỘC THÁNG HIỆN TẠI (mờ đi)
+=============================================== */
+.admin-calendar .fc-daygrid-day.fc-day-other {
+    background: hsl(var(--muted) / 0.2);
+}
+
+/* Số ngày cũng nhạt hơn */
+.admin-calendar .fc-daygrid-day.fc-day-other .fc-daygrid-day-number {
+    color: hsl(var(--muted-foreground));
+}
+
+/* Ẩn header của popover */
+.fc-popover-header {
+    display: none !important;
+}
+
+/* Bỏ padding thừa phía trên */
+.fc-popover-body {
+    padding-top: 8px !important;
+    background-color: white;
+}

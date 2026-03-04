@@ -12,7 +12,8 @@ import {
     Menu,
     Mic,
     LogOut,
-    Bell
+    Bell,
+    Calendar
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,8 +23,9 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils";
 import Image from "next/image";
+import { PATHS } from "@/utils/constants";
 
 interface AdminLayoutProps {
     children: ReactNode;
@@ -48,12 +50,17 @@ const sidebarItems: SidebarItem[] = [
         icon: LayoutDashboard,
     },
     {
+        title: "Lịch học",
+        href: "/quan-ly/lich-hoc",
+        icon: Calendar,
+    },
+    {
         title: "Giao tiếp",
-        href: "/quan-ly/giao-tiep",
+        href: PATHS.ADMIN.SPEAKING_EXAM,
         icon: Mic,
         children: [
-            { title: "Danh sách đề", href: "/quan-ly/giao-tiep" },
-            { title: "Chấm bài", href: "/quan-ly/giao-tiep/cham-bai" },
+            { title: "Danh sách đề", href: PATHS.ADMIN.SPEAKING_EXAM },
+            { title: "Chấm bài", href: PATHS.ADMIN.SPEAKING_GRADING },
         ],
     },
     {

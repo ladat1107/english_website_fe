@@ -32,6 +32,8 @@ import LoadingCustom from '@/components/ui/loading-custom';
 import { SpeakingAttemptAvg } from '@/types/speaking-attempt.type';
 import dayjs from 'dayjs';
 import { getScoreBadgeVariant } from '@/utils/funtions';
+import { PATHS } from '@/utils/constants';
+import { useSpeakingExamStore } from '@/stores/speaking-exam.strore';
 
 
 // =====================================================
@@ -46,7 +48,7 @@ function AttemptHistoryCard({ attempt, index }: AttemptHistoryCardProps) {
     const router = useRouter();
 
     const handleClick = () => {
-        router.push(`/giao-tiep/ket-qua/${attempt._id}`);
+        router.push(`${PATHS.CLIENT.SPEAKING_RESULT(attempt._id)}`);
     };
 
     return (
@@ -110,6 +112,7 @@ function AttemptHistoryCard({ attempt, index }: AttemptHistoryCardProps) {
 export default function SpeakingHistoryPage() {
     const params = useParams();
     const examId = params.examId as string;
+    const { type } = useSpeakingExamStore();
 
     const { data: examRes, isLoading: isExamLoading } = useGetSpeakingExamById(examId);
     const { data: historyRes, isLoading: isHistoryLoading } = useGetSpeakingAttemptHistory(examId);
@@ -133,7 +136,7 @@ export default function SpeakingHistoryPage() {
                     <AlertCircle className="w-12 h-12 text-destructive mx-auto mb-4" />
                     <h2 className="text-lg font-semibold mb-2">Không tìm thấy bài luyện</h2>
                     <p className="text-muted-foreground mb-4">Bài luyện này có thể đã bị xóa hoặc không tồn tại</p>
-                    <Link href="/giao-tiep">
+                    <Link href={PATHS.CLIENT.SPEAKING(type)}>
                         <Button>Quay lại danh sách</Button>
                     </Link>
                 </div>
@@ -150,7 +153,7 @@ export default function SpeakingHistoryPage() {
             <div className="bg-card border-b border-border sticky top-0 z-10">
                 <div className="container-custom px-3 sm:px-4 py-3 sm:py-4">
                     <div className="flex items-center gap-3 sm:gap-4">
-                        <Link href="/giao-tiep">
+                        <Link href={PATHS.CLIENT.SPEAKING(type)}>
                             <Button variant="ghost" size="icon" className="flex-shrink-0">
                                 <ArrowLeft className="w-5 h-5" />
                             </Button>
@@ -201,7 +204,7 @@ export default function SpeakingHistoryPage() {
                             <h3 className="text-sm sm:text-base font-semibold">
                                 {attempts.length} lần làm bài
                             </h3>
-                            <Link href={`/giao-tiep/${examId}`}>
+                            <Link href={PATHS.CLIENT.SPEAKING_DETAIL(examId)}>
                                 <Button size="sm" className="gap-1">
                                     <Play className="w-3 h-3" />
                                     <span className="hidden sm:inline">Làm bài mới</span>
@@ -227,7 +230,7 @@ export default function SpeakingHistoryPage() {
                         <p className="text-sm text-muted-foreground mb-4">
                             Bạn chưa hoàn thành bài luyện giao tiếp này
                         </p>
-                        <Link href={`/giao-tiep/${examId}`}>
+                        <Link href={PATHS.CLIENT.SPEAKING_DETAIL(examId)}>
                             <Button className="gap-2">
                                 <Play className="w-4 h-4" />
                                 Bắt đầu làm bài

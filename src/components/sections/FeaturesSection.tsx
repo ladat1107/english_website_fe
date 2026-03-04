@@ -98,10 +98,10 @@ export const FeaturesSection: React.FC = () => {
                         Tính năng nổi bật
                     </span>
                     <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                        Tự học <span className="text-primary">IELTS</span> của Khailingo có gì?
+                        Tự học <span className="text-primary">Ngoại ngữ</span> của Khailingo có gì?
                     </h2>
                     <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                        Đầy đủ công cụ và tài liệu giúp bạn chinh phục IELTS một cách hiệu quả nhất
+                        Đầy đủ công cụ và tài liệu giúp bạn chinh phục ngoại ngữ một cách hiệu quả nhất
                     </p>
                 </motion.div>
 

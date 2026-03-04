@@ -1,13 +1,12 @@
 "use client";
 
-import React, { memo, useCallback } from "react";
+import React, { memo, useCallback, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { motion } from "framer-motion";
 import {
     ArrowLeft,
-    Save,
     Eye,
     Plus,
     Trash2,
@@ -18,6 +17,7 @@ import {
     CheckCircle,
     Loader2,
     AlertCircle,
+    Pencil,
 } from "lucide-react";
 import {
     Button,
@@ -50,10 +50,10 @@ import { CloudinaryFolder } from "@/lib/cloudinary";
 import { cn } from "@/utils/cn";
 import { SortableContainer } from "../dnd";
 import DraggableQuestionItem from "./draggable-question-item";
-import { SpeakingTopic } from "@/utils/constants/enum";
+import { LevelExam, SpeakingTopic, TypeLanguage } from "@/utils/constants/enum";
 import { Switch } from "../ui/switch";
 import { PATHS } from "@/utils/constants";
-import { speakingTopicOptions } from "@/types/speaking.type";
+import { levelExamOptions, speakingTopicOptions, typeLanguageOptions, Vocabulary } from "@/types/speaking.type";
 import Link from "next/link";
 
 // =====================================================
@@ -72,10 +72,15 @@ const questionSchema = z.object({
     suggested_answer: z.string().optional(),
 });
 
+const vocabularySchema = z.object({
+    vocabulary: z.string().min(1, "Vui lòng nhập từ vựng"),
+    meaning: z.string().min(1, "Vui lòng nhập nghĩa"),
+});
+
 const speakingExamFormSchema = z.object({
     title: z.string().min(1, "Vui lòng nhập tiêu đề"),
     description: z.string().optional(),
-    topic: z.nativeEnum(SpeakingTopic),
+    topic: z.enum(SpeakingTopic),
     estimated_duration_minutes: z.number().min(1).max(60, "Thời gian không được vượt quá 60 phút"),
     video_url: z.string().min(1, "Vui lòng thêm video"),
     thumbnail: z.string().optional(),
@@ -83,6 +88,9 @@ const speakingExamFormSchema = z.object({
     questions: z.array(questionSchema).min(1, "Vui lòng thêm ít nhất 1 câu hỏi"),
     is_published: z.boolean(),
     _id: z.string().optional(),
+    level: z.enum(LevelExam),
+    type: z.enum(TypeLanguage),
+    vocabularies: z.array(vocabularySchema).optional(),
 });
 
 export type SpeakingExamFormValues = z.infer<typeof speakingExamFormSchema>;
@@ -124,6 +132,9 @@ const DEFAULT_FORM_VALUES: SpeakingExamFormValues = {
     thumbnail: "",
     video_script: [],
     questions: [],
+    vocabularies: [],
+    type: TypeLanguage.ENGLISH,
+    level: LevelExam.EASY,
     is_published: false,
 };
 
@@ -209,86 +220,71 @@ const FormHeader = memo(function FormHeader({
 
 interface SummarySidebarProps {
     mode: SpeakingExamFormMode;
-    title: string;
-    topic: SpeakingTopic;
-    duration: number;
-    videoUrl: string;
-    scriptsCount: number;
-    questionsCount: number;
     isPublished: boolean;
     isSaving: boolean;
-    onSaveDraft: () => void;
+    vocabularies: Vocabulary[];
     onPublish: () => void;
+    addVocabulary: (vocab: Vocabulary) => void;
+    updateVocabulary: (index: number, vocab: Vocabulary) => void;
+    deleteVocabulary: (index: number) => void;
 }
 
 const SummarySidebar = memo(function SummarySidebar({
     mode,
-    title,
-    topic,
-    duration,
-    videoUrl,
-    scriptsCount,
-    questionsCount,
     isPublished,
     isSaving,
-    onSaveDraft,
+    vocabularies,
     onPublish,
+    addVocabulary,
+    updateVocabulary,
+    deleteVocabulary,
 }: SummarySidebarProps) {
-    const disabled = isSaving || title.trim() === "" || videoUrl.trim() === "" || questionsCount === 0;
+
+    const [newWord, setNewWord] = useState<Vocabulary>({ vocabulary: "", meaning: "" });
+
+    const [editIndex, setEditIndex] = useState<number | null>(null);
+    const [editItem, setEditItem] = useState<Vocabulary>({ vocabulary: "", meaning: "" });
+
+    const handleAddWord = () => {
+        addVocabulary(newWord);
+        setNewWord({ vocabulary: "", meaning: "" });
+    };
+
+    const deleteWord = (index: number) => {
+        deleteVocabulary(index);
+    };
+
+    const startEdit = (index: number) => {
+        setEditIndex(index);
+        setEditItem(vocabularies[index]);
+        console.log("Start edit:", editItem);
+    };
+
+    const handleSave = (index: number) => {
+        updateVocabulary(index, editItem);
+        setEditItem({ vocabulary: "", meaning: "" });
+        setEditIndex(null);
+    };
+
+    const cancelEdit = () => {
+        setEditIndex(null);
+    };
+
     return (
         <div className="space-y-4 sm:space-y-6">
             <Card className="sticky top-12 sm:top-16">
-                <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-4">
-                    <CardTitle className="text-base sm:text-lg">Tóm tắt</CardTitle>
-                </CardHeader>
-                <CardContent className="p-3 sm:p-6 pt-0 space-y-3 sm:space-y-4">
-                    <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm">
-                        {mode === "edit" && (
-                            <div className="flex justify-between items-center">
-                                <span className="text-muted-foreground">Trạng thái:</span>
-                                <Badge variant={isPublished ? "success" : "warning"}>
-                                    {isPublished ? "Đã xuất bản" : "Bản nháp"}
-                                </Badge>
-                            </div>
-                        )}
-                        <div className="flex justify-between">
-                            <span className="text-muted-foreground">Tiêu đề:</span>
-                            <span className="font-medium text-right max-w-[55%] truncate">
-                                {title || "Chưa nhập"}
-                            </span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                            <span className="text-muted-foreground">Chủ đề:</span>
-                            <Badge variant="secondary" className="text-xs">
-                                {topic}
-                            </Badge>
-                        </div>
-                        <div className="flex justify-between">
-                            <span className="text-muted-foreground">Thời gian:</span>
-                            <span>{duration} phút</span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span className="text-muted-foreground">Video:</span>
-                            <span className={videoUrl ? "text-success" : "text-muted-foreground"}>
-                                {videoUrl ? "✓ Đã thêm" : "Chưa có"}
-                            </span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span className="text-muted-foreground">Số đoạn hội thoại:</span>
-                            <span>{scriptsCount}</span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span className="text-muted-foreground">Số câu hỏi:</span>
-                            <span>{questionsCount}</span>
-                        </div>
-                    </div>
-
-                    <div className="pt-3 sm:pt-4 border-t border-border space-y-2">
+                <CardContent className="p-3 pt-0 space-y-3 sm:space-y-4">
+                    <div className="py-3 sm:py-4 border-b border-border space-y-2">
                         {/* Switch Xuất bản */}
                         {mode === "edit" && (
                             <div className="flex items-center justify-between">
                                 <div className="text-sm font-medium">
-                                    {"Xuất bản đề thi"}
+                                    {"Trạng thái"}
+                                    {mode === "edit" && (
+                                        <Badge className="text-[10px] ms-2 py-0.5" variant={isPublished ? "success" : "warning"}>
+                                            {isPublished ? "Đã xuất bản" : "Bản nháp"}
+                                        </Badge>
+                                    )}
                                 </div>
 
                                 <Switch
@@ -298,16 +294,134 @@ const SummarySidebar = memo(function SummarySidebar({
                                 />
                             </div>
                         )}
-                        <Button
-                            type="button"
-                            variant="outline"
-                            className="w-full gap-2 h-9 sm:h-10 text-sm"
-                            onClick={onSaveDraft}
-                            disabled={disabled}
-                        >
-                            {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                            {mode === "create" ? "Lưu bản nháp" : "Lưu thay đổi"}
-                        </Button>
+                    </div>
+                    {/* Quản lý từ vựng */}
+                    <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                            <h3 className="text-sm font-medium">Danh sách từ vựng</h3>
+                            <Button
+                                size="sm"
+                                className="px-3"
+                                onClick={handleAddWord}
+                                disabled={!newWord.vocabulary || !newWord.meaning}
+                            >
+                                Thêm
+                            </Button>
+                        </div>
+
+                        {/* Form nhập từ */}
+                        <div className="flex flex-col sm:flex-row gap-2">
+                            <Input
+                                className="text-sm"
+                                placeholder="Từ vựng (VD: Environment)"
+                                value={newWord.vocabulary}
+                                onChange={(e) => setNewWord({ ...newWord, vocabulary: e.target.value })}
+                            />
+                            <Input
+                                className="text-sm"
+                                placeholder="Nghĩa (VD: Môi trường)"
+                                value={newWord.meaning}
+                                onChange={(e) => setNewWord({ ...newWord, meaning: e.target.value })}
+                            />
+                        </div>
+
+                        {/* Danh sách từ vựng */}
+                        <div className=" space-y-2 max-h-80 overflow-y-auto">
+                            {vocabularies.length === 0 && (
+                                <p className="text-xs text-muted-foreground">Chưa có từ nào.</p>
+                            )}
+
+                            {vocabularies.map((item, index) => (
+                                <div
+                                    key={index}
+                                    className="group flex items-start justify-between bg-muted/30 p-2 rounded-md"
+                                >
+                                    {/* Text */}
+                                    {editIndex === index ? (
+                                        <div className="flex flex-1 gap-2 pr-8"> {/* chừa không gian cho nút */}
+                                            <Input
+                                                className="text-xs h-6"
+                                                value={editItem.vocabulary}
+                                                onChange={(e) =>
+                                                    setEditItem({ ...editItem, vocabulary: e.target.value })
+                                                }
+                                            />
+                                            <Input
+                                                className="text-xs h-6"
+                                                value={editItem.meaning}
+                                                onChange={(e) =>
+                                                    setEditItem({ ...editItem, meaning: e.target.value })
+                                                }
+                                            />
+                                        </div>
+                                    ) : (
+                                        <div className="flex flex-wrap flex-row flex-1 min-w-0 pr-8"> {/* chừa chỗ */}
+                                            <span className="flex-1 font-medium text-sm break-words">
+                                                {item.vocabulary}
+                                            </span>
+                                            <span className="text-xs text-muted-foreground break-words w-1/2">
+                                                {item.meaning}
+                                            </span>
+                                        </div>
+                                    )}
+
+                                    {/* Nút (KHÔNG đẩy layout, nhờ fixed width + absolute) */}
+                                    <div className="relative w-8 flex justify-end">
+                                        <div className="
+        absolute right-0 top-[10px] -translate-y-1/2 
+        flex gap-1 
+        opacity-0 group-hover:opacity-100 
+        pointer-events-none group-hover:pointer-events-auto
+        transition-opacity
+      ">
+                                            {editIndex === index ? (
+                                                <>
+                                                    <Button
+                                                        type="button"
+                                                        size="sm"
+                                                        className="text-[10px] h-6 px-2"
+                                                        onClick={() => handleSave(index)}
+                                                    >
+                                                        Lưu
+                                                    </Button>
+                                                    <Button
+                                                        type="button"
+                                                        size="sm"
+                                                        variant="ghost"
+                                                        className="text-[10px] h-6 px-0"
+                                                        onClick={cancelEdit}
+                                                    >
+                                                        Huỷ
+                                                    </Button>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Button
+                                                        type="button"
+                                                        size="icon"
+                                                        variant="ghost"
+                                                        className="h-4 w-4 text-blue-600"
+                                                        onClick={() => startEdit(index)}
+                                                    >
+                                                        <Pencil className="w-4 h-4" />
+                                                    </Button>
+
+                                                    <Button
+                                                        type="button"
+                                                        size="icon"
+                                                        variant="ghost"
+                                                        className="h-4 w-4 text-red-600"
+                                                        onClick={() => deleteWord(index)}
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </Button>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </CardContent>
             </Card>
@@ -413,9 +527,31 @@ export function SpeakingExamForm({
         });
     }, [appendQuestion, questionFields.length]);
 
+    const deleteVocabulary = useCallback((index: number) => {
+        const currentVocabularies = watch("vocabularies") || [];
+        const updated = currentVocabularies.filter((_: any, i: number) => i !== index);
+        setValue("vocabularies", updated);
+    }, [watch, setValue]);
+
+    const updateVocabulary = useCallback((index: number, vocab: Vocabulary) => {
+        const currentVocabularies = watch("vocabularies") || [];
+        const updated = currentVocabularies.map((item: Vocabulary, i: number) => i === index ? vocab : item);
+        setValue("vocabularies", updated);
+    }, [watch, setValue]);
+
+    const addVocabulary = useCallback((vocab: Vocabulary) => {
+        const currentVocabularies = watch("vocabularies") || [];
+        const sortVocabulary = [...currentVocabularies, vocab].sort((a, b) =>
+            a.vocabulary.localeCompare(b.vocabulary)
+        );
+        setValue("vocabularies", sortVocabulary);
+    }, [watch, setValue]);
+
+
     const onSubmit = useCallback(
         async (data: SpeakingExamFormValues) => {
             const dataToSave = { ...data, is_published: mode === "create" ? false : watchedValues.is_published };
+            console.log("Submitting form with data:", dataToSave);
             onSaveSuccess?.(dataToSave);
         },
         [mode, onSaveSuccess, watchedValues.is_published]
@@ -428,7 +564,6 @@ export function SpeakingExamForm({
     const handlePublish = useCallback(() => {
         setValue("is_published", !watchedValues.is_published); // Cập nhật giá trị is_published trong form
     }, [setValue, watchedValues.is_published]);
-
 
     const handleQuestionsReorder = useCallback(
         (oldIndex: number, newIndex: number) => {
@@ -510,7 +645,7 @@ export function SpeakingExamForm({
                                         )}
                                     />
 
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                                    <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
                                         <FormField
                                             control={control}
                                             name="topic"
@@ -544,10 +679,72 @@ export function SpeakingExamForm({
 
                                         <FormField
                                             control={control}
+                                            name="type"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Loại đề *</FormLabel>
+                                                    <Select
+                                                        onValueChange={field.onChange}
+                                                        defaultValue={field.value}
+                                                    >
+                                                        <FormControl>
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder="Chọn loại đề" />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            {typeLanguageOptions.map((option) => (
+                                                                <SelectItem
+                                                                    key={option.key}
+                                                                    value={option.value}
+                                                                >
+                                                                    {option.label}
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+
+                                        <FormField
+                                            control={control}
+                                            name="level"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Độ khó *</FormLabel>
+                                                    <Select
+                                                        onValueChange={field.onChange}
+                                                        defaultValue={field.value}
+                                                    >
+                                                        <FormControl>
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder="Chọn mức độ" />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            {levelExamOptions.map((option) => (
+                                                                <SelectItem
+                                                                    key={option.key}
+                                                                    value={option.value}
+                                                                >
+                                                                    {option.label}
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+
+                                        <FormField
+                                            control={control}
                                             name="estimated_duration_minutes"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>Thời gian ước tính (phút) *</FormLabel>
+                                                    <FormLabel>Uớc tính (phút) *</FormLabel>
                                                     <FormControl>
                                                         <Input
                                                             type="number"
@@ -743,7 +940,7 @@ export function SpeakingExamForm({
 
                             {/* Questions Section */}
                             <Card>
-                                <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-4 flex flex-row items-center justify-between">
+                                <CardHeader className="p-3 sm:p-6 !pb-0 flex flex-row items-center justify-between">
                                     <CardTitle className="text-base sm:text-lg flex items-center gap-2">
                                         <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                                         <span className="hidden xs:inline">Câu hỏi luyện nói</span>
@@ -764,22 +961,12 @@ export function SpeakingExamForm({
                                         <span className="sm:hidden">Thêm</span>
                                     </Button>
                                 </CardHeader>
-                                <CardContent className="p-3 sm:p-6 pt-0 space-y-3 sm:space-y-4">
+                                <CardContent className="p-3 sm:p-6 !pt-2 space-y-3 sm:space-y-4">
                                     {errors.questions?.message && (
                                         <p className="text-xs sm:text-sm text-destructive flex items-center gap-1">
                                             <AlertCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                             {errors.questions.message}
                                         </p>
-                                    )}
-
-                                    {/* Hướng dẫn kéo thả - hiển thị khi có >= 2 câu hỏi */}
-                                    {questionFields.length >= 2 && (
-                                        <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 px-3 py-2 rounded-lg">
-                                            <GripVertical className="w-4 h-4" />
-                                            <span>
-                                                Kéo thả biểu tượng <strong>⋮⋮</strong> để sắp xếp lại thứ tự câu hỏi
-                                            </span>
-                                        </div>
                                     )}
 
                                     {questionFields.length === 0 ? (
@@ -826,16 +1013,13 @@ export function SpeakingExamForm({
                         {/* Right Column - Summary */}
                         <SummarySidebar
                             mode={mode}
-                            title={watchedValues.title || ""}
-                            topic={watchedValues.topic}
-                            duration={watchedValues.estimated_duration_minutes}
-                            videoUrl={watchedValues.video_url || ""}
-                            scriptsCount={scriptFields.length}
-                            questionsCount={questionFields.length}
                             isPublished={watchedValues.is_published}
                             isSaving={isSaving}
-                            onSaveDraft={handleSaveDraft}
+                            vocabularies={watchedValues.vocabularies || []}
                             onPublish={handlePublish}
+                            addVocabulary={addVocabulary}
+                            updateVocabulary={updateVocabulary}
+                            deleteVocabulary={deleteVocabulary}
                         />
                     </div>
                 </div>

@@ -4,8 +4,32 @@
  */
 
 import envConfig from "../env-config";
+import { TypeLanguage } from "./enum";
 
-
+export const PATHS = {
+    ADMIN: {
+        DASHBOARD: '/quan-ly',
+        SPEAKING_EXAM: '/quan-ly/giao-tiep',
+        SPEAKING_EXAM_CREATE: '/quan-ly/giao-tiep/tao-de',
+        SPEAKING_EXAM_EDIT: (examId: string) => `/quan-ly/giao-tiep/chinh-sua/${examId}`,
+        SPEAKING_GRADING: '/quan-ly/giao-tiep/cham-bai',
+        SPEAKING_GRADING_DETAIL: (attemptId: string) => `/quan-ly/giao-tiep/cham-bai/${attemptId}`,
+        CLASS_SCHEDULE: '/quan-ly/lich-hoc',
+        CLASS_SESSION_DETAIL: (sessionId: string) => `/quan-ly/lich-hoc/${sessionId}`,
+        USERS: '/quan-ly/nguoi-dung',
+    },
+    CLIENT: {
+        HOME: '/',
+        PROFILE: '/profile',
+        FLASHCARD: '/flashcard',
+        SPEAKING: (type?: string) => `/luyen-noi${type ? `?type=${type}` : ''}`,
+        SPEAKING_RESULT: (attemptId: string) => `/luyen-noi/ket-qua/${attemptId}`,
+        SPEAKING_HISTORY: (examId: string) => `/luyen-noi/lich-su/${examId}`,
+        SPEAKING_DETAIL: (examId: string) => `/luyen-noi/${examId}`,
+        CLASS_SCHEDULE: '/lich-hoc',
+        CLASS_SESSION_DETAIL: (sessionId: string) => `/lich-hoc/${sessionId}`,
+    }
+} as const;
 // =====================================================
 // THÔNG TIN WEBSITE
 // =====================================================
@@ -69,35 +93,16 @@ interface NavItem {
 
 export const MAIN_NAV_ITEMS: NavItem[] = [
     {
-        title: "Luyện thi IELTS",
-        href: "/luyen-thi-ielts",
-        children: [
-            {
-                title: "IELTS Full Test",
-                href: "/luyen-thi-ielts/full-test",
-                description: "Làm bài thi IELTS đầy đủ với trải nghiệm như thi thật",
-            },
-            {
-                title: "IELTS Reading",
-                href: "/luyen-thi-ielts/reading",
-                description: "Luyện đề IELTS Reading với kho đề khủng",
-            },
-            {
-                title: "IELTS Listening",
-                href: "/luyen-thi-ielts/listening",
-                description: "Luyện nghe IELTS với audio chất lượng cao",
-            },
-            {
-                title: "IELTS Writing",
-                href: "/luyen-thi-ielts/writing",
-                description: "Xem bài mẫu Writing Task 1 & Task 2",
-            },
-            {
-                title: "IELTS Speaking",
-                href: "/luyen-thi-ielts/speaking",
-                description: "Bài mẫu Speaking với từ vựng và dàn ý",
-            },
-        ],
+        title: "Luyện nói",
+        href: "#",
+        description: "Luyện nói tiếng Anh theo chủ đề hàng ngày",
+        children: [{
+            title: "Tiếng anh",
+            href: `${PATHS.CLIENT.SPEAKING(TypeLanguage.ENGLISH)}`,
+        }, {
+            title: "Tiếng trung",
+            href: `${PATHS.CLIENT.SPEAKING(TypeLanguage.CHINESE)}`,
+        }]
     },
     {
         title: "Chép chính tả",
@@ -109,10 +114,11 @@ export const MAIN_NAV_ITEMS: NavItem[] = [
         href: "/flashcard",
         description: "Học từ vựng hiệu quả với flashcard",
     },
+
     {
-        title: "Giao tiếp",
-        href: "/giao-tiep",
-        description: "Luyện nói tiếng Anh theo chủ đề hàng ngày",
+        title: "Lịch học",
+        href: "/lich-hoc",
+        description: "Xem lịch học và đăng ký tham gia các buổi học trực tuyến",
     },
 ] as const;
 
@@ -186,22 +192,7 @@ export const CAMBRIDGE_BOOKS = [
 // =====================================================
 // API ENDPOINTS
 // =====================================================
-export const PATHS = {
-    ADMIN: {
-        DASHBOARD: '/quan-ly',
-        SPEAKING_EXAM: '/quan-ly/giao-tiep',
-        SPEAKING_EXAM_CREATE: '/quan-ly/giao-tiep/tao-de',
-        SPEAKING_EXAM_EDIT: (examId: string) => `/quan-ly/giao-tiep/chinh-sua/${examId}`,
-        SPEAKING_GRADING: '/quan-ly/giao-tiep/cham-bai',
-        SPEAKING_GRADING_DETAIL: (attemptId: string) => `/quan-ly/giao-tiep/cham-bai/${attemptId}`,
-    },
-    CLIENT: {
-        HOME: '/',
-        PROFILE: '/profile',
-        FLASHCARD: '/flashcard',
-        SPEAKING: '/giao-tiep',
-    }
-} as const;
+
 
 // =====================================================
 // ANIMATION VARIANTS - FRAMER MOTION

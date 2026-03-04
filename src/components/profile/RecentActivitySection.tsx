@@ -27,6 +27,8 @@ import { ExamAttemptStatus } from '@/utils/constants/enum';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import 'dayjs/locale/vi';
+import { PATHS } from '@/utils/constants';
+import { useSpeakingExamStore } from '@/stores/speaking-exam.strore';
 
 dayjs.extend(relativeTime);
 dayjs.locale('vi');
@@ -287,7 +289,7 @@ const SpeakingActivityItem: React.FC<SpeakingActivityItemProps> = ({ attempt, de
 
                 {/* Action */}
                 <Link
-                    href={`/giao-tiep/ket-qua/${attempt._id}`}
+                    href={PATHS.CLIENT.SPEAKING_RESULT(attempt._id)}
                     className="opacity-0 group-hover:opacity-100 transition-opacity"
                 >
                     <Button variant="ghost" size="icon-sm">
@@ -302,6 +304,7 @@ const SpeakingActivityItem: React.FC<SpeakingActivityItemProps> = ({ attempt, de
 export const RecentActivitySection: React.FC = () => {
     const { data: recentExams, isLoading: isLoadingExams } = useGetRecentExams(5);
     const { data: recentSpeaking, isLoading: isLoadingSpeaking } = useGetRecentSpeakingAttempts(5);
+    const { type } = useSpeakingExamStore();
 
     // Sử dụng mock data nếu API chưa có
     const exams = recentExams ?? MOCK_RECENT_EXAMS;
@@ -392,7 +395,7 @@ export const RecentActivitySection: React.FC = () => {
                             <div className="text-center py-8 text-muted-foreground">
                                 <FiMic className="w-12 h-12 mx-auto mb-3 opacity-50" />
                                 <p>Chưa có bài luyện nói nào</p>
-                                <Link href="/giao-tiep">
+                                <Link href={PATHS.CLIENT.SPEAKING(type)}>
                                     <Button variant="outline" size="sm" className="mt-4">
                                         Bắt đầu luyện nói
                                     </Button>
@@ -401,7 +404,7 @@ export const RecentActivitySection: React.FC = () => {
                         )}
 
                         {speaking.length > 0 && (
-                            <Link href="/giao-tiep" className="mt-4 block">
+                            <Link href={PATHS.CLIENT.SPEAKING(type)} className="mt-4 block">
                                 <Button variant="ghost" size="sm" className="w-full">
                                     Xem tất cả bài luyện nói
                                     <FiArrowRight className="w-4 h-4 ml-2" />

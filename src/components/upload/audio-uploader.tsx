@@ -4,7 +4,7 @@ import { useCallback, useRef, useState } from "react";
 import { Upload, Mic, Square, Loader2, Trash2, Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils";
 import { useCloudinaryUpload } from "@/hooks/use-cloudinary-upload";
 import { CloudinaryFolder, UploadResult } from "@/lib/cloudinary";
 

@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
+import { PATHS } from "@/utils/constants";
 
 export default function AdminDashboardPage() {
     const stats = [
@@ -21,7 +22,7 @@ export default function AdminDashboardPage() {
             icon: AlertCircle,
             color: "text-yellow-600",
             bgColor: "bg-yellow-100",
-            href: "/quan-ly/giao-tiep/cham-bai",
+            href: PATHS.ADMIN.SPEAKING_GRADING,
         },
         {
             title: "Đã chấm hôm nay",
@@ -30,7 +31,7 @@ export default function AdminDashboardPage() {
             icon: CheckCircle,
             color: "text-green-600",
             bgColor: "bg-green-100",
-            href: "/quan-ly/giao-tiep/cham-bai",
+            href: PATHS.ADMIN.SPEAKING_GRADING,
         },
         {
             title: "Tổng học viên",
@@ -39,7 +40,7 @@ export default function AdminDashboardPage() {
             icon: Users,
             color: "text-blue-600",
             bgColor: "bg-blue-100",
-            href: "/quan-ly/nguoi-dung",
+            href: PATHS.ADMIN.USERS,
         },
         {
             title: "Số đề giao tiếp",
@@ -48,7 +49,7 @@ export default function AdminDashboardPage() {
             icon: BookOpen,
             color: "text-purple-600",
             bgColor: "bg-purple-100",
-            href: "/quan-ly/de-thi",
+            href: "#",
         },
     ];
 
@@ -162,8 +163,8 @@ export default function AdminDashboardPage() {
                                         </p>
                                         <span
                                             className={`text-xs px-2 py-1 rounded-full ${submission.status === "pending"
-                                                    ? "bg-yellow-100 text-yellow-700"
-                                                    : "bg-green-100 text-green-700"
+                                                ? "bg-yellow-100 text-yellow-700"
+                                                : "bg-green-100 text-green-700"
                                                 }`}
                                         >
                                             {submission.status === "pending" ? "Chờ chấm" : "Đã chấm"}
@@ -172,7 +173,7 @@ export default function AdminDashboardPage() {
                                 </div>
                             ))}
                         </div>
-                        <Link href="/quan-ly/giao-tiep/cham-bai">
+                        <Link href={PATHS.ADMIN.SPEAKING_GRADING}>
                             <div className="mt-4 text-center">
                                 <span className="text-primary hover:underline text-sm font-medium">
                                     Xem tất cả bài nộp →

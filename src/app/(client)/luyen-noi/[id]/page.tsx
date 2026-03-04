@@ -7,7 +7,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import {
     ArrowLeft,
@@ -48,6 +48,9 @@ import { useToast } from '@/components/ui/toaster';
 import { SpeakingAttemptResponse } from '@/types/speaking-attempt.type';
 import { useCreateSpeakingAnswer } from '@/hooks/use-speaking-answer';
 import { useSockets } from '@/contexts/socket-context';
+import { PATHS } from '@/utils/constants';
+import { useSpeakingExamStore } from '@/stores/speaking-exam.strore';
+import VocabularyPanel from '@/components/speaking/VocabularyPanel';
 
 // =====================================================
 // TYPES
@@ -66,6 +69,10 @@ interface QuestionAnswer {
 export default function SpeakingPracticeDetailPage() {
     const params = useParams();
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const preview = searchParams.get("preview");
+
+    const { type } = useSpeakingExamStore();
     const examId = params.id as string;
     // States
     const [attemptId, setAttemptId] = useState<string | null>(null);
@@ -74,7 +81,7 @@ export default function SpeakingPracticeDetailPage() {
     const [activeQuestion, setActiveQuestion] = useState(0);
     const [answers, setAnswers] = useState<QuestionAnswer[]>([]);
     const [showSubmitDialog, setShowSubmitDialog] = useState(false);
-    const [attemptStarted, setAttemptStarted] = useState(false);
+    const [attemptStarted, setAttemptStarted] = useState(preview === "true"); // Nếu là preview thì coi như đã bắt đầu attempt
 
     const { data: speakingExamRes, isLoading: isExamLoading } = useGetSpeakingExamById(examId);
     const { mutate: createSpeakingAttempt, isPending: isCreating } = useCreateSpeakingAttempt();
@@ -194,9 +201,7 @@ export default function SpeakingPracticeDetailPage() {
                 addToast('Bài luyện đã được nộp thành công!', 'success');
                 setShowSubmitDialog(false);
                 allowNavigation();
-                // Rời khỏi room trước khi chuyển trang
-                //leaveRoom();
-                router.push(`/giao-tiep/ket-qua/${attemptId}`);
+                router.push(`${PATHS.CLIENT.SPEAKING_RESULT(attemptId)}`);
             }
         });
     };
@@ -204,7 +209,7 @@ export default function SpeakingPracticeDetailPage() {
     // Completion stats
     const completedCount = answers.filter(a => a.completed).length;
     const totalQuestions = exam?.questions.length || 0;
-    const canSubmit = completedCount > 0;
+    const canSubmit = completedCount > 0 || preview === "true";
 
     if (isExamLoading) {
         return (<LoadingCustom />);
@@ -217,7 +222,7 @@ export default function SpeakingPracticeDetailPage() {
                     <AlertCircle className="w-12 h-12 text-destructive mx-auto mb-4" />
                     <h2 className="text-lg font-semibold mb-2">Không tìm thấy bài luyện</h2>
                     <p className="text-muted-foreground mb-4">Bài luyện này có thể đã bị xóa hoặc không tồn tại</p>
-                    <Link href="/giao-tiep">
+                    <Link href={PATHS.CLIENT.SPEAKING()}>
                         <Button>Quay lại danh sách</Button>
                     </Link>
                 </div>
@@ -232,10 +237,10 @@ export default function SpeakingPracticeDetailPage() {
         return (
             <div className="min-h-screen bg-background">
                 {/* Header */}
-                <div className="bg-card border-b border-border">
+                <div className="container bg-card border-b border-border">
                     <div className="container mx-auto px-4 py-4">
                         <div className="flex items-center gap-4">
-                            <Link href="/giao-tiep">
+                            <Link href={PATHS.CLIENT.SPEAKING(type)}>
                                 <Button variant="ghost" size="icon">
                                     <ArrowLeft className="w-5 h-5" />
                                 </Button>
@@ -252,8 +257,8 @@ export default function SpeakingPracticeDetailPage() {
                     </div>
                 </div>
 
-                <div className="container mx-auto max-w-4xl px-4 py-8">
-                    <Card className="overflow-hidden">
+                <div className="flex flex-col sm:flex-row container-custom px-4 py-8 gap-2 sm:gap-4">
+                    <Card className="flex-1 overflow-hidden">
                         {/* Video Preview */}
                         <div className="aspect-video bg-black">
                             <VideoPlayer
@@ -309,6 +314,15 @@ export default function SpeakingPracticeDetailPage() {
                             </Button>
                         </CardContent>
                     </Card>
+                    <div className="space-y-6">
+                        {/* Online Users */}
+                        <div className='overflow-hidden sticky top-16'>
+                            <OnlineUsersPanel
+                                users={onlineUsers}
+                                googleMeetLink={speakingGoogleMeetLink[exam.topic as keyof typeof speakingGoogleMeetLink]}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
         );
@@ -324,7 +338,7 @@ export default function SpeakingPracticeDetailPage() {
                 <div className="container mx-auto px-4 py-3">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                            <Link href="/giao-tiep">
+                            <Link href={PATHS.CLIENT.SPEAKING(type)}>
                                 <Button variant="ghost" size="icon">
                                     <ArrowLeft className="w-5 h-5" />
                                 </Button>
@@ -362,7 +376,7 @@ export default function SpeakingPracticeDetailPage() {
             </div>
 
             {/* Main Content */}
-            <div className="container mx-auto px-4 py-6">
+            <div className="container-custom mx-auto px-4 py-6">
                 <div className="grid lg:grid-cols-3 gap-6">
                     {/* Main Column */}
                     <div className="lg:col-span-2 space-y-6">
@@ -414,6 +428,10 @@ export default function SpeakingPracticeDetailPage() {
 
                     {/* Sidebar */}
                     <div className="space-y-6">
+                        <VocabularyPanel
+                            data={exam.vocabularies}
+                        />
+
                         {/* Online Users */}
                         <OnlineUsersPanel
                             users={onlineUsers}

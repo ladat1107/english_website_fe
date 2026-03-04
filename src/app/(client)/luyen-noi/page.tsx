@@ -15,17 +15,23 @@ import {
 } from 'lucide-react';
 import { Input, Badge } from '@/components/ui';
 import { SpeakingExamCard } from '@/components/speaking';
-import { SpeakingExam, SpeakingExamParams, speakingTopicOptions } from '@/types/speaking.type';
+import { levelExamOptions, SpeakingExam, SpeakingExamParams, speakingTopicOptions } from '@/types/speaking.type';
 import { useGetAllSpeakingExams } from '@/hooks/use-speaking-exam';
 import { useDebounce } from '@/hooks/use-debounce';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Pagination } from '@/types';
 import LoadingCustom from '@/components/ui/loading-custom';
+import { useSearchParams } from 'next/navigation';
+import { useSpeakingExamStore } from '@/stores/speaking-exam.strore';
+import { TypeLanguage } from '@/utils/constants/enum';
 
 // =====================================================
 // STUDENT SPEAKING PRACTICE PAGE
 // =====================================================
 export default function StudentSpeakingPage() {
+    const searchParams = useSearchParams()
+    const { type, setType } = useSpeakingExamStore();
+
     // States
     const [searchQuery, setSearchQuery] = useState('');
     const [publishedExams, setPublishedExams] = useState<SpeakingExam[] | []>([]);
@@ -39,6 +45,13 @@ export default function StudentSpeakingPage() {
     });
     const { data: speakingExamRes, isLoading: isExamLoading } = useGetAllSpeakingExams(params);
     const pagination: Pagination = speakingExamRes?.data.pagination;
+
+    useEffect(() => {
+        const type = searchParams.get("type");
+        if (type && Object.values(TypeLanguage).includes(type as TypeLanguage)) { setType(type as TypeLanguage); }
+        else { setType(TypeLanguage.ENGLISH); }
+    }, [searchParams]);
+
     useEffect(() => {
         if (speakingExamRes?.success) {
             setPublishedExams(speakingExamRes.data.items);
@@ -50,8 +63,9 @@ export default function StudentSpeakingPage() {
         setParams(pre => ({
             ...pre,
             search: searchDebounce,
+            type: type || undefined,
         }))
-    }, [searchDebounce]);
+    }, [searchDebounce, type]);
 
 
     const setFilter = (key: keyof SpeakingExamParams, value: any) => {
@@ -110,9 +124,27 @@ export default function StudentSpeakingPage() {
                             leftIcon={<Search className="w-4 h-4" />}
                         />
                     </div>
+                    <div className='flex flex-row items-center gap-2'>
+                        <div className="relative w-40">
+                            <Select
+                                value={params.level || 'all'}
+                                onValueChange={(val) => setFilter("level", val === 'all' ? undefined : val)}
+                            >
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Độ khó" />
+                                </SelectTrigger>
 
-                    {/* Filter Dropdown */}
-                    <div className="relative">
+                                <SelectContent>
+                                    <SelectItem value="all">All</SelectItem>
+
+                                    {levelExamOptions.map((topic) => (
+                                        <SelectItem key={topic.key} value={topic.value}>
+                                            {topic.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
                         {/* Filter Dropdown */}
                         <div className="relative w-full sm:w-auto">
                             <Select
@@ -121,11 +153,11 @@ export default function StudentSpeakingPage() {
                             >
                                 <SelectTrigger className="w-full sm:w-64">
                                     <Filter className="w-4 h-4 mr-2 opacity-70" />
-                                    <SelectValue placeholder="Tất cả chủ đề" />
+                                    <SelectValue placeholder="Select topic" />
                                 </SelectTrigger>
 
                                 <SelectContent>
-                                    <SelectItem value="all">Tất cả chủ đề</SelectItem>
+                                    <SelectItem value="all">All topics</SelectItem>
 
                                     {speakingTopicOptions.map((topic) => (
                                         <SelectItem key={topic.key} value={topic.value}>
@@ -135,8 +167,9 @@ export default function StudentSpeakingPage() {
                                 </SelectContent>
                             </Select>
                         </div>
-
                     </div>
+
+
                 </div>
 
                 {/* Active Filter Badge */}
