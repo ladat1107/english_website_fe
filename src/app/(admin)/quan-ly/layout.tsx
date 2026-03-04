@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/sheet";
 import { cn } from "@/utils";
 import Image from "next/image";
+import { PATHS } from "@/utils/constants";
 
 interface AdminLayoutProps {
     children: ReactNode;
@@ -55,11 +56,11 @@ const sidebarItems: SidebarItem[] = [
     },
     {
         title: "Giao tiếp",
-        href: "/quan-ly/giao-tiep",
+        href: PATHS.ADMIN.SPEAKING_EXAM,
         icon: Mic,
         children: [
-            { title: "Danh sách đề", href: "/quan-ly/giao-tiep" },
-            { title: "Chấm bài", href: "/quan-ly/giao-tiep/cham-bai" },
+            { title: "Danh sách đề", href: PATHS.ADMIN.SPEAKING_EXAM },
+            { title: "Chấm bài", href: PATHS.ADMIN.SPEAKING_GRADING },
         ],
     },
     {

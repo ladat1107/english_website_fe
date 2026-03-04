@@ -127,38 +127,10 @@ export default function FlashcardPage() {
                     </h1>
                     <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                         Học từ vựng hiệu quả với phương pháp Spaced Repetition.
-                        Hơn 5000+ từ vựng IELTS được phân loại theo chủ đề và cấp độ.
+                        Toàn bộ từ vựng được phân loại theo chủ đề và cấp độ.
                     </p>
                 </div>
-
-                {/* Stats */}
-                <div className="grid sm:grid-cols-4 gap-4 mb-10">
-                    <Card variant="bordered" className="border-primary/20">
-                        <CardContent className="p-4 text-center">
-                            <div className="text-3xl font-bold text-primary">5000+</div>
-                            <div className="text-sm text-muted-foreground">Từ vựng</div>
-                        </CardContent>
-                    </Card>
-                    <Card variant="bordered" className="border-primary/20">
-                        <CardContent className="p-4 text-center">
-                            <div className="text-3xl font-bold text-primary">50+</div>
-                            <div className="text-sm text-muted-foreground">Bộ flashcard</div>
-                        </CardContent>
-                    </Card>
-                    <Card variant="bordered" className="border-primary/20">
-                        <CardContent className="p-4 text-center">
-                            <div className="text-3xl font-bold text-primary">100K+</div>
-                            <div className="text-sm text-muted-foreground">Người học</div>
-                        </CardContent>
-                    </Card>
-                    <Card variant="bordered" className="border-primary/20">
-                        <CardContent className="p-4 text-center">
-                            <div className="text-3xl font-bold text-primary">∞</div>
-                            <div className="text-sm text-muted-foreground">Miễn phí</div>
-                        </CardContent>
-                    </Card>
-                </div>
-
+              
                 {/* Search and Create */}
                 <div className="flex flex-col sm:flex-row gap-4 mb-8">
                     <div className="flex-1">

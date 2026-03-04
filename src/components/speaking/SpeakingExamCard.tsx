@@ -34,6 +34,8 @@ import {
 import { SpeakingTopic } from '@/utils/constants/enum';
 import Image from 'next/image';
 import { useAuth } from '@/contexts';
+import { PATHS } from '@/utils/constants';
+import { difficultyColors } from '@/utils/constants/ui';
 
 // =====================================================
 // TYPES
@@ -149,6 +151,12 @@ export function SpeakingExamCard({
                                 <Tag className="w-3 h-3" />
                                 {exam.topic}
                             </Badge>
+                            <Badge
+                                variant="outline"
+                                className={cn('gap-1 text-xs', difficultyColors[exam.level as keyof typeof difficultyColors], 'border-none')}
+                            >
+                                {exam.level}
+                            </Badge>                            
                         </div>
                         <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground" >
                             <HelpCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -187,18 +195,18 @@ export function SpeakingExamCard({
                         // Student Actions
                         isAuthenticated ?
                             <>
-                                <Link href={`/giao-tiep/${exam._id}`} className="flex-1">
+                                <Link href={PATHS.CLIENT.SPEAKING_DETAIL(exam._id)} className="flex-1">
                                     <Button variant="default" className="w-full gap-2 h-9 sm:h-10 text-sm">
                                         <Play className="w-4 h-4" />
                                         Luyện tập
                                     </Button>
                                 </Link>
-                                <Link href={`/giao-tiep/lich-su/${exam._id}`}>
+                                <Link href={PATHS.CLIENT.SPEAKING_HISTORY(exam._id)}>
                                     <Button variant="outline" size="icon" className="h-9 w-9 sm:h-10 sm:w-10">
                                         <History className="w-4 h-4" />
                                     </Button>
                                 </Link>
-                            </> 
+                            </>
                             :
                             <Button variant="default" className="w-full gap-2 h-9 sm:h-10 text-sm" onClick={openAuthModal}>
                                 <Play className="w-4 h-4" />

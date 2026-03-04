@@ -77,7 +77,7 @@ export const HeroSection: React.FC = () => {
                             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6"
                         >
                             <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                            Nền tảng học tiếng Anh #1 Việt Nam
+                            Nền tảng học ngoại ngữ miễn phí
                         </motion.div>
 
                         {/* Heading */}
@@ -86,7 +86,7 @@ export const HeroSection: React.FC = () => {
                             className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6"
                         >
                             Nền tảng tự học{" "}
-                            <span className="text-gradient-primary">IELTS Online</span>
+                            <span className="text-gradient-primary"></span>
                             <br />
                             <span className="text-primary">miễn phí</span> và chất lượng
                         </motion.h1>
@@ -96,7 +96,7 @@ export const HeroSection: React.FC = () => {
                             variants={ANIMATION_VARIANTS.fadeInUp}
                             className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto lg:mx-0"
                         >
-                            Khailingo cung cấp đầy đủ nội dung chất lượng gồm IELTS Online Test,
+                            Khailingo cung cấp đầy đủ nội dung chất lượng gồm Lịch học Online miễn phí,
                             luyện đề Reading, Listening, bài mẫu Writing, Speaking kết hợp
                             nghe chép chính tả và flashcard từ vựng.
                         </motion.p>
@@ -117,24 +117,6 @@ export const HeroSection: React.FC = () => {
                             </Button>
                         </motion.div>
 
-                        {/* Stats */}
-                        <motion.div
-                            variants={ANIMATION_VARIANTS.fadeInUp}
-                            className="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-border/50"
-                        >
-                            <div className="text-center lg:text-left">
-                                <div className="text-3xl font-bold text-primary">100K+</div>
-                                <div className="text-sm text-muted-foreground">Người dùng</div>
-                            </div>
-                            <div className="text-center lg:text-left">
-                                <div className="text-3xl font-bold text-primary">1000+</div>
-                                <div className="text-sm text-muted-foreground">Đề thi</div>
-                            </div>
-                            <div className="text-center lg:text-left">
-                                <div className="text-3xl font-bold text-primary">4.9★</div>
-                                <div className="text-sm text-muted-foreground">Đánh giá</div>
-                            </div>
-                        </motion.div>
                     </motion.div>
 
                     {/* Hero Image/Illustration */}

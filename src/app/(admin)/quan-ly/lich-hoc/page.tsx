@@ -20,11 +20,9 @@ import {
     CardContent,
     CardHeader,
 } from "@/components/ui";
-import { useConfirmDialogContext } from "@/components/ui/confirm-dialog-context";
-import { useToast } from "@/components/ui/toaster";
+
 import {
     useGetClassSessions,
-    useDeleteClassSession,
 } from "@/hooks/use-class-session";
 import { ClassSession, CalendarEvent } from "@/types/class-session.type";
 import "./lich-hoc.css"; // Custom styles for calendar
@@ -58,8 +56,6 @@ function renderEventContent(eventInfo: EventContentArg) {
 export default function AdminClassSchedulePage() {
     // Ref để thao tác trực tiếp với FullCalendar API
     const calendarRef = useRef<FullCalendar>(null);
-    const { confirm } = useConfirmDialogContext();
-    const { addToast } = useToast();
 
     // States quản lý UI và data
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -83,9 +79,9 @@ export default function AdminClassSchedulePage() {
 
     // Queries
     const { data: sessionsRes, isLoading, refetch } = useGetClassSessions(dateRange);
-    const { mutate: deleteSession } = useDeleteClassSession();
 
-    const sessions: ClassSession[] = sessionsRes?.data || [];
+    const sessions: ClassSession[] = useMemo(() => sessionsRes?.data ?? [],
+        [sessionsRes?.data]);
 
     // Transform sessions to calendar events
     const calendarEvents: CalendarEvent[] = useMemo(() => {
@@ -194,27 +190,7 @@ export default function AdminClassSchedulePage() {
         setSelectedDate(session.date);
         setShowCreateDialog(true);
     };
-
-    const handleDeleteSession = (session: ClassSession) => {
-        confirm({
-            title: "Xác nhận xóa buổi học",
-            description: `Bạn có chắc chắn muốn xóa buổi học "${session.title}" không?`,
-            confirmText: "Xóa",
-            cancelText: "Hủy",
-            onConfirm: () => {
-                deleteSession(session._id, {
-                    onSuccess: () => {
-                        addToast("Xóa buổi học thành công", "success");
-                        refetch();
-                    },
-                    onError: () => {
-                        addToast("Có lỗi xảy ra", "error");
-                    },
-                });
-            },
-        });
-    };
-
+  
     const handleSessionDetailChange = (open: boolean) => {
         if (!open) {
             setSelectedSession(null);

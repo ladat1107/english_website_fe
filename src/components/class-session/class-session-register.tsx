@@ -4,7 +4,6 @@ import {
     DialogHeader,
     DialogTitle,
     DialogFooter,
-    DialogDescription,
     Button,
     Badge,
 } from "@/components/ui";

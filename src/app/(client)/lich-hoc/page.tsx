@@ -198,7 +198,8 @@ export default function StudentClassSchedulePage() {
     // Queries
     const { data: sessionsRes, isLoading } = useGetClassSessions({ ...dateRange });
 
-    const sessions: ClassSession[] = sessionsRes?.data || [];
+    const sessions: ClassSession[] = useMemo(() => sessionsRes?.data || [], [sessionsRes?.data]);
+    
     const userRegistrations = useMemo(() => {
         const map = new Map<string, Participant>();
         sessions.forEach(session => {

@@ -5,7 +5,7 @@
 
 "use client";
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -24,7 +24,7 @@ import {
     Badge,
 } from '@/components/ui';
 import { SpeakingExamCard } from '@/components/speaking';
-import { SpeakingExam, SpeakingExamParams, speakingTopicOptions } from '@/types/speaking.type';
+import { levelExamOptions, SpeakingExam, SpeakingExamParams, speakingTopicOptions, typeLanguageOptions } from '@/types/speaking.type';
 import { cn } from '@/utils/cn';
 import { SpeakingTopic, UserRole } from '@/utils/constants/enum';
 import { useDeleteSpeakingExam, useGetAllSpeakingExams } from '@/hooks/use-speaking-exam';
@@ -35,6 +35,7 @@ import LoadingCustom from '@/components/ui/loading-custom';
 import { PATHS } from '@/utils/constants';
 import { useConfirmDialogContext } from '@/components/ui/confirm-dialog-context';
 import { useToast } from '@/components/ui/toaster';
+import { DismissableLayer } from '@radix-ui/react-dismissable-layer';
 
 
 // =====================================================
@@ -56,6 +57,8 @@ export default function AdminSpeakingManagementPage() {
         search: searchDebounce,
         is_published: undefined,
         topic: undefined,
+        level: undefined,
+        type: undefined,
     });
     const { data: speakingExamRes, isLoading: isExamLoading } = useGetAllSpeakingExams({
         ...params,
@@ -89,7 +92,7 @@ export default function AdminSpeakingManagementPage() {
 
     const handlePreview = (exam: SpeakingExam) => {
         // Mở tab mới để preview
-        window.open(`/giao-tiep/${exam._id}?preview=true`, '_blank');
+        window.open(`${PATHS.CLIENT.SPEAKING_DETAIL(exam._id)}?preview=true`, '_blank');
     };
 
     const handleDeleteClick = (exam: SpeakingExam) => {
@@ -109,18 +112,6 @@ export default function AdminSpeakingManagementPage() {
     };
 
 
-    // =====================================================
-    // STATS
-    // =====================================================
-    const stats = useMemo(() => ({
-        total: exams.length,
-        published: exams.filter(e => e.is_published).length,
-        draft: exams.filter(e => !e.is_published).length,
-    }), [exams]);
-
-    // =====================================================
-    // RENDER
-    // =====================================================
     return (
         <div className="min-h-screen bg-background">
             {/* Header */}
@@ -138,13 +129,13 @@ export default function AdminSpeakingManagementPage() {
                         </div>
 
                         <div className="flex flex-wrap gap-2">
-                            <Link href="/quan-ly/giao-tiep/cham-bai">
+                            <Link href={PATHS.ADMIN.SPEAKING_GRADING}>
                                 <Button variant="outline" size='sm' className="gap-2 w-full sm:w-auto">
                                     <ClipboardCheck className="w-4 h-4" />
                                     Chấm bài
                                 </Button>
                             </Link>
-                            <Link href="/quan-ly/giao-tiep/tao-de">
+                            <Link href={PATHS.ADMIN.SPEAKING_EXAM_CREATE}>
                                 <Button size={"sm"} className="gap-2 w-full sm:w-auto">
                                     <Plus className="w-4 h-4" />
                                     Tạo đề mới
@@ -156,49 +147,61 @@ export default function AdminSpeakingManagementPage() {
             </div>
 
             <div className="container mx-auto px-4 py-6">
-                {/* Stats Cards */}
-                <div className="grid grid-cols-3 gap-4 mb-6">
-                    <Card className="text-center p-4">
-                        <p className="text-3xl font-bold text-primary">{stats.total}</p>
-                        <p className="text-sm text-muted-foreground">Tổng số đề</p>
-                    </Card>
-                    <Card className="text-center p-4">
-                        <p className="text-3xl font-bold text-success">{stats.published}</p>
-                        <p className="text-sm text-muted-foreground">Đã xuất bản</p>
-                    </Card>
-                    <Card className="text-center p-4">
-                        <p className="text-3xl font-bold text-warning">{stats.draft}</p>
-                        <p className="text-sm text-muted-foreground">Bản nháp</p>
-                    </Card>
-                </div>
-
                 {/* Search & Filter Bar */}
-                <div className="flex flex-col sm:flex-row gap-3 mb-6">
-                    {/* Search */}
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+
+                    {/* Search: giãn full chiều ngang */}
                     <div className="flex-1">
                         <Input
                             placeholder="Tìm kiếm đề giao tiếp..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             leftIcon={<Search className="w-4 h-4" />}
+                            className="h-10"
                         />
                     </div>
 
-                    {/* Filter Dropdown */}
-                    <div className="relative">
+                    {/* Select nhỏ gọn */}
+                    <div className="w-full sm:w-auto">
+                        <Select
+                            value={params.type !== undefined ? params.type + "" : ""}
+                            onValueChange={(value) =>
+                                setFilter("type", value === "all" ? undefined : value)
+                            }
+                        >
+                            <SelectTrigger className="h-10 min-w-[160px]">
+                                <SelectValue placeholder="Loại đề" />
+                            </SelectTrigger>
+
+                            <SelectContent>
+                                <SelectItem value="all">All</SelectItem>
+                                {typeLanguageOptions.map((item) => (
+                                    <SelectItem key={item.key} value={item.value}>
+                                        {item.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                    {/* Button Lọc – auto width */}
+                    <div className="relative w-full sm:w-auto">
                         <Button
                             variant="outline"
                             onClick={() => setShowFilterDropdown(!showFilterDropdown)}
-                            className="gap-2"
+                            className="gap-2 h-10 w-full sm:w-auto"
                         >
                             <Filter className="w-4 h-4" />
                             Lọc
-                            <ChevronDown className={cn(
-                                'w-4 h-4 transition-transform',
-                                showFilterDropdown && 'rotate-180'
-                            )} />
+                            <ChevronDown
+                                className={cn(
+                                    'w-4 h-4 transition-transform',
+                                    showFilterDropdown && 'rotate-180'
+                                )}
+                            />
                         </Button>
 
+                        {/* Dropdown */}
                         <AnimatePresence>
                             {showFilterDropdown && (
                                 <motion.div
@@ -207,66 +210,109 @@ export default function AdminSpeakingManagementPage() {
                                     exit={{ opacity: 0, y: -10 }}
                                     className="absolute right-0 top-full mt-2 w-64 bg-card border border-border rounded-xl shadow-lg p-4 z-20"
                                 >
-                                    {/* Topic Filter */}
-                                    <div className="mb-4">
-                                        <label className="text-sm font-medium mb-2 block">
-                                            Chủ đề
-                                        </label>
 
-                                        <Select
-                                            value={params.topic ?? "all"}
-                                            onValueChange={(value) =>
-                                                setFilter("topic", value === "all" ? undefined : value)
+                                    <DismissableLayer
+                                        onInteractOutside={(e) => {
+                                            // Nếu click vào select-content thì không đóng
+                                            if ((e.target as HTMLElement).closest("[data-radix-select-content]")) {
+                                                e.preventDefault();
+                                                return;
                                             }
-                                        >
-                                            <SelectTrigger className="w-full h-10">
-                                                <SelectValue placeholder="Tất cả chủ đề" />
-                                            </SelectTrigger>
 
-                                            <SelectContent>
-                                                <SelectItem value="all">Tất cả chủ đề</SelectItem>
+                                            // Còn lại → đóng dropdown
+                                            setShowFilterDropdown(false);
+                                        }}
+                                    >
+                                        {/* Topic Filter */}
+                                        <div className="mb-4">
+                                            <label className="text-sm font-medium mb-2 block">
+                                                Chủ đề
+                                            </label>
 
-                                                {speakingTopicOptions.map((topic) => (
-                                                    <SelectItem key={topic.key} value={topic.value}>
-                                                        {topic.label}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
+                                            <Select
+                                                value={params.topic ?? "all"}
+                                                onValueChange={(value) =>
+                                                    setFilter("topic", value === "all" ? undefined : value)
+                                                }
+                                            >
+                                                <SelectTrigger className="w-full h-10">
+                                                    <SelectValue placeholder="Tất cả chủ đề" />
+                                                </SelectTrigger>
 
-                                    {/* Status Filter */}
-                                    <div>
-                                        <label className="text-sm font-medium mb-2 block">
-                                            Trạng thái
-                                        </label>
-                                        <Select
-                                            value={params.is_published !== undefined ? params.is_published + "" : ""}
-                                            onValueChange={(key) =>
-                                                setFilter("is_published", key === "all" ? undefined : key === "true" ? true : false)
-                                            }
-                                        >
-                                            <SelectTrigger className="w-full h-10">
-                                                <SelectValue placeholder="Trạng thái" />
-                                            </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="all">Tất cả chủ đề</SelectItem>
 
-                                            <SelectContent>
-                                                {[
-                                                    { key: 'all', label: 'Tất cả' },
-                                                    { key: 'true', label: 'Đã xuất bản' },
-                                                    { key: 'false', label: 'Bản nháp' },
-                                                ].map((item) => (
-                                                    <SelectItem key={item.key} value={item.key}>
-                                                        {item.label}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
+                                                    {speakingTopicOptions.map((topic) => (
+                                                        <SelectItem key={topic.key} value={topic.value}>
+                                                            {topic.label}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+
+                                        {/* Level Filter */}
+                                        <div className='mb-4'>
+                                            <label className="text-sm font-medium mb-2 block">
+                                                Độ khó
+                                            </label>
+                                            <Select
+                                                value={params.level !== undefined ? params.level + "" : ""}
+                                                onValueChange={(value) =>
+                                                    setFilter("level", value === "all" ? undefined : value)
+                                                }
+                                            >
+                                                <SelectTrigger className="w-full h-10">
+                                                    <SelectValue placeholder="Độ khó" />
+                                                </SelectTrigger>
+
+                                                <SelectContent>
+                                                    <SelectItem value="all">All</SelectItem>
+                                                    {levelExamOptions.map((item) => (
+                                                        <SelectItem key={item.key} value={item.value}>
+                                                            {item.label}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        {/* Status Filter */}
+                                        <div className='mb-4'>
+                                            <label className="text-sm font-medium mb-2 block">
+                                                Trạng thái
+                                            </label>
+                                            <Select
+                                                value={params.is_published !== undefined ? params.is_published + "" : ""}
+                                                onValueChange={(key) =>
+                                                    setFilter("is_published", key === "all" ? undefined : key === "true" ? true : false)
+                                                }
+                                            >
+                                                <SelectTrigger className="w-full h-10">
+                                                    <SelectValue placeholder="Trạng thái" />
+                                                </SelectTrigger>
+
+                                                <SelectContent>
+                                                    {[
+                                                        { key: 'all', label: 'Tất cả' },
+                                                        { key: 'true', label: 'Đã xuất bản' },
+                                                        { key: 'false', label: 'Bản nháp' },
+                                                    ].map((item) => (
+                                                        <SelectItem key={item.key} value={item.key}>
+                                                            {item.label}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                    </DismissableLayer>
+
+
+
                                 </motion.div>
                             )}
                         </AnimatePresence>
                     </div>
+
                 </div>
 
                 {/* Active Filters */}
@@ -340,7 +386,7 @@ export default function AdminSpeakingManagementPage() {
                                 <p className="text-muted-foreground mb-4">
                                     Thử thay đổi bộ lọc hoặc tạo đề mới
                                 </p>
-                                <Link href="/quan-ly/giao-tiep/tao-de">
+                                <Link href={PATHS.ADMIN.SPEAKING_EXAM_CREATE}>
                                     <Button className="gap-2">
                                         <Plus className="w-4 h-4" />
                                         Tạo đề mới

@@ -1,7 +1,3 @@
-/**
- * Khailingo - Profile Settings Section
- * Section chỉnh sửa thông tin cá nhân và mục tiêu học tập
- */
 
 "use client";
 
@@ -28,42 +24,21 @@ import {
     SelectTrigger,
     SelectValue
 } from '@/components/ui/select';
-import { useUpdateProfile, useUploadAvatar } from '@/hooks/use-user';
+import { useUpdateProfile } from '@/hooks/use-user';
 import { useCloudinaryUpload } from '@/hooks/use-cloudinary-upload';
 import { useToast } from '@/components/ui/toaster';
 import { UserType } from '@/types/user.type';
 import { UpdateProfileForm } from '@/types/profile.type';
 import { ExamType, ProficiencyLevel, SkillEnum } from '@/utils/constants/enum';
 import { cn } from '@/utils/cn';
-import { useAuth } from '@/contexts';
+import { examOptions, levelOptions, skillOptions } from '@/utils/constants/select';
+import { Loader2 } from 'lucide-react';
+import { CloudinaryFolder } from '@/lib/cloudinary';
 
 interface ProfileSettingsSectionProps {
     user: UserType;
 }
 
-// Exam type options
-const EXAM_TYPE_OPTIONS = [
-    { value: ExamType.IELTS, label: 'IELTS' },
-    { value: ExamType.TOEIC, label: 'TOEIC' },
-    { value: ExamType.TOEFL, label: 'TOEFL' },
-];
-
-// Proficiency level options
-const LEVEL_OPTIONS = [
-    { value: ProficiencyLevel.BEGINNER, label: 'Beginner - Mới bắt đầu' },
-    { value: ProficiencyLevel.ELEMENTARY, label: 'Elementary - Cơ bản' },
-    { value: ProficiencyLevel.INTERMEDIATE, label: 'Intermediate - Trung cấp' },
-    { value: ProficiencyLevel.UPPER_INTERMEDIATE, label: 'Upper-Intermediate - Trung cao cấp' },
-    { value: ProficiencyLevel.ADVANCED, label: 'Advanced - Nâng cao' },
-];
-
-// Skill options
-const SKILL_OPTIONS = [
-    { value: SkillEnum.LISTENING, label: 'Listening' },
-    { value: SkillEnum.READING, label: 'Reading' },
-    { value: SkillEnum.WRITING, label: 'Writing' },
-    { value: SkillEnum.SPEAKING, label: 'Speaking' },
-];
 
 // Target score options based on exam type
 const TARGET_SCORE_OPTIONS: Record<string, { value: number; label: string }[]> = {
@@ -93,14 +68,44 @@ const TARGET_SCORE_OPTIONS: Record<string, { value: number; label: string }[]> =
         { value: 100, label: '100+' },
         { value: 110, label: '110+' },
     ],
+    SAT: [
+        { value: 1000, label: '1000+' },
+        { value: 1200, label: '1200+' },
+        { value: 1400, label: '1400+' },
+        { value: 1600, label: '1600' },
+    ],
+    GRE: [
+        { value: 300, label: '300+' },
+        { value: 320, label: '320+' },
+        { value: 340, label: '340' },
+    ]
 };
 
 export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({ user }) => {
     const { addToast } = useToast();
-    const { checkAuthStatus } = useAuth();
-    const updateProfileMutation = useUpdateProfile();
-    const uploadAvatarMutation = useUploadAvatar();
-    const { uploadImage, isUploading } = useCloudinaryUpload();
+    const { mutate: updateProfileMutation, isPending: isUpdatingProfile } = useUpdateProfile();
+
+    const avatarRef = React.useRef<HTMLInputElement>(null);
+
+    const {
+        isUploading,
+        uploadImage,
+    } = useCloudinaryUpload({
+        folder: CloudinaryFolder.USER_AVATARS,
+        onSuccess: (result) => {
+            if (result?.secureUrl) {
+                updateProfileMutation({ avatar_url: result.secureUrl }, {
+                    onSuccess: () => {
+                        addToast("Cập nhật ảnh đại diện thành công", "success");
+                    }
+                })
+            }
+        },
+        onError: (error) => {
+            console.error("Cloudinary upload error:", error);
+            addToast("Xảy ra lỗi khi tải ảnh lên. Vui lòng thử lại.", "error");
+        },
+    });
 
     // Edit mode state
     const [isEditing, setIsEditing] = useState(false);
@@ -108,6 +113,7 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({ 
     // Form state
     const [formData, setFormData] = useState<UpdateProfileForm>({
         full_name: user.full_name || '',
+        phone: user.phone || '',
         target_exam: user.target_exam,
         target_score: user.target_score,
         current_level: user.current_level,
@@ -124,16 +130,19 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({ 
             current_level: user.current_level,
             target_date: user.target_date || '',
             learning_goals: user.learning_goals || [],
+            phone: user.phone || '',
         });
     }, [user]);
 
     // Handle form submit
     const handleSubmit = async () => {
         try {
-            await updateProfileMutation.mutateAsync(formData);
-            await checkAuthStatus();
-            setIsEditing(false);
-            addToast("Cập nhật thành công", "success");
+            updateProfileMutation(formData, {
+                onSuccess: () => {
+                    setIsEditing(false);
+                    addToast("Cập nhật thành công", "success");
+                }
+            });
         } catch (error) {
             console.log(error);
             addToast("Xảy ra lỗi", "error")
@@ -146,12 +155,15 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({ 
         if (!file) return;
 
         try {
-            const result = await uploadImage(file);
-            if (result?.secureUrl) {
-                await uploadAvatarMutation.mutateAsync(result.secureUrl);
-                await checkAuthStatus();
-                addToast("Thành công", "success")
+            await uploadImage(file);
+            if (avatarRef.current) {
+                avatarRef.current.value = '';
             }
+            // if (result?.secureUrl) {
+            //     await uploadAvatarMutation.mutateAsync(result.secureUrl);
+            //     await checkAuthStatus();
+            //     addToast("Thành công", "success")
+            // }
         } catch (error) {
             console.log(error);
             addToast("Xảy ra lỗi", "error")
@@ -204,10 +216,10 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({ 
                         </Button>
                         <Button
                             onClick={handleSubmit}
-                            disabled={updateProfileMutation.isPending}
+                            disabled={isUpdatingProfile}
                         >
-                            <FiSave className="w-4 h-4 mr-2" />
-                            {updateProfileMutation.isPending ? 'Đang lưu...' : 'Lưu thay đổi'}
+                            {isUpdatingProfile ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <FiSave className="w-4 h-4 mr-2" />}
+                            {isUpdatingProfile ? 'Đang lưu...' : 'Lưu thay đổi'}
                         </Button>
                     </div>
                 )}
@@ -229,7 +241,7 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({ 
                         {/* Avatar */}
                         <div className="flex items-center gap-4">
                             <div className="relative">
-                                <div className="w-16 h-16 rounded-full overflow-hidden bg-primary/10">
+                                <div className="relative w-16 h-16 rounded-full overflow-hidden bg-primary/10">
                                     {user.avatar_url ? (
                                         <Image
                                             src={user.avatar_url}
@@ -242,16 +254,24 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({ 
                                             <FiUser className="w-8 h-8 text-primary" />
                                         </div>
                                     )}
+
+                                    {/* Overlay Loading */}
+                                    {isUploading && (
+                                        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center">
+                                            <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                        </div>
+                                    )}
                                 </div>
-                                {isEditing && (
-                                    <label className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center cursor-pointer hover:bg-primary/90 transition-colors">
+
+                                {isEditing && !isUploading && (
+                                    <label className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center cursor-pointer hover:bg-primary/90 transition-colors shadow-md">
                                         <FiUpload className="w-3 h-3" />
                                         <input
+                                            ref={avatarRef}
                                             type="file"
                                             accept="image/*"
                                             className="hidden"
                                             onChange={handleAvatarUpload}
-                                            disabled={isUploading}
                                         />
                                     </label>
                                 )}
@@ -285,12 +305,18 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({ 
                         {/* Email (readonly) */}
                         <div>
                             <label className="text-sm font-medium text-foreground mb-1.5 block">
-                                Email
+                                Điện thoại
                             </label>
-                            <p className="text-muted-foreground">{user.email}</p>
-                            <p className="text-xs text-muted-foreground mt-1">
-                                Email không thể thay đổi
-                            </p>
+                            {isEditing ? (
+                                <Input
+                                    value={formData.phone}
+                                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                    placeholder="Nhập số điện thoại"
+                                />
+                            ) : (
+                                <p className="text-foreground">{user.phone}</p>
+                            )}
+
                         </div>
 
                         {/* Current Level */}
@@ -307,7 +333,7 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({ 
                                         <SelectValue placeholder="Chọn trình độ" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {LEVEL_OPTIONS.map(option => (
+                                        {levelOptions.map(option => (
                                             <SelectItem key={option.value} value={option.value}>
                                                 {option.label}
                                             </SelectItem>
@@ -353,7 +379,7 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({ 
                                         <SelectValue placeholder="Chọn kỳ thi" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {EXAM_TYPE_OPTIONS.map(option => (
+                                        {examOptions.map(option => (
                                             <SelectItem key={option.value} value={option.value}>
                                                 {option.label}
                                             </SelectItem>
@@ -424,7 +450,7 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({ 
                                 Kỹ năng muốn cải thiện
                             </label>
                             <div className="flex flex-wrap gap-2">
-                                {SKILL_OPTIONS.map(skill => {
+                                {skillOptions.map(skill => {
                                     const isSelected = formData.learning_goals?.includes(skill.value);
                                     return (
                                         <button

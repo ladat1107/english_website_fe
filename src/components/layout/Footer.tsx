@@ -6,7 +6,7 @@
 import Link from "next/link";
 import { FaFacebook, FaYoutube, FaTiktok, FaInstagram } from "react-icons/fa";
 import { FiMail, FiPhone, FiMapPin } from "react-icons/fi";
-import { SITE_CONFIG, FOOTER_NAV } from "@/utils/constants";
+import { SITE_CONFIG, FOOTER_NAV, PATHS } from "@/utils/constants";
 import Image from "next/image";
 
 export const Footer: React.FC = () => {
@@ -15,19 +15,19 @@ export const Footer: React.FC = () => {
     return (
         <footer className="bg-foreground text-white">
             {/* CTA Section */}
-            <div className="bg-gradient-primary">
-                <div className="container-custom py-12">
+            <div className="bg-gradient-to-r from-red-600 via-red-500 to-red-700">
+                <div className="container-custom py-4">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                         <div>
                             <h3 className="text-2xl font-bold mb-2">
-                                Bắt đầu học tiếng Anh ngay hôm nay!
+                                Bắt đầu học ngoại ngữ ngay hôm nay!
                             </h3>
                             <p className="text-white/80">
                                 Đăng ký miễn phí và trải nghiệm các tính năng premium
                             </p>
                         </div>
                         <Link
-                            href="/dang-ky"
+                            href={PATHS.CLIENT.CLASS_SCHEDULE}
                             className="inline-flex items-center px-8 py-3 bg-white text-primary font-semibold rounded-xl hover:bg-white/90 transition-colors"
                         >
                             Đăng ký miễn phí ngay

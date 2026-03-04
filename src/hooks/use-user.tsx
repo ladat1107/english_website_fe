@@ -127,25 +127,4 @@ export const useGetAchievements = () => {
     });
 };
 
-/**
- * Hook cập nhật thông tin profile
- */
 
-
-/**
- * Hook upload avatar
- */
-export const useUploadAvatar = () => {
-    const queryClient = useQueryClient();
-
-    return useMutation({
-        mutationFn: async (avatarUrl: string) => {
-            const response = await http.patch('/users/me', { avatar_url: avatarUrl });
-            return response.data;
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['profile'] });
-            queryClient.invalidateQueries({ queryKey: ['auth'] });
-        },
-    });
-};

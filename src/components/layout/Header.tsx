@@ -103,19 +103,19 @@ export const Header: React.FC = () => {
                                             animate={{ opacity: 1, y: 0 }}
                                             exit={{ opacity: 0, y: 10 }}
                                             transition={{ duration: 0.2 }}
-                                            className="absolute top-full left-0 mt-1 w-72 bg-white rounded-xl shadow-lg border p-2"
+                                            className="absolute top-full left-0 mt-1 w-fit bg-white rounded-xl shadow-lg border p-2"
                                         >
                                             {item.children.map((child) => (
                                                 <Link
                                                     key={child.href}
                                                     href={child.href}
-                                                    className="block px-4 py-3 rounded-lg hover:bg-primary/5 transition-colors group"
+                                                    className="block px-4 py-1 rounded-lg hover:bg-primary/5 transition-colors group"
                                                 >
-                                                    <span className="font-medium text-foreground group-hover:text-primary">
+                                                    <span className="font-medium text-base text-foreground group-hover:text-primary whitespace-nowrap">
                                                         {child.title}
                                                     </span>
                                                     {child.description && (
-                                                        <span className="block text-sm text-muted-foreground mt-0.5">
+                                                        <span className="block text-xs text-muted-foreground mt-0.5 line-clamp-2">
                                                             {child.description}
                                                         </span>
                                                     )}
@@ -160,19 +160,19 @@ export const Header: React.FC = () => {
                                     <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 rounded-sm shadow-xl border border-gray-200 dark:border-gray-700 z-50">
                                         <div className="py-1">
                                             <Link
-                                                href="/profile"
+                                                href={PATHS.CLIENT.PROFILE}
                                                 className="flex items-center px-4 py-2 text-sm font-semibold text-gray-900 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                                             >
                                                 <SquareUser className="h-4 w-4 mr-3" />
                                                 Thông tin cá nhân
                                             </Link>
                                             <Link
-                                                href="/"
+                                                href={PATHS.CLIENT.CLASS_SCHEDULE}
                                                 onClick={() => { }}
                                                 className="flex items-center px-4 py-2 text-sm font-semibold text-gray-900 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                                             >
                                                 <BookAudio className="h-4 w-4 mr-3" />
-                                                Học tiếng Anh
+                                                Lịch học Online
                                             </Link>
                                             {user.role === UserRole.ADMIN && (
                                                 <Link

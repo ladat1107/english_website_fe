@@ -6,7 +6,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { FiHeadphones, FiUsers, FiClock, FiPlay } from "react-icons/fi";
-import { Card, CardContent, Button, Badge, Tabs, TabsList, TabsTrigger, Progress } from "@/components/ui";
+import { Card, CardContent, Button, Badge, Progress } from "@/components/ui";
 
 export const metadata: Metadata = {
     title: "Nghe Chép Chính Tả - Luyện Nghe IELTS Hiệu Quả",
@@ -128,45 +128,8 @@ export default function DictationPage() {
                         Phương pháp luyện nghe hiệu quả nhất. Nghe và ghi lại từng câu
                         để cải thiện khả năng nghe và chính tả tiếng Anh.
                     </p>
-                </div>
-
-                {/* Stats */}
-                <div className="grid sm:grid-cols-4 gap-4 mb-10">
-                    <Card variant="bordered" className="border-primary/20">
-                        <CardContent className="p-4 text-center">
-                            <div className="text-3xl font-bold text-primary">200+</div>
-                            <div className="text-sm text-muted-foreground">Bài nghe</div>
-                        </CardContent>
-                    </Card>
-                    <Card variant="bordered" className="border-primary/20">
-                        <CardContent className="p-4 text-center">
-                            <div className="text-3xl font-bold text-primary">50+</div>
-                            <div className="text-sm text-muted-foreground">Giờ audio</div>
-                        </CardContent>
-                    </Card>
-                    <Card variant="bordered" className="border-primary/20">
-                        <CardContent className="p-4 text-center">
-                            <div className="text-3xl font-bold text-primary">50K+</div>
-                            <div className="text-sm text-muted-foreground">Người luyện</div>
-                        </CardContent>
-                    </Card>
-                    <Card variant="bordered" className="border-primary/20">
-                        <CardContent className="p-4 text-center">
-                            <div className="text-3xl font-bold text-primary">4</div>
-                            <div className="text-sm text-muted-foreground">Cấp độ</div>
-                        </CardContent>
-                    </Card>
-                </div>
-
-                {/* Tabs Filter */}
-                <Tabs defaultValue="all" className="mb-8">
-                    <TabsList>
-                        <TabsTrigger value="all">Tất cả</TabsTrigger>
-                        <TabsTrigger value="ielts">IELTS</TabsTrigger>
-                        <TabsTrigger value="bbc">BBC</TabsTrigger>
-                        <TabsTrigger value="ted">TED Talk</TabsTrigger>
-                    </TabsList>
-                </Tabs>
+                </div>              
+                
 
                 {/* Difficulty Filter */}
                 <div className="flex flex-wrap gap-2 mb-8">

@@ -1,11 +1,6 @@
-/**
- * Khailingo - Profile Hero Section
- * Section header hiển thị thông tin user chính
- */
-
 "use client";
 
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import {
@@ -17,10 +12,13 @@ import {
     FiEdit3
 } from 'react-icons/fi';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { UserType } from '@/types/user.type';
 import dayjs from 'dayjs';
 import 'dayjs/locale/vi';
+import { useCloudinaryUpload, useUpdateProfile } from '@/hooks';
+import { CloudinaryFolder } from '@/lib/cloudinary';
+import { useToast } from '../ui/toaster';
+import { Loader2 } from 'lucide-react';
 
 dayjs.locale('vi');
 
@@ -29,6 +27,46 @@ interface ProfileHeroSectionProps {
 }
 
 export const ProfileHeroSection: React.FC<ProfileHeroSectionProps> = ({ user }) => {
+
+    const { mutate: updateProfileMutation } = useUpdateProfile();
+    const { addToast } = useToast();
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const {
+        isUploading,
+        uploadImage,
+    } = useCloudinaryUpload({
+        folder: CloudinaryFolder.USER_AVATARS,
+        onSuccess: (result) => {
+            if (result?.secureUrl) {
+                updateProfileMutation({ avatar_url: result.secureUrl }, {
+                    onSuccess: () => {
+                        addToast("Cập nhật ảnh đại diện thành công", "success");
+                    }
+                })
+            }
+        },
+        onError: (error) => {
+            console.error("Cloudinary upload error:", error);
+            addToast("Xảy ra lỗi khi tải ảnh lên. Vui lòng thử lại.", "error");
+        },
+    });
+    const handleClickAvatar = () => {
+        if (!isUploading) {
+            fileInputRef.current?.click();
+        }
+    };
+
+    const handleChangeFile = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        await uploadImage(file);
+
+        // Reset input
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+    }, [uploadImage,]);
     // Format ngày tham gia
     const joinDate = user.createdAt
         ? dayjs(user.createdAt).format('DD [tháng] MM, YYYY')
@@ -90,7 +128,9 @@ export const ProfileHeroSection: React.FC<ProfileHeroSectionProps> = ({ user }) 
                         <div className="absolute -inset-2 bg-gradient-to-r from-primary/50 to-accent/50 rounded-full blur-lg opacity-50 group-hover:opacity-75 transition-opacity" />
 
                         {/* Avatar container */}
-                        <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-full ring-4 ring-white dark:ring-gray-800 shadow-xl overflow-hidden bg-primary/10">
+                        <div
+                            className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-full ring-4 ring-white dark:ring-gray-800 shadow-xl overflow-hidden bg-primary/10 cursor-pointer group"
+                        >
                             {user.avatar_url ? (
                                 <Image
                                     src={user.avatar_url}
@@ -104,10 +144,31 @@ export const ProfileHeroSection: React.FC<ProfileHeroSectionProps> = ({ user }) 
                                     <FiUser className="w-10 h-10 sm:w-14 sm:h-14 text-primary" />
                                 </div>
                             )}
+
+                            {/* Hover effect nhẹ */}
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
+
+                            {/* Loading Overlay */}
+                            {isUploading && (
+                                <div className="absolute inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center">
+                                    <Loader2 className="w-8 h-8 text-white animate-spin" />
+                                </div>
+                            )}
+
+                            {/* Input ẩn */}
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={handleChangeFile}
+                                disabled={isUploading}
+                            />
                         </div>
 
                         {/* Edit button overlay */}
                         <button
+                            onClick={handleClickAvatar}
                             className="absolute bottom-0 right-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white dark:bg-gray-800 shadow-lg flex items-center justify-center hover:bg-primary hover:text-white transition-colors border border-border"
                             aria-label="Thay đổi ảnh đại diện"
                         >
@@ -151,11 +212,55 @@ export const ProfileHeroSection: React.FC<ProfileHeroSectionProps> = ({ user }) 
                     </div>
 
                     {/* Action Buttons - Desktop */}
-                    <div className="hidden lg:flex flex-col gap-3">
-                        <Button variant="outline" size="lg">
-                            <FiEdit3 className="w-4 h-4 mr-2" />
-                            Chỉnh sửa hồ sơ
-                        </Button>
+                    <div className="hidden lg:block absolute right-0 top-10 pointer-events-none opacity-40">
+                        <svg
+                            width="420"
+                            height="420"
+                            viewBox="0 0 420 420"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <defs>
+                                <linearGradient id="profileRed" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stopColor="#fecaca" />
+                                    <stop offset="100%" stopColor="#f87171" />
+                                </linearGradient>
+                            </defs>
+
+                            {/* Outer Circle */}
+                            <circle
+                                cx="210"
+                                cy="210"
+                                r="170"
+                                stroke="url(#profileRed)"
+                                strokeWidth="2"
+                                opacity="0.5"
+                            />
+
+                            {/* User Head */}
+                            <circle
+                                cx="210"
+                                cy="170"
+                                r="55"
+                                fill="url(#profileRed)"
+                                opacity="0.6"
+                            />
+
+                            {/* User Body */}
+                            <path
+                                d="M130 290C150 250 190 230 210 230C230 230 270 250 290 290"
+                                stroke="#f87171"
+                                strokeWidth="6"
+                                strokeLinecap="round"
+                                opacity="0.6"
+                            />
+
+                            {/* Data Dots */}
+                            <circle cx="80" cy="210" r="6" fill="#fca5a5" />
+                            <circle cx="340" cy="210" r="6" fill="#fca5a5" />
+                            <circle cx="210" cy="60" r="6" fill="#fca5a5" />
+                            <circle cx="210" cy="360" r="6" fill="#fca5a5" />
+                        </svg>
                     </div>
                 </motion.div>
             </div>

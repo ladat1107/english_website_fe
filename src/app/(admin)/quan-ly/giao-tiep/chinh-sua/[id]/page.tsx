@@ -11,6 +11,7 @@ import { PATHS } from '@/utils/constants';
 import LoadingCustom from '@/components/ui/loading-custom';
 import { useConfirmDialogContext } from '@/components/ui/confirm-dialog-context';
 import { useToast } from '@/components/ui/toaster';
+import { usePreventLeave } from '@/hooks';
 
 
 // =====================================================
@@ -46,6 +47,7 @@ export default function AdminEditSpeakingExamPage() {
     const router = useRouter();
     const params = useParams();
     const examId = params.id as string;
+    const { allowNavigation } = usePreventLeave({ enabled: true });
 
     const { data: speakingExamResponse, isLoading: isExamLoading } = useGetSpeakingExamById(examId);
     const { mutate: updateExam, isPending: isUpdating } = useUpdateSpeakingExam(examId);
@@ -75,6 +77,9 @@ export default function AdminEditSpeakingExamPage() {
                     suggested_answer: q.suggested_answer,
                 })),
                 is_published: examData.is_published,
+                level: examData.level,
+                type: examData.type,
+                vocabularies: examData.vocabularies || [],
             });
         }
     }, [speakingExamResponse]);
@@ -98,6 +103,7 @@ export default function AdminEditSpeakingExamPage() {
             onConfirm: () => {
                 updateExam(data, {
                     onSuccess: () => {
+                        allowNavigation(); // Cho phép rời trang sau khi đã cập nhật thành công
                         router.push(PATHS.ADMIN.SPEAKING_EXAM);
                         addToast("Cập nhật đề thi thành công", "success");
                     },
