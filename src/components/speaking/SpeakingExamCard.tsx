@@ -18,10 +18,11 @@ import {
     Tag,
     CheckCircle,
     XCircle,
-    History
+    History,
+    Send
 } from 'lucide-react';
 import { cn } from '@/utils/cn';
-import { SpeakingExam } from '@/types/speaking.type';
+import { levelExamMeaning, SpeakingExam, speakingTopicMeaning, TypeLanguageMeaning } from '@/types/speaking.type';
 import {
     Card,
     CardHeader,
@@ -123,7 +124,7 @@ export function SpeakingExamCard({
 
                     {/* Publish Status (Admin only) */}
                     {variant === 'admin' && (
-                        <div className="absolute top-1.5 sm:top-2 left-1.5 sm:left-2">
+                        <div className="absolute top-1.5 sm:top-2 left-1.5 sm:left-2 flex flex-row justify-between w-full gap-1">
                             {exam.is_published ? (
                                 <Badge variant="success" className="gap-1 text-xs">
                                     <CheckCircle className="w-3 h-3" />
@@ -135,6 +136,11 @@ export function SpeakingExamCard({
                                     Bản nháp
                                 </Badge>
                             )}
+
+                            <Badge variant="info" className="gap-1 text-xs">
+                                <Send className="w-3 h-3" />
+                                {TypeLanguageMeaning[exam.type]}
+                            </Badge>
                         </div>
                     )}
                 </div>
@@ -149,14 +155,14 @@ export function SpeakingExamCard({
                                 className={cn('gap-1 text-xs', topicColor.bg, topicColor.text, 'border-none')}
                             >
                                 <Tag className="w-3 h-3" />
-                                {exam.topic}
+                                {speakingTopicMeaning[exam.topic]}
                             </Badge>
                             <Badge
                                 variant="outline"
                                 className={cn('gap-1 text-xs', difficultyColors[exam.level as keyof typeof difficultyColors], 'border-none')}
                             >
-                                {exam.level}
-                            </Badge>                            
+                                {levelExamMeaning[exam.level]}
+                            </Badge>
                         </div>
                         <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground" >
                             <HelpCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -170,7 +176,7 @@ export function SpeakingExamCard({
                     </CardTitle>
 
                     {exam.description ? (
-                        <CardDescription className="line-clamp-2 mt-1 text-xs sm:text-sm min-h-[2.5rem] sm:min-h-[2.8rem]">
+                        <CardDescription className="line-clamp-2 mt-1 text-xs sm:text-sm min-h-[2.5rem] sm:min-h-[2.8rem] whitespace-pre-line">
                             {exam.description}
                         </CardDescription>
                     ) : <div className="mt-1 text-xs sm:text-sm min-h-[2.5rem] sm:min-h-[2.8rem]"></div>}

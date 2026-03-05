@@ -174,7 +174,7 @@ export default function AdminSpeakingManagementPage() {
                             </SelectTrigger>
 
                             <SelectContent>
-                                <SelectItem value="all">All</SelectItem>
+                                <SelectItem value="all">Tất cả</SelectItem>
                                 {typeLanguageOptions.map((item) => (
                                     <SelectItem key={item.key} value={item.value}>
                                         {item.label}

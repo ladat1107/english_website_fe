@@ -60,7 +60,9 @@ export function SessionDetailDialog({ open, onOpenChange, session_id, onEdit }: 
                         {session.description && (
                             <div className="flex items-center gap-2">
                                 <Info className="w-3 h-3 text-muted-foreground mt-0.5" />
-                                <p className="text-sm text-muted-foreground">{session.description}</p>
+                                <p className="text-sm text-muted-foreground whitespace-pre-line">
+                                    {session.description}
+                                </p>
                             </div>
                         )}
 

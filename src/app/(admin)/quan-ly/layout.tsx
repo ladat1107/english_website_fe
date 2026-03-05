@@ -5,9 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
     LayoutDashboard,
-    BookOpen,
     Users,
-    Settings,
     ChevronDown,
     Menu,
     Mic,
@@ -64,23 +62,9 @@ const sidebarItems: SidebarItem[] = [
         ],
     },
     {
-        title: "Đề thi IELTS",
-        href: "/quan-ly/de-thi",
-        icon: BookOpen,
-        children: [
-            { title: "Danh sách", href: "/quan-ly/de-thi" },
-            { title: "Tạo đề mới", href: "/quan-ly/de-thi/tao-de" },
-        ],
-    },
-    {
         title: "Người dùng",
         href: "/quan-ly/nguoi-dung",
         icon: Users,
-    },
-    {
-        title: "Cài đặt",
-        href: "/quan-ly/cai-dat",
-        icon: Settings,
     },
 ];
 

@@ -6,6 +6,6 @@ export const pastelForRedTheme = ["#e0f2fe", "#dbeafe", "#bfdbfe", "#dcfce7", "#
 // Màu cho level
 export const difficultyColors = {
     [LevelExam.EASY]: "text-success bg-success/10",
-    [LevelExam.MEDIUM]: "text-warning bg-warning/10",
+    [LevelExam.MEDIUM]: "text-blue-500 bg-blue-100",
     [LevelExam.HARD]: "text-destructive bg-destructive/10",
 };

@@ -38,7 +38,8 @@ import {
 } from '@/components/speaking';
 import {
     SpeakingExam,
-    speakingGoogleMeetLink
+    speakingGoogleMeetLink,
+    speakingTopicMeaning
 } from '@/types/speaking.type';
 import { useGetSpeakingExamById } from '@/hooks/use-speaking-exam';
 import LoadingCustom from '@/components/ui/loading-custom';
@@ -250,7 +251,7 @@ export default function SpeakingPracticeDetailPage() {
                                     {exam.title}
                                 </h1>
                                 <p className="text-sm text-muted-foreground">
-                                    {exam.topic}
+                                    {speakingTopicMeaning[exam.topic]}
                                 </p>
                             </div>
                         </div>
@@ -273,12 +274,12 @@ export default function SpeakingPracticeDetailPage() {
                             <div className="mb-6">
                                 <h2 className="text-2xl font-bold mb-2">{exam.title}</h2>
                                 {exam.description && (
-                                    <p className="text-muted-foreground mb-4">{exam.description}</p>
+                                    <p className="text-muted-foreground mb-4 whitespace-pre-line text-sm">{exam.description}</p>
                                 )}
 
                                 <div className="flex flex-wrap gap-4 text-sm">
                                     <div className="flex items-center gap-2">
-                                        <Badge variant="secondary">{exam.topic}</Badge>
+                                        <Badge variant="secondary">{speakingTopicMeaning[exam.topic]}</Badge>
                                     </div>
                                     <div className="flex items-center gap-2 text-muted-foreground">
                                         <Clock className="w-4 h-4" />
@@ -430,6 +431,7 @@ export default function SpeakingPracticeDetailPage() {
                     <div className="space-y-6">
                         <VocabularyPanel
                             data={exam.vocabularies}
+                            language={exam.type}
                         />
 
                         {/* Online Users */}

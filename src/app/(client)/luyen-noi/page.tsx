@@ -135,7 +135,7 @@ export default function StudentSpeakingPage() {
                                 </SelectTrigger>
 
                                 <SelectContent>
-                                    <SelectItem value="all">All</SelectItem>
+                                    <SelectItem value="all">Tất cả</SelectItem>
 
                                     {levelExamOptions.map((topic) => (
                                         <SelectItem key={topic.key} value={topic.value}>
@@ -153,11 +153,11 @@ export default function StudentSpeakingPage() {
                             >
                                 <SelectTrigger className="w-full sm:w-64">
                                     <Filter className="w-4 h-4 mr-2 opacity-70" />
-                                    <SelectValue placeholder="Select topic" />
+                                    <SelectValue placeholder="Chọn chủ đề" />
                                 </SelectTrigger>
 
                                 <SelectContent>
-                                    <SelectItem value="all">All topics</SelectItem>
+                                    <SelectItem value="all">Tất cả chủ đề</SelectItem>
 
                                     {speakingTopicOptions.map((topic) => (
                                         <SelectItem key={topic.key} value={topic.value}>

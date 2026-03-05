@@ -26,15 +26,15 @@ export const speakingGoogleMeetLink = {
     [SpeakingTopic.ACADEMIC_TOPICS]: "https://meet.google.com/ijm-mjar-kuu",
 };
 
-export const speakingTopicOptions = Object.entries(SpeakingTopic).map(([key, value]) => ({
-    value: value,
-    label: value,
-    key: key,
-}));
+export const levelExamMeaning: Record<LevelExam, string> = {
+    [LevelExam.EASY]: "Dễ",
+    [LevelExam.MEDIUM]: "Thường",
+    [LevelExam.HARD]: "Khó",
+};
 
 export const levelExamOptions = Object.entries(LevelExam).map(([key, value]) => ({
     value: value,
-    label: value,
+    label: levelExamMeaning[value],
     key: key,
 }));
 
@@ -48,6 +48,28 @@ export const typeLanguageOptions = Object.entries(TypeLanguage).map(([key, value
     label: TypeLanguageMeaning[value],
     key: key,
 }));
+
+export const speakingTopicMeaning: Record<SpeakingTopic, string> = {
+    [SpeakingTopic.DAILY_LIFE]: "Hàng ngày",
+    [SpeakingTopic.WORK_AND_CAREER]: "Việc làm",
+    [SpeakingTopic.EDUCATION]: "Giáo dục",
+    [SpeakingTopic.HEALTH]: "Sức khỏe",
+    [SpeakingTopic.TRAVEL]: "Du lịch",
+    [SpeakingTopic.CULTURE]: "Văn hóa",
+    [SpeakingTopic.HOBBIES_AND_INTERESTS]: "Sở thích",
+    [SpeakingTopic.SOCIAL_ISSUES]: "Vấn đề xã hội",
+    [SpeakingTopic.ENVIRONMENT]: "Môi trường",
+    [SpeakingTopic.TECHNOLOGY]: "Công nghệ",
+    [SpeakingTopic.ACADEMIC_TOPICS]: "Chủ đề học thuật",
+};
+
+export const speakingTopicOptions = Object.entries(SpeakingTopic)
+    .sort(([, a], [, b]) => speakingTopicMeaning[a as SpeakingTopic].localeCompare(speakingTopicMeaning[b as SpeakingTopic], "vi"))
+    .map(([key, value]) => ({
+        value: value,
+        label: speakingTopicMeaning[value as SpeakingTopic],
+        key: key,
+    }));
 
 
 // =====================================================

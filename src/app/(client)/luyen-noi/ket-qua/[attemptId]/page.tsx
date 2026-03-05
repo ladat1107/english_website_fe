@@ -564,7 +564,7 @@ export default function SpeakingResultPage() {
             </div>
 
             {/* ── Body ── */}
-            <div className="flex-1 container-custom px-3 sm:px-4 py-4 sm:py-6">
+            <div className="flex-1 container-custom px-3 sm:px-4 py-4 sm:py-6 w-full">
 
                 {/* ════════════════════════════════════
                     MOBILE LAYOUT (< lg)
@@ -615,10 +615,10 @@ export default function SpeakingResultPage() {
                 {/* ════════════════════════════════════
                     DESKTOP LAYOUT (≥ lg) — split panel
                 ════════════════════════════════════ */}
-                <div className="hidden sm:grid sm:grid-cols-[250px_1fr] md:[300px_1fr] lg:[320px_1fr] xl:grid-cols-[380px_1fr] gap-6 h-[calc(100vh-88px)]">
+                <div className="hidden sm:grid sm:grid-cols-[250px_1fr] md:grid-cols-[300px_1fr] lg:grid-cols-[320px_1fr] xl:grid-cols-[380px_1fr] gap-6 h-[calc(100vh-88px)] w-full">
 
                     {/* ── LEFT PANEL ── */}
-                    <div className="flex flex-col gap-4 min-h-0">
+                    <div className="flex flex-col gap-4 min-h-0 w-full">
 
                         {/* Score summary */}
                         <Card className={`border-2 flex-shrink-0 ${getScoreBgClass(average_score)}`}>
@@ -672,7 +672,7 @@ export default function SpeakingResultPage() {
                     </div>
 
                     {/* ── RIGHT PANEL ── */}
-                    <div className="min-h-0 overflow-y-auto">
+                    <div className="min-h-0 overflow-y-auto w-full">
                         <AnimatePresence mode="wait">
                             {selectedAnswer ? (
                                 <motion.div

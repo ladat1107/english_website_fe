@@ -39,6 +39,7 @@ import { ClassSession, CalendarEvent, Participant } from "@/types/class-session.
 import { ClassSessionRegisterDialog } from "@/components/class-session/class-session-register";
 import "@/app/(admin)/quan-ly/lich-hoc/lich-hoc.css";
 import { pastelForRedTheme } from "@/utils/constants/ui";
+import { ClassSessionCard } from "@/components/class-session/class-session-card";
 dayjs.locale("vi");
 
 function renderEventContent(eventInfo: EventContentArg) {
@@ -199,7 +200,7 @@ export default function StudentClassSchedulePage() {
     const { data: sessionsRes, isLoading } = useGetClassSessions({ ...dateRange });
 
     const sessions: ClassSession[] = useMemo(() => sessionsRes?.data || [], [sessionsRes?.data]);
-    
+
     const userRegistrations = useMemo(() => {
         const map = new Map<string, Participant>();
         sessions.forEach(session => {
@@ -298,7 +299,7 @@ export default function StudentClassSchedulePage() {
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="lg:col-span-3"
+                        className="lg:col-span-3 hidden md:block"
                     >
                         <Card className="p-0 border-none gap-0">
                             <CardHeader className="pb-2">
@@ -349,12 +350,30 @@ export default function StudentClassSchedulePage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="lg:col-span-1"
+                        className="lg:col-span-1 hidden sm:block"
                     >
                         <UpcomingSessions
                             onSessionClick={handleSessionClick}
                         />
                     </motion.div>
+                </div>
+
+                {/* Mobile Session List */}
+                <div className="sm:hidden mt-4">
+                    <ClassSessionCard
+                        sessions={sessions}
+                        isLoading={isLoading}
+                        userRegistrations={userRegistrations}
+                        onSessionClick={handleSessionClick}
+                        currentDate={currentDate}
+                        onPrevMonth={() =>
+                            setCurrentDate(dayjs(currentDate).subtract(1, "month").toDate())
+                        }
+                        onNextMonth={() =>
+                            setCurrentDate(dayjs(currentDate).add(1, "month").toDate())
+                        }
+                    />
+
                 </div>
             </div>
 

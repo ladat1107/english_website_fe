@@ -1,3 +1,6 @@
+import dayjs from "dayjs";
+import { TypeLanguage } from "./constants/enum";
+
 // Hàm lấy tên viết tắt cho avatar từ tên đầy đủ ================================================================================   
 export function getNameAvatar(name: string): string {
     if (!name) return '';
@@ -51,3 +54,33 @@ export const getYoutubeEmbedUrl = (url: string) => {
         : null;
 };
 
+export const getVietnameseWeekday = (date: string) => {
+    const day = dayjs(date).day(); // 0-6
+
+    const map = ["Chủ nhật", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
+
+    return map[day];
+};
+
+
+export const speakText = (text: string, lang: TypeLanguage, speed: number = 0.9) => {
+    if (typeof window === "undefined") return;
+    if (!("speechSynthesis" in window)) return;
+
+    const utterance = new SpeechSynthesisUtterance(text);
+
+    if (lang === TypeLanguage.CHINESE) {
+        utterance.lang = "zh-CN";
+    } else {
+        utterance.lang = "en-US";
+    }
+
+    utterance.rate = speed;
+
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
+};
+
+export const removeBracketContent = (text: string): string => {
+    return text.replace(/\s*[\(\[\{][^)\]\}]*[\)\]\}]/g, "").trim();
+};

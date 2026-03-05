@@ -186,7 +186,7 @@ export function ClassSessionRegisterDialog({ open, onOpenChange, session_id }: S
 
                             {session.description && (
                                 <div className="pt-2 border-t border-primary/10">
-                                    <p className="text-sm text-muted-foreground">{session.description}</p>
+                                    <p className="text-sm text-muted-foreground whitespace-pre-line">{session.description}</p>
                                 </div>
                             )}
                         </div>

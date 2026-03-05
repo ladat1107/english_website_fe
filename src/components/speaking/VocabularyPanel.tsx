@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen, ChevronDown, ChevronUp } from "lucide-react";
+import { BookOpen, ChevronDown, ChevronUp, Volume2 } from "lucide-react";
 import {
     Card,
     CardContent,
@@ -12,17 +12,27 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Vocabulary } from "@/types/speaking.type";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { TypeLanguage } from "@/utils/constants/enum";
+import { removeBracketContent, speakText } from "@/utils/funtions";
 
 interface VocabularyPanelProps {
     data?: Vocabulary[] | [];
     defaultExpanded?: boolean;
+    language: TypeLanguage; // Thêm prop language để xác định ngôn ngữ phát âm
 }
 
 export default function VocabularyPanel({
     data,
     defaultExpanded = true,
+    language
 }: VocabularyPanelProps) {
     const [expanded, setExpanded] = useState(defaultExpanded);
+
 
     if (!data || data.length === 0) {
         return null; // Không hiển thị panel nếu không có dữ liệu
@@ -69,11 +79,35 @@ export default function VocabularyPanel({
                                 {data.map((item, index) => (
                                     <div
                                         key={index}
-                                        className="flex flex-col sm:flex-row items-start sm:items-center p-0 rounded-lg bg-muted/40 hover:bg-muted transition-colors shadow-sm"
+                                        className="flex flex-col sm:flex-row items-start sm:items-center p-0 rounded-lg bg-muted/40 hover:bg-muted transition-colors shadow-sm w-full"
                                     >
-                                        <div className="flex-1 text-sm font-medium text-primary line-clamp-2">
-                                            {item.vocabulary}
-                                        </div>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <div className="flex flex-row items-center justify-between gap-2 flex-1 text-sm font-medium text-primary line-clamp-2 cursor-pointer">
+                                                    <span> {item.vocabulary}</span>
+                                                    <button
+                                                        onClick={() => speakText(removeBracketContent(item.vocabulary), language)}
+                                                        className="sm:hidden flex items-center gap-2 p-1 rounded hover:bg-muted text-xs"
+                                                    >
+                                                        <Volume2 className="w-4 h-4" />
+                                                    </button>
+                                                </div>
+                                            </TooltipTrigger>
+
+                                            <TooltipContent
+                                                side="top"
+                                                align="start"
+                                                className="flex items-center gap-2"
+                                            >
+                                                <button
+                                                    onClick={() => speakText(removeBracketContent(item.vocabulary), language)}
+                                                    className="flex items-center gap-2 p-1 rounded hover:bg-muted text-xs"
+                                                >
+                                                    <Volume2 className="w-4 h-4" />
+                                                    Nghe
+                                                </button>
+                                            </TooltipContent>
+                                        </Tooltip>
                                         <div className="text-sm text-muted-foreground mt-0 w-full sm:w-1/2 sm:mt-1 line-clamp-2">
                                             {item.meaning}
                                         </div>

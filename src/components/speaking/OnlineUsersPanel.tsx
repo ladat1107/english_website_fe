@@ -12,6 +12,7 @@ import { cn } from '@/utils/cn';
 import { Button, Card, CardHeader, CardTitle, CardContent, Badge } from '@/components/ui';
 import Image from 'next/image';
 import { UserType } from '@/types/user.type';
+import { getNameAvatar } from '@/utils/funtions';
 
 // =====================================================
 // TYPES
@@ -94,7 +95,7 @@ export function OnlineUsersPanel({
                                 <div className="space-y-3 mb-4">
                                     {users.map((user, index) => (
                                         <motion.div
-                                            key={user._id}
+                                            key={index}
                                             initial={{ opacity: 0, x: -10 }}
                                             animate={{ opacity: 1, x: 0 }}
                                             transition={{ delay: index * 0.1 }}
@@ -114,7 +115,7 @@ export function OnlineUsersPanel({
                                                         />
                                                     ) : (
                                                         <div className="w-full h-full flex items-center justify-center text-sm font-semibold text-muted-foreground">
-                                                            {user.full_name.charAt(0).toUpperCase()}
+                                                            {getNameAvatar(user.full_name)}
                                                         </div>
                                                     )}
                                                 </div>

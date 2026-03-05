@@ -309,7 +309,7 @@ export default function AdminSessionDetailPage() {
                         {session.description && (
                             <div className="pt-4 border-t">
                                 <p className="text-sm text-muted-foreground mb-1">Mô tả</p>
-                                <p className="text-sm">{session.description}</p>
+                                <p className="text-sm whitespace-pre-line">{session.description}</p>
                             </div>
                         )}
                     </CardContent>
