@@ -2,16 +2,29 @@
  * Khailingo - Footer Component
  * Component footer của website
  */
-
+"use client";
 import Link from "next/link";
 import { FaFacebook, FaYoutube, FaTiktok, FaInstagram } from "react-icons/fa";
 import { FiMail, FiPhone, FiMapPin } from "react-icons/fi";
-import { SITE_CONFIG, FOOTER_NAV, PATHS } from "@/utils/constants";
+import { SITE_CONFIG, FOOTER_NAV } from "@/utils/constants";
 import Image from "next/image";
+import { Button } from "../ui";
+import FreeLevelTestDialog from "./FreeTestDialog";
+import { useState } from "react";
+import { useAuth } from "@/contexts";
 
 export const Footer: React.FC = () => {
     const currentYear = new Date().getFullYear();
+    const [open, onOpenChange] = useState(false);
+    const { isAuthenticated, openAuthModal } = useAuth();
 
+    const handleCTAClick = () => {
+        if (isAuthenticated) {
+            onOpenChange(true);
+        } else {
+            openAuthModal();
+        }
+    };
     return (
         <footer className="bg-foreground text-white">
             {/* CTA Section */}
@@ -26,12 +39,12 @@ export const Footer: React.FC = () => {
                                 Đăng ký miễn phí và trải nghiệm các tính năng premium
                             </p>
                         </div>
-                        <Link
-                            href={PATHS.CLIENT.CLASS_SCHEDULE}
+                        <Button
+                            onClick={handleCTAClick}
                             className="inline-flex items-center px-8 py-3 bg-white text-primary font-semibold rounded-xl hover:bg-white/90 transition-colors"
                         >
                             Đăng ký miễn phí ngay
-                        </Link>
+                        </Button>
                     </div>
                 </div>
             </div>
@@ -187,6 +200,11 @@ export const Footer: React.FC = () => {
                     </div>
                 </div>
             </div>
+
+            <FreeLevelTestDialog
+                open={open}
+                onOpenChange={onOpenChange}
+            />
         </footer>
     );
 };

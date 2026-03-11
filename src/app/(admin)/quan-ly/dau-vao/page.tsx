@@ -29,7 +29,7 @@ import { useDebounce } from "@/hooks/use-debounce";
 
 import { Pagination as PaginationType } from "@/types";
 import dayjs from "dayjs";
-import { useDeleteUser, useGetAllUsers, useUpdateUser } from "@/hooks";
+import { useGetAllUsers, useUpdateUser } from "@/hooks";
 import { UserParams, UserType } from "@/types/user.type";
 import { getNameAvatar } from "@/utils/funtions";
 

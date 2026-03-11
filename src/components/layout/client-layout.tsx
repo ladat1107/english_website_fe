@@ -2,6 +2,7 @@
 
 import { ReactNode } from "react";
 import { Header, Footer } from "@/components/layout";
+import { FloatingWidgets } from "../floating";
 
 interface ClientLayoutProps {
     children: ReactNode;
@@ -10,6 +11,7 @@ interface ClientLayoutProps {
 export default function ClientLayout({ children }: ClientLayoutProps) {
     return (
         <>
+
             {/* Header */}
             <Header />
 
@@ -17,10 +19,11 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
             <main className="pt-14 min-h-screen">
                 {children}
             </main>
+            
+            <FloatingWidgets />
 
             {/* Footer */}
             <Footer />
-
         </>
     );
 }

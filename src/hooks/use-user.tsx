@@ -68,6 +68,13 @@ export const useUpdateProfile = () => {
     });
 };
 
+export const useUpdateBookingTest = () => {
+    return useMutation({
+        mutationFn: (data: { phone: string }) => {
+            return http.patch(`${prefix}/booking-test`, data);
+        },
+    });
+}
 /**
  * Hook lấy thống kê học tập của user
  */

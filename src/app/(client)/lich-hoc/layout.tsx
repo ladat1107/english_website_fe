@@ -3,7 +3,7 @@
  * Layout cho trang lịch học (Học viên)
  */
 
-import { Header, Footer } from "@/components/layout";
+import ClientLayout from "@/components/layout/client-layout";
 
 export default function StudentClassScheduleLayout({
     children,
@@ -11,12 +11,8 @@ export default function StudentClassScheduleLayout({
     children: React.ReactNode;
 }) {
     return (
-        <>
-            <Header />
-            <main className="pt-14 min-h-screen bg-background">
-                {children}
-            </main>
-            <Footer />
-        </>
+        <ClientLayout>
+            {children}
+        </ClientLayout>
     );
 }
