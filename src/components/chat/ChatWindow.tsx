@@ -25,7 +25,7 @@ export default function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
             className={cn(
                 // Kích thước responsive
                 "w-[300px] xs:w-[360px] sm:w-[380px] border-red-500",
-                "h-[500px] sm:h-[520px]",
+                "h-[500px] sm:h-[520px] max-h-screen",
                 // Layout flex dọc
                 "flex flex-col",
                 // Visual

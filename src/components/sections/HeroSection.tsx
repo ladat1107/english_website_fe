@@ -9,11 +9,13 @@ import { motion } from "framer-motion";
 import { FiArrowRight } from "react-icons/fi";
 import { FcGoogle } from "react-icons/fc";
 import { Button } from "@/components/ui";
-import { ANIMATION_VARIANTS } from "@/utils/constants";
+import { ANIMATION_VARIANTS, PATHS } from "@/utils/constants";
 import { useAuth } from "@/contexts";
+import { useRouter } from "next/navigation";
 
 export const HeroSection: React.FC = () => {
-    const { openAuthModal } = useAuth();
+    const { openAuthModal, isAuthenticated } = useAuth();
+    const router = useRouter();
     return (
         <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-hero bee-pattern">
             {/* Decorative elements */}
@@ -108,11 +110,15 @@ export const HeroSection: React.FC = () => {
                         >
                             <Button
                                 size="xl"
-                                onClick={openAuthModal}
+                                onClick={() => { isAuthenticated ? router.push(PATHS.CLIENT.SPEAKING()) : openAuthModal() }}
                                 className="group"
                             >
-                                <FcGoogle className="w-5 h-5 mr-2" />
-                                Đăng ký miễn phí ngay
+                                {isAuthenticated ? "Bắt đầu học ngay " :
+                                    <>
+                                        <FcGoogle className="w-5 h-5 mr-2" />
+                                        Đăng ký miễn phí ngay
+                                    </>
+                                }
                                 <FiArrowRight className="w-5 h-5 ml-2 transition-transform group-hover:translate-x-1" />
                             </Button>
                         </motion.div>

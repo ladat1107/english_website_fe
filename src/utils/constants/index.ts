@@ -98,10 +98,10 @@ export const MAIN_NAV_ITEMS: NavItem[] = [
         href: "#",
         description: "Luyện nói tiếng Anh theo chủ đề hàng ngày",
         children: [{
-            title: "Tiếng anh",
+            title: "Tiếng Anh",
             href: `${PATHS.CLIENT.SPEAKING(TypeLanguage.ENGLISH)}`,
         }, {
-            title: "Tiếng trung",
+            title: "Tiếng Trung",
             href: `${PATHS.CLIENT.SPEAKING(TypeLanguage.CHINESE)}`,
         }]
     },
