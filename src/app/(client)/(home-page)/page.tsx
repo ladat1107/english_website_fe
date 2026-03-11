@@ -4,7 +4,6 @@
  * Server Component để tối ưu SEO
  */
 
-import { Header, Footer } from "@/components/layout";
 import {
   HeroSection,
   FeaturesSection,
@@ -17,9 +16,6 @@ import {
 export default function HomePage() {
   return (
     <>
-      {/* Header cố định */}
-      <Header />
-
       {/* Main content */}
       <main>
         {/* Hero Section - Banner chính */}
@@ -40,9 +36,6 @@ export default function HomePage() {
         {/* CTA Section - Kêu gọi đăng ký */}
         <CTASection />
       </main>
-
-      {/* Footer */}
-      <Footer />
     </>
   );
 }

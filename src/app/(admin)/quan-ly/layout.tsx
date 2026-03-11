@@ -62,8 +62,13 @@ const sidebarItems: SidebarItem[] = [
         ],
     },
     {
+        title: "Kiểm đầu vào",
+        href: PATHS.ADMIN.FIRST_TEST,
+        icon: Users,
+    },
+    {
         title: "Người dùng",
-        href: "/quan-ly/nguoi-dung",
+        href: PATHS.ADMIN.USERS,
         icon: Users,
     },
 ];

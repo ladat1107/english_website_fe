@@ -104,7 +104,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // Xóa query params khỏi URL để clean
       router.replace(newUrl, { scroll: false });
     } else if (errorParam === "login_failed") {
-      console.error("Login failed");
       // Có thể hiển thị toast thông báo lỗi
       router.replace(newUrl, { scroll: false });
       router.replace(newUrl, { scroll: false });
@@ -121,7 +120,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.error("Logout error:", error);
     } finally {
       setUser(null);
-      router.refresh();
+      window.location.reload(); // Reload để reset state toàn app
     }
   }, [router]);
 

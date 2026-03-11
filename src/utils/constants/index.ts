@@ -16,6 +16,7 @@ export const PATHS = {
         SPEAKING_GRADING_DETAIL: (attemptId: string) => `/quan-ly/giao-tiep/cham-bai/${attemptId}`,
         CLASS_SCHEDULE: '/quan-ly/lich-hoc',
         CLASS_SESSION_DETAIL: (sessionId: string) => `/quan-ly/lich-hoc/${sessionId}`,
+        FIRST_TEST: '/quan-ly/dau-vao',
         USERS: '/quan-ly/nguoi-dung',
     },
     CLIENT: {
@@ -40,14 +41,14 @@ export const SITE_CONFIG = {
     url: envConfig.NEXT_PUBLIC_FRONTEND_URL,
     logo: "/logo/logo-small.png",
     logoText: "Khailingo",
-    email: "support@khailingo.vn",
-    phone: "1800 96 96 39",
+    email: "khailingo98@gmail.com",
+    phone: "0968 983 722",
     address: "TP. Hồ Chí Minh, Việt Nam",
     social: {
-        facebook: "https://facebook.com/khailingo",
-        youtube: "https://youtube.com/khailingo",
-        tiktok: "https://tiktok.com/@khailingo",
-        instagram: "https://instagram.com/khailingo",
+        facebook: envConfig.NEXT_PUBLIC_FACEBOOK_URL,
+        youtube: envConfig.NEXT_PUBLIC_YOUTUBE_URL,
+        tiktok: envConfig.NEXT_PUBLIC_TIKTOK_URL,
+        instagram: envConfig.NEXT_PUBLIC_INSTAGRAM_URL,
     },
 } as const;
 

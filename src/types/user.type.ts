@@ -17,11 +17,13 @@ export interface UserType {
     learning_goals?: SkillEnum[];
     createdAt?: string;
     updatedAt?: string;
+    booking_test?: string;
 }
 
 export interface UserParams extends ParamBasic {
     role?: UserRole;
     current_level?: ProficiencyLevel;
+    booking_test?: string;
 }
 
 export interface StatisticsRoleUser {
