@@ -20,6 +20,7 @@ const inter = Inter({
   variable: '--font-inter',
 });
 
+
 // Metadata cho SEO
 export const metadata: Metadata = {
   metadataBase: new URL(envConfig.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000"),
@@ -28,6 +29,9 @@ export const metadata: Metadata = {
     template: `%s | ${SITE_CONFIG.name}`,
   },
   description: SITE_CONFIG.description,
+  verification: {
+    google: "jV1PeG2g5NTvFJ2wRIPbpAXiIF6JcLFGZrVDFWAoaVs"
+  },
   keywords: [
     'IELTS',
     'học tiếng Anh',
