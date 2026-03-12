@@ -32,6 +32,8 @@ export const metadata: Metadata = {
   verification: {
     google: "jV1PeG2g5NTvFJ2wRIPbpAXiIF6JcLFGZrVDFWAoaVs"
   },
+  applicationName: SITE_CONFIG.name,
+  category: 'Education',
   keywords: [
     'IELTS',
     'học tiếng Anh',
@@ -112,9 +114,29 @@ interface RootLayoutProps {
  * ClientProviders wrap children để cung cấp auth context
  */
 const RootLayout = ({ children }: RootLayoutProps) => {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    name: SITE_CONFIG.name,
+    url: SITE_CONFIG.url,
+    description: SITE_CONFIG.description,
+    logo: `${SITE_CONFIG.url}${SITE_CONFIG.logo}`,
+    sameAs: [ // Các URL mạng xã hội của Khailingo
+      SITE_CONFIG.social.facebook,
+      SITE_CONFIG.social.youtube,
+      SITE_CONFIG.social.tiktok,
+      SITE_CONFIG.social.instagram,
+    ],
+  };
   return (
     <html lang="vi" className={inter.variable} suppressHydrationWarning>
       <body className={`${inter.className} min-h-screen antialiased`}>
+        {/* JSON-LD cho SEO */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+
         <ClientProviders>
           {children}
         </ClientProviders>
