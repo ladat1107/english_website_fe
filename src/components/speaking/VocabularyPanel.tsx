@@ -83,31 +83,40 @@ export default function VocabularyPanel({
                                     >
                                         <Tooltip>
                                             <TooltipTrigger asChild>
-                                                <div className="flex flex-row items-center justify-between gap-2 flex-1 text-sm font-medium text-primary line-clamp-2 cursor-pointer">
-                                                    <span> {item.vocabulary}</span>
-                                                    <button
-                                                        onClick={() => speakText(removeBracketContent(item.vocabulary), language)}
-                                                        className="sm:hidden flex items-center gap-2 p-1 rounded hover:bg-muted text-xs"
-                                                    >
-                                                        <Volume2 className="w-4 h-4" />
-                                                    </button>
+                                                <div className="flex justify-between flex-1 w-full items-center">
+                                                    <div className="flex flex-row items-center justify-start gap-2 flex-1 text-sm font-medium text-primary line-clamp-2 cursor-pointer">
+                                                        <span> {item.vocabulary}</span>
+                                                        <button
+                                                            onClick={() => speakText(removeBracketContent(item.vocabulary), language)}
+                                                            className="md:hidden flex items-center gap-2 p-1 rounded hover:bg-muted text-xs"
+                                                        >
+                                                            <Volume2 className="w-4 h-4" />
+                                                        </button>
+                                                    </div>
+                                                    <span className="md:hidden text-xs italic text-muted-foreground w-24"> {item?.type ? `(${item.type})` : ""}</span>
                                                 </div>
+
                                             </TooltipTrigger>
 
                                             <TooltipContent
                                                 side="top"
                                                 align="start"
-                                                className="flex items-center gap-2"
+                                                className="flex flex-col items-center gap-2"
                                             >
+
                                                 <button
                                                     onClick={() => speakText(removeBracketContent(item.vocabulary), language)}
                                                     className="flex items-center gap-2 p-1 rounded hover:bg-muted text-xs"
                                                 >
                                                     <Volume2 className="w-4 h-4" />
                                                     Nghe
+                                                    <span className="text-xs text-muted-foreground italic">
+                                                        {item?.type ? `(${item.type})` : ""}
+                                                    </span>
                                                 </button>
                                             </TooltipContent>
                                         </Tooltip>
+
                                         <div className="text-sm text-muted-foreground mt-0 w-full sm:w-1/2 sm:mt-1 line-clamp-2">
                                             {item.meaning}
                                         </div>

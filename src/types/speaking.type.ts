@@ -124,9 +124,49 @@ export interface AIAnalysis {
     ai_fix: string;           // Đoạn text AI sửa lại
 }
 
+
+// Loại từ (Part of Speech) - dùng để phân loại từ vựng trong phần từ vựng của đề thi giao tiếp
+export enum PartOfSpeech {
+    NOUN = "noun",
+    VERB = "verb",
+    ADJECTIVE = "adjective",
+    ADVERB = "adverb",
+    PRONOUN = "pronoun",
+    NUMERAL = "numeral",
+    MEASURE_WORD = "measure_word",
+    CONJUNCTION = "conjunction",
+    PREPOSITION = "preposition",
+    INTERJECTION = "interjection",
+}
+
+// Viết tắt loại từ cho hiển thị trong phần từ vựng
+export const POS_ABBR = {
+    noun: { en: "noun", zh: "名" },
+    verb: { en: "verb", zh: "动" },
+    adjective: { en: "adj", zh: "形" },
+    adverb: { en: "adv", zh: "副" },
+    pronoun: { en: "pron", zh: "代" },
+    numeral: { en: "num", zh: "数" },
+    measure_word: { en: "mw", zh: "量" },
+    conjunction: { en: "conj", zh: "连" },
+    preposition: { en: "prep", zh: "介" },
+    interjection: { en: "int", zh: "叹" },
+} as const;;
+
+export const POS_OPTIONS_EN = Object.values(PartOfSpeech).map((pos) => ({
+    value: pos,
+    label: POS_ABBR[pos].en, // hoặc zh
+}));
+
+export const POS_OPTIONS_ZH = Object.values(PartOfSpeech).map((pos) => ({
+    value: pos,
+    label: POS_ABBR[pos].zh, // hoặc en
+}));
+
 export interface Vocabulary {
     vocabulary: string;
     meaning: string;
+    type?: string;   // Loại từ (danh từ, động từ, tính từ, v.v.)
 }
 
 

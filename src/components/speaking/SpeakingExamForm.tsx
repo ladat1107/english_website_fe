@@ -53,7 +53,7 @@ import DraggableQuestionItem from "./draggable-question-item";
 import { LevelExam, SpeakingTopic, TypeLanguage } from "@/utils/constants/enum";
 import { Switch } from "../ui/switch";
 import { PATHS } from "@/utils/constants";
-import { levelExamOptions, speakingTopicOptions, typeLanguageOptions, Vocabulary } from "@/types/speaking.type";
+import { levelExamOptions, POS_OPTIONS_EN, POS_OPTIONS_ZH, speakingTopicOptions, typeLanguageOptions, Vocabulary } from "@/types/speaking.type";
 import Link from "next/link";
 
 // =====================================================
@@ -75,6 +75,7 @@ const questionSchema = z.object({
 const vocabularySchema = z.object({
     vocabulary: z.string().min(1, "Vui lòng nhập từ vựng"),
     meaning: z.string().min(1, "Vui lòng nhập nghĩa"),
+    type: z.string().optional(), // Loại từ (danh từ, động từ, tính từ, v.v.)
 });
 
 const speakingExamFormSchema = z.object({
@@ -222,6 +223,7 @@ interface SummarySidebarProps {
     mode: SpeakingExamFormMode;
     isPublished: boolean;
     isSaving: boolean;
+    examType: TypeLanguage;
     vocabularies: Vocabulary[];
     onPublish: () => void;
     addVocabulary: (vocab: Vocabulary) => void;
@@ -233,6 +235,7 @@ const SummarySidebar = memo(function SummarySidebar({
     mode,
     isPublished,
     isSaving,
+    examType,
     vocabularies,
     onPublish,
     addVocabulary,
@@ -240,14 +243,19 @@ const SummarySidebar = memo(function SummarySidebar({
     deleteVocabulary,
 }: SummarySidebarProps) {
 
-    const [newWord, setNewWord] = useState<Vocabulary>({ vocabulary: "", meaning: "" });
+    const [newWord, setNewWord] = useState<Vocabulary>({ vocabulary: "", meaning: "", type: "" });
 
     const [editIndex, setEditIndex] = useState<number | null>(null);
-    const [editItem, setEditItem] = useState<Vocabulary>({ vocabulary: "", meaning: "" });
+    const [editItem, setEditItem] = useState<Vocabulary>({ vocabulary: "", meaning: "", type: "" });
 
+    const POS_OPTIONS = examType === TypeLanguage.ENGLISH ? POS_OPTIONS_EN : POS_OPTIONS_ZH;
     const handleAddWord = () => {
-        addVocabulary(newWord);
-        setNewWord({ vocabulary: "", meaning: "" });
+        addVocabulary({
+            vocabulary: newWord.vocabulary,
+            meaning: newWord.meaning,
+            type: POS_OPTIONS.find(option => option.value === newWord.type)?.label || newWord.type || "", // Lấy label hiển thị hoặc giữ nguyên nếu không tìm thấy
+        });
+        setNewWord({ vocabulary: "", meaning: "", type: "" });
     };
 
     const deleteWord = (index: number) => {
@@ -257,12 +265,11 @@ const SummarySidebar = memo(function SummarySidebar({
     const startEdit = (index: number) => {
         setEditIndex(index);
         setEditItem(vocabularies[index]);
-        console.log("Start edit:", editItem);
     };
 
     const handleSave = (index: number) => {
         updateVocabulary(index, editItem);
-        setEditItem({ vocabulary: "", meaning: "" });
+        setEditItem({ vocabulary: "", meaning: "", type: "" });
         setEditIndex(null);
     };
 
@@ -313,16 +320,33 @@ const SummarySidebar = memo(function SummarySidebar({
                         <div className="flex flex-col sm:flex-row gap-2">
                             <Input
                                 className="text-sm"
-                                placeholder="Từ vựng (VD: Environment)"
+                                placeholder="Từ vựng"
                                 value={newWord.vocabulary}
                                 onChange={(e) => setNewWord({ ...newWord, vocabulary: e.target.value })}
                             />
                             <Input
                                 className="text-sm"
-                                placeholder="Nghĩa (VD: Môi trường)"
+                                placeholder="Nghĩa"
                                 value={newWord.meaning}
                                 onChange={(e) => setNewWord({ ...newWord, meaning: e.target.value })}
                             />
+                            <Select
+                                value={newWord.type}
+                                onValueChange={(value) => setNewWord({ ...newWord, type: value })}
+                            >
+                                <SelectTrigger className="text-sm w-20">
+                                    <SelectValue placeholder="Loại từ" />
+                                </SelectTrigger>
+                                <SelectContent className="text-sm w-20">
+                                    {POS_OPTIONS.map((option) => (
+                                        <SelectItem key={option.value} value={option.value}>
+                                            {option.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+
+
                         </div>
 
                         {/* Danh sách từ vựng */}
@@ -353,6 +377,13 @@ const SummarySidebar = memo(function SummarySidebar({
                                                     setEditItem({ ...editItem, meaning: e.target.value })
                                                 }
                                             />
+                                            <Input
+                                                className="text-xs h-6"
+                                                value={editItem.type}
+                                                onChange={(e) =>
+                                                    setEditItem({ ...editItem, type: e.target.value })
+                                                }
+                                            />
                                         </div>
                                     ) : (
                                         <div className="flex flex-wrap flex-row flex-1 min-w-0 pr-8"> {/* chừa chỗ */}
@@ -361,6 +392,9 @@ const SummarySidebar = memo(function SummarySidebar({
                                             </span>
                                             <span className="text-xs text-muted-foreground break-words w-1/2">
                                                 {item.meaning}
+                                            </span>
+                                            <span className="text-xs text-muted-foreground break-words w-1/6">
+                                                {item.type}
                                             </span>
                                         </div>
                                     )}
@@ -1015,6 +1049,7 @@ export function SpeakingExamForm({
                             mode={mode}
                             isPublished={watchedValues.is_published}
                             isSaving={isSaving}
+                            examType={watchedValues.type}
                             vocabularies={watchedValues.vocabularies || []}
                             onPublish={handlePublish}
                             addVocabulary={addVocabulary}
