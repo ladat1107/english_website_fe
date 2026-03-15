@@ -85,5 +85,7 @@ export {
     SheetDescription,
 } from "./sheet";
 
+export {Select, SelectTrigger, SelectValue, SelectContent, SelectItem, SelectGroup, SelectLabel, SelectSeparator} from "./select";
+
 // Pagination
 export { Pagination, SimplePagination } from "./pagination";

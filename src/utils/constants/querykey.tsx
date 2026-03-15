@@ -28,5 +28,9 @@ export const QUERY_KEYS = {
     participant: {
         getBySession: "participants-by-session",
         getByUser: "participants-by-user",
+    },
+    flashcardDeck:{
+        getAll: "flashcard-decks",
+        findOne: "flashcard-deck",
     }
 }
