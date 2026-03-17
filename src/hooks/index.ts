@@ -13,3 +13,4 @@ export * from './use-speaking-answer';
 export * from './use-event-leave';
 export * from './use-speaking-socket';
 export * from './use-class-session';
+export * from './use-flashcard';

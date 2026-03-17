@@ -24,6 +24,7 @@ import {
 import { cn } from "@/utils";
 import Image from "next/image";
 import { PATHS } from "@/utils/constants";
+import { FiZap } from "react-icons/fi";
 
 interface AdminLayoutProps {
     children: ReactNode;
@@ -60,6 +61,10 @@ const sidebarItems: SidebarItem[] = [
             { title: "Danh sách đề", href: PATHS.ADMIN.SPEAKING_EXAM },
             { title: "Chấm bài", href: PATHS.ADMIN.SPEAKING_GRADING },
         ],
+    }, {
+        title: "Flashcard",
+        href: PATHS.ADMIN.FLASHCARD,
+        icon: FiZap,
     },
     {
         title: "Kiểm đầu vào",

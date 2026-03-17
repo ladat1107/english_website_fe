@@ -1,6 +1,23 @@
 import { z } from 'zod';
 import { FlashcardTopic, TypeLanguage } from '@/utils/constants/enum';
+import { ParamBasic } from '.';
+import { UserType } from './user.type';
 
+export const FLASHCARD_TOPIC_MEANINGS: Record<FlashcardTopic, string> = {
+  [FlashcardTopic.BASIC]: "Cơ bản",
+  [FlashcardTopic.ADVANCED]: "Nâng cao",
+  [FlashcardTopic.TOEIC]: "TOEIC",
+  [FlashcardTopic.IELTS]: "IELTS",
+  [FlashcardTopic.HSK]: "HSK",
+  [FlashcardTopic.ACADEMIC]: "Học thuật",
+  [FlashcardTopic.DAILY]: "Giao tiếp",
+  [FlashcardTopic.MIXED]: "Hỗn hợp",
+};
+
+export const flashCardTopicOptions = Object.entries(FLASHCARD_TOPIC_MEANINGS).map(([value, label]) => ({
+  value,
+  label,
+}));
 // Entities
 export interface Flashcard {
   _id: string;
@@ -12,6 +29,19 @@ export interface Flashcard {
   examples?: string;
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface UserFlashcard {
+  user_id: string;
+  deck_id: string;
+  correct_cards: number;
+  incorrect_cards: number;
+  last_studied_at: string | null;
+  cards_result: {
+    card_id: string;
+    status: string;
+    last_studied_at: string | null;
+  }[];
 }
 
 export interface FlashcardDeck {
@@ -26,6 +56,14 @@ export interface FlashcardDeck {
   flashcards: Flashcard[];
   createdAt?: string;
   updatedAt?: string;
+  author?: UserType;
+  userFlashcard?: UserFlashcard;
+}
+
+export interface FlashCardParams extends ParamBasic {
+  topic?: FlashcardTopic;
+  type?: TypeLanguage;
+  is_admin?: boolean;
 }
 
 // Zod Schemas
@@ -45,7 +83,7 @@ export const flashcardDeckSchema = z.object({
   image: z.string().optional(),
   type: z.nativeEnum(TypeLanguage),
   topic: z.nativeEnum(FlashcardTopic),
-  flashcards: z.array(flashcardSchema),
+  flashcards: z.array(flashcardSchema).optional(),
 });
 
 export type CreateFlashcardDeckFormData = z.infer<typeof flashcardDeckSchema>;
