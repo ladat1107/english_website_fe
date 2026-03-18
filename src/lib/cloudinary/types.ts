@@ -16,6 +16,9 @@ export enum CloudinaryFolder {
     SPEAKING_THUMBNAILS = "speaking/thumbnails",
     SPEAKING_AUDIO = "speaking/audio",
 
+    // Flashcard module
+    FLASHCARD_IMAGES = "flashcard/images",
+
     // Listening module
     LISTENING_AUDIO = "listening/audio",
     LISTENING_IMAGES = "listening/images",

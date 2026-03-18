@@ -1,8 +1,3 @@
-/**
- * Khailingo - Admin User Management Page
- * Trang quản lý danh sách người dùng (Admin) - Table View
- */
-
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
