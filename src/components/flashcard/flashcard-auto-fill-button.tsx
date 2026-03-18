@@ -19,6 +19,7 @@ interface FlashcardAutoFillButtonProps {
   onAutoFillSuccess: (data: Flashcard) => void;
   disabled?: boolean;
   className?: string;
+  variant?: "link" | "outline" | "default" | "destructive" | "secondary" | "ghost" | "success" | "warning" | null | undefined;
 }
 
 
@@ -27,6 +28,7 @@ export function FlashcardAutoFillButton({
   onAutoFillSuccess,
   disabled = false,
   className,
+  variant = "ghost",
 }: FlashcardAutoFillButtonProps) {
 
   const { mutate, isPending } = useGenerateFlashcard();
@@ -50,7 +52,7 @@ export function FlashcardAutoFillButton({
         <TooltipTrigger asChild>
           <Button
             type="button"
-            variant={"ghost"}
+            variant={variant}
             size="sm"
             disabled={isDisabled}
             onClick={handleClick}

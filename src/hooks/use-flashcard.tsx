@@ -164,3 +164,11 @@ export const useSubmitStudyProgress = () => {
         },
     });
 };
+
+/** Lấy danh sách deck của user (để add flashcard) */
+export const useGetMyFlashcardDecks = () => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.flashcardDeck.getMyDecks],
+        queryFn: () => http.get(`${userFlashcardPrefix}/my-decks`),
+    });
+};

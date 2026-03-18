@@ -19,6 +19,7 @@ import { cn } from "@/utils";
 
 export function FlashcardClient() {
 
+    const { isAuthenticated, openAuthModal } = useAuth();
     const { mutate: deleteFlashcardDeck } = useDeleteFlashcardDeck();
     const { confirm } = useConfirmDialogContext();
 
@@ -65,6 +66,13 @@ export function FlashcardClient() {
             [key]: value,
         }));
     };
+
+    const handleClick = (e: React.MouseEvent) => {
+        if (!isAuthenticated) {
+            e.preventDefault();
+            openAuthModal();
+        }
+    }
     return (
         <div>
             {/* Search and Create */}
@@ -172,7 +180,7 @@ export function FlashcardClient() {
                         </AnimatePresence>
                     </div>
 
-                    <Link href={PATHS.CLIENT.FLASHCARD_CREATE}>
+                    <Link href={isAuthenticated ? PATHS.CLIENT.FLASHCARD_CREATE : '#'} onClick={(e: React.MouseEvent<HTMLAnchorElement>) => handleClick(e)}>
                         <Button className="h-8">
                             <FiPlus className="w-4 h-4 mr-2" />
                             Tạo bộ flashcard
@@ -189,8 +197,9 @@ export function FlashcardClient() {
                         flashcardDecks.map((deck) => (
                             <Link
                                 key={deck._id}
-                                href={`/flashcard/${deck._id}`}
+                                href={isAuthenticated ? `/flashcard/${deck._id}` : '#'}
                                 className="group block"
+                                onClick={(e: React.MouseEvent<HTMLAnchorElement>) => handleClick(e)}
                             >
                                 <Card variant="default" hoverable className="h-full">
                                     {/* Header */}

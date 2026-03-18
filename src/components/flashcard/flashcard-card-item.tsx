@@ -279,7 +279,7 @@ export function FlashcardCardItem({
                   placeholder="/Phiên âm/"
                   size={Math.max(localData.transliteration.length, 4)}
                   className={cn(
-                    "bg-transparent border-0 text-sm text-muted-foreground border-b-2 border-gray-300 min-w-40 max-w-full h-7",
+                    "bg-transparent border-0 text-sm text-primary border-b-2 border-gray-300 min-w-40 max-w-full h-7",
                     "focus:outline-none focus:text-foreground",
                     "placeholder:text-muted-foreground/50",
                     "transition-colors"

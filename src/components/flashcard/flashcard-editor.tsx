@@ -61,7 +61,7 @@ export function FlashcardEditor({
       return deckRes.data;
     }
   }, [deckRes, mode])
-  
+
   const { mutate: createDeckMutation, isPending: isCreatingDeck } = useCreateFlashcardDeck();
   const { mutate: updateDeckMutation, isPending: isUpdatingDeck } = useUpdateFlashcardDeck();
   const { mutate: addFlashcardMutation, isPending: isAddingFlashcard } = useAddFlashcard(deckId || "");
@@ -159,7 +159,6 @@ export function FlashcardEditor({
       onSuccess: (result) => {
         if (result && result?.success) {
           // Redirect to edit page
-          console.log("Created deck:", result.data);
           const newDeckId = result.data._id;
           const editPath = isAdmin ? PATHS.ADMIN.FLASHCARD_EDIT(newDeckId) : PATHS.CLIENT.FLASHCARD_EDIT(newDeckId);
           router.push(editPath);

@@ -4,9 +4,9 @@
  */
 
 import type { Metadata } from "next";
-import envConfig from "@/utils/env-config";
 import { SITE_CONFIG } from "@/utils/constants";
 import { DeckOverview } from "@/components/flashcard-study/overview/deck-overview";
+import { http } from "@/lib/http";
 
 interface FlashcardDetailPageProps {
   params: Promise<{ slug: string }>;
@@ -15,13 +15,11 @@ interface FlashcardDetailPageProps {
 /** Fetch data cho metadata (server-side, không cần auth) */
 async function fetchDeckPublic(id: string) {
   try {
-    const res = await fetch(
-      `${envConfig.NEXT_PUBLIC_BACKEND_URL}/flash-card-deck/public/${id}`,
-      { next: { revalidate: 60 } }
-    );
-    if (!res.ok) return null;
-    return res.json();
-  } catch {
+    const res = await http.get(`/flash-card-deck/public/${id}`);
+    if (!res.success) return null;
+    return res.data;
+  } catch (error) {
+    console.error("Error fetching deck for metadata", error);
     return null;
   }
 }
