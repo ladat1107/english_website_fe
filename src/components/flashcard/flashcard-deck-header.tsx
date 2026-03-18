@@ -78,7 +78,7 @@ export function FlashcardDeckHeader({
 
   return (
     <div className="flex justify-between items-start gap-2">
-      <div className="space-y-4">
+      <div className="flex-1 space-y-4">
         {/* Title */}
         <div className="relative">
           <input
