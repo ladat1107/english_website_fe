@@ -32,6 +32,7 @@ export const QUERY_KEYS = {
     flashcardDeck:{
         getAll: "flashcard-decks",
         findOne: "flashcard-deck",
+        findOnePublic: "flashcard-deck-public",
         getAllForClient: "flashcard-decks-for-client",
     }
 }

@@ -31,17 +31,19 @@ export interface Flashcard {
   updatedAt?: string;
 }
 
+export interface FlashCardResult {
+  card_id: string;
+  status?: string;
+  last_studied_at?: string | null;
+}
+
 export interface UserFlashcard {
   user_id: string;
   deck_id: string;
   correct_cards: number;
   incorrect_cards: number;
   last_studied_at: string | null;
-  cards_result: {
-    card_id: string;
-    status: string;
-    last_studied_at: string | null;
-  }[];
+  cards_result: FlashCardResult[];
 }
 
 export interface FlashcardDeck {
@@ -88,3 +90,34 @@ export const flashcardDeckSchema = z.object({
 
 export type CreateFlashcardDeckFormData = z.infer<typeof flashcardDeckSchema>;
 export type FlashcardDeckFormData = CreateFlashcardDeckFormData & { _id?: string };
+
+// =====================================================
+// STUDY TYPES - Dùng cho các chế độ học
+// =====================================================
+
+export type StudyMode = 'flip' | 'learn' | 'test' | 'match';
+
+export type CardStatus = 'correct' | 'incorrect' | 'skipped';
+
+/** Kết quả học 1 card trong session */
+export interface StudyCardResult {
+  card_id: string;
+  status: CardStatus;
+}
+
+/** DTO gửi lên backend sau khi hoàn thành session */
+export interface SubmitStudyProgressPayload {
+  deck_id: string;
+  cards_result: FlashCardResult[];
+  mode?: StudyMode;
+}
+
+/** Thống kê kết quả session */
+export interface StudySessionStats {
+  total: number;
+  correct: number;
+  incorrect: number;
+  skipped: number;
+  percentage: number;
+  duration: number; // ms
+}

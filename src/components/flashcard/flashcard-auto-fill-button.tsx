@@ -28,15 +28,8 @@ export function FlashcardAutoFillButton({
   disabled = false,
   className,
 }: FlashcardAutoFillButtonProps) {
-  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
   const { mutate, isPending } = useGenerateFlashcard();
-
-  React.useEffect(() => {
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, []);
 
   const handleClick = React.useCallback(() => {
     const trimmed = word.trim();

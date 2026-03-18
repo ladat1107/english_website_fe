@@ -17,9 +17,7 @@ import { DismissableLayer } from "@radix-ui/react-dismissable-layer";
 import { useEffect, useState } from "react";
 import { cn } from "@/utils";
 
-
 export function FlashcardClient() {
-
 
     const { mutate: deleteFlashcardDeck } = useDeleteFlashcardDeck();
     const { confirm } = useConfirmDialogContext();
@@ -41,7 +39,7 @@ export function FlashcardClient() {
 
     const { data: flashcardDeckRes, isLoading } = useGetAllFlashcardDecksForClient(params); // Lấy danh sách flashcard deck từ API
     const flashcardDecks: FlashcardDeck[] = flashcardDeckRes?.data?.items || [];
-   
+
     useEffect(() => {
         setParams((prev) => ({
             ...prev,
@@ -267,14 +265,14 @@ export function FlashcardClient() {
                                                 <span className="text-primary">Tiến độ</span>
                                                 <span className="font-medium">{deck?.userFlashcard?.correct_cards || 0}/{deck.flashcards.length}</span>
                                             </div>
-                                            <Progress value={0} size="sm" />
+                                            <Progress value={deck.flashcards.length > 0 ? Math.round(((deck?.userFlashcard?.correct_cards || 0) / deck.flashcards.length) * 100) : 0} size="sm" />
                                         </div>
 
                                         {/* Footer */}
                                         <div className="flex items-center justify-between">
                                             <span className="text-xs text-muted-foreground flex items-center">
                                                 <Clock1 className="w-3.5 h-3.5 mr-1" />
-                                                {deck?.userFlashcard?.last_studied_at ? dayjs(deck?.userFlashcard?.last_studied_at).fromNow() : "Chưa học"} {/* Hiển thị thời gian học gần nhất */}
+                                                {deck?.userFlashcard?.last_studied_at ? dayjs(deck?.userFlashcard?.last_studied_at).format("DD/MM/YYYY HH:mm") : "Chưa học"} {/* Hiển thị thời gian học gần nhất */}
                                             </span>
                                             <Button size="sm" variant="secondary" className="group-hover:bg-primary group-hover:text-white">
                                                 Học ngay

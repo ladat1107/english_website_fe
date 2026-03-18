@@ -39,7 +39,7 @@ const DEFAULT_DECK_DATA: CreateFlashcardDeckFormData = {
   description: "",
   topic: FlashcardTopic.BASIC,
   type: TypeLanguage.ENGLISH,
-  image: "https://res.cloudinary.com/dnyodp0rd/image/upload/v1773669365/studying_rmfc63.png",  
+  image: "https://res.cloudinary.com/dnyodp0rd/image/upload/v1773669365/studying_rmfc63.png",
 };
 
 export function FlashcardEditor({
@@ -60,7 +60,8 @@ export function FlashcardEditor({
     if (mode === "edit" && deckRes?.success) {
       return deckRes.data;
     }
-  }, [deckRes])
+  }, [deckRes, mode])
+  
   const { mutate: createDeckMutation, isPending: isCreatingDeck } = useCreateFlashcardDeck();
   const { mutate: updateDeckMutation, isPending: isUpdatingDeck } = useUpdateFlashcardDeck();
   const { mutate: addFlashcardMutation, isPending: isAddingFlashcard } = useAddFlashcard(deckId || "");

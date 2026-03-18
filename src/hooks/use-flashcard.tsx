@@ -4,9 +4,10 @@ import { http } from '@/lib/http';
 import { QUERY_KEYS } from '@/utils/constants/querykey';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/components/ui/toaster';
-import { FlashCardParams } from '@/types/flashcard.type';
+import { FlashCardParams, SubmitStudyProgressPayload } from '@/types/flashcard.type';
 
 const prefix = '/flash-card-deck';
+const userFlashcardPrefix = '/user-flashcard';
 
 export const useGetAllFlashcardDecks = (params?: FlashCardParams) => {
     return useQuery({
@@ -125,5 +126,41 @@ export const useGenerateFlashcard = () => {
     return useMutation({
         mutationFn: (word: string) =>
             http.post(`${prefix}/generate-flashcard`, { word }),
+    });
+};
+
+// =====================================================
+// PUBLIC & STUDY PROGRESS HOOKS
+// =====================================================
+
+/** Lấy deck công khai (cho SSR metadata, không cần auth) */
+export const useGetFlashcardDeckPublic = (id: string) => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.flashcardDeck.findOnePublic, id],
+        queryFn: () => http.get(`${prefix}/public/${id}`),
+        enabled: !!id,
+    });
+};
+
+/** Gửi kết quả học lên backend */
+export const useSubmitStudyProgress = () => {
+    const queryClient = useQueryClient();
+    const { addToast } = useToast();
+
+    return useMutation({
+        mutationFn: (data: SubmitStudyProgressPayload) =>
+            http.patch(`${userFlashcardPrefix}/progress`, data),
+        onSuccess: (_data, variables) => {
+            // Invalidate deck data để cập nhật progress mới
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.flashcardDeck.findOne, variables.deck_id],
+            });
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.flashcardDeck.getAllForClient],
+            });
+        },
+        onError: () => {
+            addToast('Không thể lưu kết quả học', 'error');
+        },
     });
 };
