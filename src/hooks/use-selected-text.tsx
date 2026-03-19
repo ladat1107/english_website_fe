@@ -1,8 +1,21 @@
 "use client";
 
+import { useAuth } from "@/contexts";
 import { useEffect, useState } from "react";
 
+// Kiểm tra có chứa tiếng Trung không
+const hasChinese = (text: string) => {
+    return /[\u4e00-\u9fff]/.test(text);
+};
+
+// Đếm số ký tự tiếng Trung (chuẩn hơn length)
+const countChineseChars = (text: string) => {
+    const match = text.match(/[\u4e00-\u9fff]/g);
+    return match ? match.length : 0;
+};
+
 export function useTextSelection() {
+    const { isAuthenticated } = useAuth();
     const [selection, setSelection] = useState<{
         text: string;
         rect: DOMRect | null;
@@ -12,14 +25,15 @@ export function useTextSelection() {
     });
 
     useEffect(() => {
+        const handleSelection = () => {
+            if (!isAuthenticated) return;
 
-        // Không trigger trong input, textarea để tránh làm phiền khi người dùng đang gõ thì làm sao?
-        const active = document.activeElement;
-        if (active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA")) {
-            return;
-        }
+            // Không trigger trong input, textarea để tránh làm phiền khi người dùng đang gõ thì làm sao?
+            const active = document.activeElement;
+            if (active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA" || (active as HTMLElement).isContentEditable)) {
+                return;
+            }
 
-        const handleMouseUp = () => {
             const sel = window.getSelection();
             if (!sel || sel.isCollapsed) {
                 setSelection({ text: "", rect: null });
@@ -27,7 +41,18 @@ export function useTextSelection() {
             }
 
             const text = sel.toString().trim();
-            if (!text || text.length < 3) return;
+
+            if (!text) return;
+
+            const isChinese = hasChinese(text);
+
+            // ✅ Validate theo ngôn ngữ
+            if (isChinese) {
+                const chineseLength = countChineseChars(text);
+                if (chineseLength > 5) return;
+            } else {
+                if (text.length < 2 || text.length > 25) return;
+            }
 
             const range = sel.getRangeAt(0);
             const rect = range.getBoundingClientRect();
@@ -39,18 +64,26 @@ export function useTextSelection() {
 
         };
 
-        const handleMouseDown = () => {
+        const handleClear = () => {
             setSelection({ text: "", rect: null });
-        }
+        };
 
-        document.addEventListener("mouseup", handleMouseUp);
-        document.addEventListener("mousedown", handleMouseDown);
+        // ✅ Desktop
+        document.addEventListener("mouseup", handleSelection);
+        document.addEventListener("mousedown", handleClear);
+
+        // ✅ Mobile
+        document.addEventListener("touchend", handleSelection);
+        document.addEventListener("touchstart", handleClear);
 
         return () => {
-            document.removeEventListener("mouseup", handleMouseUp);
-            document.removeEventListener("mousedown", handleMouseDown);
+            document.removeEventListener("mouseup", handleSelection);
+            document.removeEventListener("mousedown", handleClear);
+
+            document.removeEventListener("touchend", handleSelection);
+            document.removeEventListener("touchstart", handleClear);
         };
-    }, []);
+    }, [isAuthenticated]);
 
     return selection;
 }

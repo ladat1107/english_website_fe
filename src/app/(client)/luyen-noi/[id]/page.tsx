@@ -34,17 +34,19 @@ import {
     VideoPlayer,
     VideoScriptDisplay,
     SpeakingQuestionCard,
-    OnlineUsersPanel
+    OnlineUsersPanel,
+    MultipleChoiceSection
 } from '@/components/speaking';
 import {
     SpeakingExam,
+    MultipleChoiceAnswer,
     speakingGoogleMeetLink,
     speakingTopicMeaning
 } from '@/types/speaking.type';
 import { useGetSpeakingExamById } from '@/hooks/use-speaking-exam';
 import LoadingCustom from '@/components/ui/loading-custom';
 import { usePreventLeave } from '@/hooks/use-event-leave';
-import { useCreateSpeakingAttempt, useSubmitSpeakingAttempt } from '@/hooks/use-speaking-attempt';
+import { useCreateSpeakingAttempt, useSubmitSpeakingAttempt, useUpdateSpeakingAttempt } from '@/hooks/use-speaking-attempt';
 import { useToast } from '@/components/ui/toaster';
 import { SpeakingAttemptResponse } from '@/types/speaking-attempt.type';
 import { useCreateSpeakingAnswer } from '@/hooks/use-speaking-answer';
@@ -81,12 +83,14 @@ export default function SpeakingPracticeDetailPage() {
     const [exam, setExam] = useState<SpeakingExam | null>(null);
     const [activeQuestion, setActiveQuestion] = useState(0);
     const [answers, setAnswers] = useState<QuestionAnswer[]>([]);
+    const [multipleChoiceAnswers, setMultipleChoiceAnswers] = useState<MultipleChoiceAnswer[]>([]);
     const [showSubmitDialog, setShowSubmitDialog] = useState(false);
     const [attemptStarted, setAttemptStarted] = useState(preview === "true"); // Nếu là preview thì coi như đã bắt đầu attempt
 
     const { data: speakingExamRes, isLoading: isExamLoading } = useGetSpeakingExamById(examId);
     const { mutate: createSpeakingAttempt, isPending: isCreating } = useCreateSpeakingAttempt();
     const { mutate: submitSpeakingAttempt, isPending: isSubmitting } = useSubmitSpeakingAttempt();
+    const { mutate: updateSpeakingAttempt } = useUpdateSpeakingAttempt(attemptId || '');
     const { mutate: createSpeakingAnswer } = useCreateSpeakingAnswer();
     const { addToast } = useToast();
 
@@ -115,6 +119,14 @@ export default function SpeakingPracticeDetailPage() {
                 duration_seconds: 0,
                 completed: false,
             })));
+            // Initialize multiple choice answers array
+            if (examData.multiple_choice_questions?.length > 0) {
+                setMultipleChoiceAnswers(examData.multiple_choice_questions.map(q => ({
+                    question_number: q.question_number,
+                    question_text: q.question_text,
+                    selected_option: '',
+                })));
+            }
             return;
         }
 
@@ -157,6 +169,16 @@ export default function SpeakingPracticeDetailPage() {
                     }
                 }
 
+                // Load saved multiple choice answers
+                if (resData && resData?.attempt && resData?.attempt?.multiple_choice_answers && resData?.attempt?.multiple_choice_answers?.length > 0) {
+                    setMultipleChoiceAnswers(prev => prev.map(ans => {
+                        const savedAns = resData.attempt.multiple_choice_answers?.find(
+                            (a: MultipleChoiceAnswer) => a.question_number === ans.question_number
+                        );
+                        return savedAns ? { ...ans, selected_option: savedAns.selected_option } : ans;
+                    }));
+                }
+
                 setAttemptStarted(true);
             },
         })
@@ -189,6 +211,26 @@ export default function SpeakingPracticeDetailPage() {
                 }
             }
         })
+    };
+
+    const handleSelectMultipleChoice = (questionNumber: number, selectedOption: string) => {
+        // Update local state
+        setMultipleChoiceAnswers(prev => prev.map(ans =>
+            ans.question_number === questionNumber
+                ? { ...ans, selected_option: selectedOption }
+                : ans
+        ));
+
+        // Auto-save to backend
+        if (attemptId) {
+            const updatedAnswers = multipleChoiceAnswers.map(ans =>
+                ans.question_number === questionNumber
+                    ? { ...ans, selected_option: selectedOption }
+                    : ans
+            ).filter(ans => ans.selected_option); // Only send answered questions
+
+            updateSpeakingAttempt({ multiple_choice_answers: [...updatedAnswers] });
+        }
     };
 
     const handleSubmit = async () => {
@@ -425,6 +467,19 @@ export default function SpeakingPracticeDetailPage() {
                                 })}
                             </div>
                         </div>
+
+                        {/* Multiple Choice Questions Section */}
+                        {exam.multiple_choice_questions && exam.multiple_choice_questions.length > 0 && (
+                            <Card>
+                                <CardContent className="p-4 sm:p-6">
+                                    <MultipleChoiceSection
+                                        questions={exam.multiple_choice_questions}
+                                        answers={multipleChoiceAnswers}
+                                        onSelectOption={handleSelectMultipleChoice}
+                                    />
+                                </CardContent>
+                            </Card>
+                        )}
                     </div>
 
                     {/* Sidebar */}

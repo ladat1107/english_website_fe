@@ -11,7 +11,6 @@ import {
     Plus,
     Trash2,
     GripVertical,
-    Video,
     MessageCircle,
     HelpCircle,
     CheckCircle,
@@ -55,6 +54,7 @@ import { Switch } from "../ui/switch";
 import { PATHS } from "@/utils/constants";
 import { levelExamOptions, POS_OPTIONS_EN, POS_OPTIONS_ZH, speakingTopicOptions, typeLanguageOptions, Vocabulary } from "@/types/speaking.type";
 import Link from "next/link";
+import MultipleChoiceQuestionEditor from "./MultipleChoiceQuestionEditor";
 
 // =====================================================
 // ZOD SCHEMA - Validation
@@ -78,6 +78,18 @@ const vocabularySchema = z.object({
     type: z.string().optional(), // Loại từ (danh từ, động từ, tính từ, v.v.)
 });
 
+const multipleChoiceOptionSchema = z.object({
+    key: z.string().min(1),
+    text: z.string().min(1, "Vui lòng nhập nội dung đáp án"),
+});
+
+const multipleChoiceQuestionSchema = z.object({
+    question_number: z.number(),
+    question_text: z.string().min(1, "Vui lòng nhập nội dung câu hỏi"),
+    options: z.array(multipleChoiceOptionSchema).min(2, "Cần ít nhất 2 đáp án"),
+    correct_option: z.string().min(1, "Vui lòng chọn đáp án đúng"),
+});
+
 const speakingExamFormSchema = z.object({
     title: z.string().min(1, "Vui lòng nhập tiêu đề"),
     description: z.string().optional(),
@@ -87,6 +99,7 @@ const speakingExamFormSchema = z.object({
     thumbnail: z.string().optional(),
     video_script: z.array(videoScriptSchema),
     questions: z.array(questionSchema).min(1, "Vui lòng thêm ít nhất 1 câu hỏi"),
+    multiple_choice_questions: z.array(multipleChoiceQuestionSchema).optional(),
     is_published: z.boolean(),
     _id: z.string().optional(),
     level: z.enum(LevelExam),
@@ -133,6 +146,7 @@ const DEFAULT_FORM_VALUES: SpeakingExamFormValues = {
     thumbnail: "",
     video_script: [],
     questions: [],
+    multiple_choice_questions: [],
     vocabularies: [],
     type: TypeLanguage.ENGLISH,
     level: LevelExam.EASY,
@@ -615,7 +629,6 @@ export function SpeakingExamForm({
         [moveQuestion, questionFields, setValue]
     );
 
-
     return (
         <Form {...form}>
             <form className={cn("min-h-screen bg-background pb-16 sm:pb-20", className)}>
@@ -632,18 +645,18 @@ export function SpeakingExamForm({
 
                 {/* Main Content */}
                 <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
-                    <div className="grid lg:grid-cols-3 gap-4 sm:gap-6">
+                    <div className="grid lg:grid-cols-5 gap-4 sm:gap-6">
                         {/* Left Column - Main Form */}
-                        <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+                        <div className="lg:col-span-3 space-y-4 sm:space-y-6">
                             {/* Basic Info Section */}
                             <Card>
-                                <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-4">
-                                    <CardTitle className="text-base sm:text-lg flex items-center gap-2">
-                                        <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+                                <CardHeader className="p-1 sm:p-3 !pb-0">
+                                    <CardTitle className="text-base sm:text-lg flex items-center gap-2 text-primary">
+                                        <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 " />
                                         Thông tin cơ bản
                                     </CardTitle>
                                 </CardHeader>
-                                <CardContent className="p-3 sm:p-6 pt-0 space-y-3 sm:space-y-4">
+                                <CardContent className="p-1 sm:p-3 space-y-3 sm:space-y-4">
                                     <FormField
                                         control={control}
                                         name="title"
@@ -798,16 +811,9 @@ export function SpeakingExamForm({
                                 </CardContent>
                             </Card>
 
-
                             {/* Video Section - Sử dụng VideoUploader mới */}
                             <Card>
-                                <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-4">
-                                    <CardTitle className="text-base sm:text-lg flex items-center gap-2">
-                                        <Video className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-                                        Video bài học
-                                    </CardTitle>
-                                </CardHeader>
-                                <CardContent className="p-3 sm:p-6 pt-0">
+                                <CardContent className="p-1 sm:p-3 space-y-3 sm:space-y-4">
                                     <FormField
                                         control={control}
                                         name="video_url"
@@ -973,8 +979,8 @@ export function SpeakingExamForm({
                             </Card>
 
                             {/* Questions Section */}
-                            <Card>
-                                <CardHeader className="p-3 sm:p-6 !pb-0 flex flex-row items-center justify-between">
+                            <Card className="border-none space-y-4">
+                                <CardHeader className="p-0 flex flex-row items-center justify-between">
                                     <CardTitle className="text-base sm:text-lg flex items-center gap-2">
                                         <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                                         <span className="hidden xs:inline">Câu hỏi luyện nói</span>
@@ -995,7 +1001,7 @@ export function SpeakingExamForm({
                                         <span className="sm:hidden">Thêm</span>
                                     </Button>
                                 </CardHeader>
-                                <CardContent className="p-3 sm:p-6 !pt-2 space-y-3 sm:space-y-4">
+                                <CardContent className="p-0 space-y-3 sm:space-y-4">
                                     {errors.questions?.message && (
                                         <p className="text-xs sm:text-sm text-destructive flex items-center gap-1">
                                             <AlertCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -1042,20 +1048,37 @@ export function SpeakingExamForm({
                                     )}
                                 </CardContent>
                             </Card>
+
                         </div>
 
                         {/* Right Column - Summary */}
-                        <SummarySidebar
-                            mode={mode}
-                            isPublished={watchedValues.is_published}
-                            isSaving={isSaving}
-                            examType={watchedValues.type}
-                            vocabularies={watchedValues.vocabularies || []}
-                            onPublish={handlePublish}
-                            addVocabulary={addVocabulary}
-                            updateVocabulary={updateVocabulary}
-                            deleteVocabulary={deleteVocabulary}
-                        />
+                        <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+                            <SummarySidebar
+                                mode={mode}
+                                isPublished={watchedValues.is_published}
+                                isSaving={isSaving}
+                                examType={watchedValues.type}
+                                vocabularies={watchedValues.vocabularies || []}
+                                onPublish={handlePublish}
+                                addVocabulary={addVocabulary}
+                                updateVocabulary={updateVocabulary}
+                                deleteVocabulary={deleteVocabulary}
+                            />
+                            <div>
+                                {/* Multiple Choice Questions Section */}
+                                <Card className="p-0">
+                                    <CardContent className="p-1 sm:p-3">
+                                        <MultipleChoiceQuestionEditor
+                                            control={control}
+                                            watch={watch}
+                                            setValue={setValue}
+                                            register={register}
+                                        />
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </form>

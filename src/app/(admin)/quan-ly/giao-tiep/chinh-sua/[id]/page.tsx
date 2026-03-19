@@ -76,6 +76,7 @@ export default function AdminEditSpeakingExamPage() {
                     question_text: q.question_text,
                     suggested_answer: q.suggested_answer,
                 })),
+                multiple_choice_questions: examData.multiple_choice_questions || [],
                 is_published: examData.is_published,
                 level: examData.level,
                 type: examData.type,

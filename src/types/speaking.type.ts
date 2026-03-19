@@ -89,6 +89,26 @@ export interface SpeakingQuestion {
 }
 
 // =====================================================
+// MULTIPLE CHOICE QUESTION - Câu hỏi trắc nghiệm
+// =====================================================
+export interface MultipleChoiceOption {
+    key: string;    // Khóa đáp án (A, B, C, D hoặc tùy ý)
+    text: string;   // Nội dung đáp án
+}
+
+export interface MultipleChoiceQuestion {
+    question_number: number;
+    question_text: string;
+    options: MultipleChoiceOption[];
+    correct_option: string;  // Key của đáp án đúng
+}
+
+export interface MultipleChoiceAnswer {
+    question_number: number;
+    selected_option: string;
+}
+
+// =====================================================
 // SPEAKING EXAM - Đề giao tiếp
 // =====================================================
 export interface SpeakingExam {
@@ -101,6 +121,7 @@ export interface SpeakingExam {
     thumbnail?: string;                 // Link video Cloudinary/Youtube
     video_script: VideoScript[];            // Kịch bản hội thoại
     questions: SpeakingQuestion[];          // Danh sách câu hỏi
+    multiple_choice_questions: MultipleChoiceQuestion[]; // Câu hỏi trắc nghiệm
     is_published: boolean;                  // Đã xuất bản chưa
     level: LevelExam;
     type: TypeLanguage;

@@ -28,6 +28,7 @@ import {
     CardContent,
     Badge
 } from '@/components/ui';
+import { MultipleChoiceSection } from '@/components/speaking';
 import { useGetSpeakingAttemptDetail } from '@/hooks/use-speaking-attempt';
 import LoadingCustom from '@/components/ui/loading-custom';
 import { SpeakingAttemptDetailResponse, SpeakingAnswerType } from '@/types/speaking-attempt.type';
@@ -513,6 +514,7 @@ export default function SpeakingResultPage() {
 
     // Desktop: selected answer index
     const [selectedIndex, setSelectedIndex] = useState(0);
+    const [viewMode, setViewMode] = useState<'speaking' | 'multiple-choice'>('speaking');
 
     if (isLoading) return <LoadingCustom />;
 
@@ -536,6 +538,14 @@ export default function SpeakingResultPage() {
     const answers = attempt.answers || [];
     const answeredCount = answers.filter(a => a.audio_url).length || 0;
     const selectedAnswer = answers[selectedIndex] ?? null;
+
+    // Multiple choice results
+    const multipleChoiceQuestions = exam.multiple_choice_questions || [];
+    const multipleChoiceAnswers = attempt.multiple_choice_answers || [];
+    const mcCorrectCount = multipleChoiceAnswers.filter(ans => {
+        const question = multipleChoiceQuestions.find(q => q.question_number === ans.question_number);
+        return question && ans.selected_option === question.correct_option;
+    }).length;
 
     // =====================================================
     // MAIN RENDER
@@ -610,12 +620,34 @@ export default function SpeakingResultPage() {
                             ))}
                         </div>
                     </div>
+
+                    {/* Multiple Choice Results */}
+                    {multipleChoiceQuestions.length > 0 && (
+                        <Card className="overflow-hidden">
+                            <CardContent className="p-4">
+                                <div className="flex items-center justify-between mb-4">
+                                    <h3 className="text-sm font-semibold">Kết quả trắc nghiệm</h3>
+                                    <Badge variant={mcCorrectCount === multipleChoiceQuestions.length ? "success" : "secondary"}>
+                                        {mcCorrectCount}/{multipleChoiceQuestions.length} đúng
+                                    </Badge>
+                                </div>
+                                <MultipleChoiceSection
+                                    questions={multipleChoiceQuestions}
+                                    answers={multipleChoiceAnswers}
+                                    onSelectOption={() => { }}
+                                    disabled={true}
+                                    showResult={true}
+                                />
+                            </CardContent>
+                        </Card>
+                    )}
                 </div>
 
                 {/* ════════════════════════════════════
                     DESKTOP LAYOUT (≥ lg) — split panel
                 ════════════════════════════════════ */}
-                <div className="hidden sm:grid sm:grid-cols-[250px_1fr] md:grid-cols-[300px_1fr] lg:grid-cols-[320px_1fr] xl:grid-cols-[380px_1fr] gap-6 h-[calc(100vh-88px)] w-full">
+                {/* h-[calc(100vh-88px)] */}
+                <div className="hidden sm:grid sm:grid-cols-[250px_1fr] md:grid-cols-[300px_1fr] lg:grid-cols-[320px_1fr] xl:grid-cols-[380px_1fr] gap-6  w-full"> 
 
                     {/* ── LEFT PANEL ── */}
                     <div className="flex flex-col gap-4 min-h-0 w-full">
@@ -652,6 +684,23 @@ export default function SpeakingResultPage() {
                             </CardContent>
                         </Card>
 
+                        {/* Tôi muốn tạo 2 nút là 2 chế độ  */}
+                        <div className='hidden md:flex items-center gap-2'>
+                            <Button
+                                size={'sm'}
+                                variant={viewMode === 'speaking' ? 'default' : 'outline'}
+                                onClick={() => setViewMode('speaking')}
+                            >
+                                Luyện nói
+                            </Button>
+                            <Button
+                                variant={viewMode === 'multiple-choice' ? 'default' : 'outline'}
+                                size={'sm'}
+                                onClick={() => setViewMode('multiple-choice')}
+                            >
+                                Trắc nghiệm
+                            </Button>
+                        </div>
                         {/* Question list — scrollable */}
                         <div className="flex-1 min-h-0 overflow-y-auto pr-1">
                             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2 px-0.5">
@@ -672,33 +721,76 @@ export default function SpeakingResultPage() {
                     </div>
 
                     {/* ── RIGHT PANEL ── */}
-                    <div className="min-h-0 overflow-y-auto w-full">
+                    <div className="w-full space-y-4"> {/* nếu có sai CSS gì thì thêm overflow-y-auto */}
                         <AnimatePresence mode="wait">
-                            {selectedAnswer ? (
-                                <motion.div
-                                    key={selectedAnswer._id}
-                                    initial={{ opacity: 0, y: 8 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -8 }}
-                                    transition={{ duration: 0.2 }}
-                                >
-                                    <Card className="h-full">
-                                        <CardContent className="p-5">
-                                            <AnswerDetail answer={selectedAnswer} />
-                                        </CardContent>
-                                    </Card>
-                                </motion.div>
-                            ) : (
-                                <motion.div
-                                    key="empty"
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    className="h-full flex items-center justify-center text-muted-foreground text-sm"
-                                >
-                                    Chọn một câu hỏi để xem kết quả
-                                </motion.div>
-                            )}
+                            {
+                                viewMode === 'speaking' ?
+                                    selectedAnswer ? (
+                                        <motion.div
+                                            key={selectedAnswer._id}
+                                            initial={{ opacity: 0, y: 8 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -8 }}
+                                            transition={{ duration: 0.2 }}
+                                        >
+                                            <Card className="h-full">
+                                                <CardContent className="p-5">
+                                                    <AnswerDetail answer={selectedAnswer} />
+                                                </CardContent>
+                                            </Card>
+                                        </motion.div>
+                                    ) : (
+                                        <motion.div
+                                            key="empty"
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            className="h-full flex items-center justify-center text-muted-foreground text-sm"
+                                        >
+                                            Chọn một câu hỏi để xem kết quả
+                                        </motion.div>
+                                    ) :
+                                    multipleChoiceQuestions.length > 0 && viewMode === 'multiple-choice' && (
+                                        <Card className="overflow-y-visible">
+                                            <CardContent className="p-5">
+                                                <div className="flex items-center justify-between mb-4">
+                                                    <h3 className="text-sm font-semibold">Kết quả trắc nghiệm</h3>
+                                                    <Badge variant={mcCorrectCount === multipleChoiceQuestions.length ? "success" : "secondary"}>
+                                                        {mcCorrectCount}/{multipleChoiceQuestions.length} đúng
+                                                    </Badge>
+                                                </div>
+                                                <MultipleChoiceSection
+                                                    questions={multipleChoiceQuestions}
+                                                    answers={multipleChoiceAnswers}
+                                                    onSelectOption={() => { }}
+                                                    disabled={true}
+                                                    showResult={true}
+                                                />
+                                            </CardContent>
+                                        </Card>
+                                    )
+                            }
                         </AnimatePresence>
+
+                        {multipleChoiceQuestions.length > 0 && (
+                            <Card className="md:hidden overflow-hidden">
+                                <CardContent className="p-5">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <h3 className="text-sm font-semibold">Kết quả trắc nghiệm</h3>
+                                        <Badge variant={mcCorrectCount === multipleChoiceQuestions.length ? "success" : "secondary"}>
+                                            {mcCorrectCount}/{multipleChoiceQuestions.length} đúng
+                                        </Badge>
+                                    </div>
+                                    <MultipleChoiceSection
+                                        questions={multipleChoiceQuestions}
+                                        answers={multipleChoiceAnswers}
+                                        onSelectOption={() => { }}
+                                        disabled={true}
+                                        showResult={true}
+                                    />
+                                </CardContent>
+                            </Card>
+                        )}
+
                     </div>
                 </div>
 

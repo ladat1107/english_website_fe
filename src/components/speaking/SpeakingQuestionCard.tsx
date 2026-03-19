@@ -1,16 +1,15 @@
 /**
  * Khailingo - Speaking Question Card Component
- * Hiển thị câu hỏi speaking với audio recorder
+ * Hiển thị câu hỏi speaking với audio recorder - Redesign nhỏ gọn và tinh tế
  */
 
 "use client";
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, Mic, Lightbulb, X } from 'lucide-react';
+import { CheckCircle2, Mic, ChevronDown, Lightbulb, X } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { SpeakingQuestion } from '@/types/speaking.type';
-import { Card, CardContent, Badge } from '@/components/ui';
 import { AudioRecorder } from './AudioRecorder';
 
 // =====================================================
@@ -44,168 +43,189 @@ export function SpeakingQuestionCard({
     disabled = false,
     className,
 }: SpeakingQuestionCardProps) {
-    const [showAnswer, setShowAnswer] = useState(false);
+    const [showHint, setShowHint] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(isActive);
 
-    // Close tooltip when clicking outside
+    // Expand when active changes
     React.useEffect(() => {
-        if (!showAnswer) return;
+        if (isActive) setIsExpanded(true);
+    }, [isActive]);
 
-        const handleClickOutside = () => setShowAnswer(false);
+    // Close hint when clicking outside
+    React.useEffect(() => {
+        if (!showHint) return;
+        const handleClickOutside = () => setShowHint(false);
         document.addEventListener('click', handleClickOutside);
         return () => document.removeEventListener('click', handleClickOutside);
-    }, [showAnswer]);
+    }, [showHint]);
+
+    const handleToggle = () => {
+        if (!disabled) {
+            setIsExpanded(!isExpanded);
+            onClick?.();
+        }
+    };
 
     return (
         <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
+            transition={{ delay: index * 0.05, duration: 0.2 }}
+            className={className}
         >
-            <Card
+            <div
                 className={cn(
-                    'transition-all duration-300',
-                    isActive && 'ring-2 ring-primary shadow-lg',
-                    isCompleted && 'bg-success/5 border-success/30',
-                    className
+                    'rounded-xl transition-all duration-200',
+                    'bg-card',
+                    isActive && 'ring-2 ring-primary/50 shadow-sm',
+                    isCompleted && !isActive && 'bg-green-50/50 dark:bg-green-950/20'
                 )}
             >
-                <CardContent className="p-4 md:p-6 relative">
-                    {/* Header */}
-                    <div className="flex items-start gap-3 mb-4">
-                        {/* Question Number */}
-                        <div className={cn(
-                            'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0',
-                            isCompleted
-                                ? 'bg-success text-white'
-                                : isActive
-                                    ? 'bg-primary text-white'
-                                    : 'bg-muted text-muted-foreground'
+                {/* Header - Always visible */}
+                <button
+                    type="button"
+                    onClick={handleToggle}
+                    className={cn(
+                        'w-full flex items-center gap-3 p-3 text-left transition-colors',
+                        'hover:bg-muted/50 rounded-xl',
+                        disabled && 'cursor-default hover:bg-transparent'
+                    )}
+                >
+                    {/* Question Number / Status */}
+                    <div className={cn(
+                        'w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-colors',
+                        isCompleted
+                            ? 'bg-green-500 text-white'
+                            : isActive
+                                ? 'bg-primary text-white'
+                                : 'bg-muted text-muted-foreground'
+                    )}>
+                        {isCompleted ? (
+                            <CheckCircle2 className="w-4 h-4" />
+                        ) : (
+                            question.question_number
+                        )}
+                    </div>
+
+                    {/* Question Text */}
+                    <div className="flex-1 min-w-0">
+                        <p className={cn(
+                            'text-sm font-medium leading-snug',
+                            isActive ? 'text-foreground' : 'text-muted-foreground'
                         )}>
-                            {isCompleted ? (
-                                <CheckCircle2 className="w-5 h-5" />
-                            ) : (
-                                question.question_number
-                            )}
-                        </div>
+                            {question.question_text}
+                        </p>
+                        {isCompleted && audioUrl && !isExpanded && (
+                            <span className="text-[10px] text-green-600 dark:text-green-400 flex items-center gap-1 mt-0.5">
+                                <Mic className="w-3 h-3" /> Đã ghi âm
+                            </span>
+                        )}
+                    </div>
 
-                        {/* Question Text */}
-                        <div className="flex-1" onClick={onClick}>
-                            <p className="text-foreground font-medium leading-relaxed">
-                                {question.question_text}
-                            </p>
-                        </div>
+                    {/* Hint button */}
+                    {question.suggested_answer && (
+                        <button
+                            type="button"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setShowHint(!showHint);
+                            }}
+                            className="p-1.5 rounded-full hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors shrink-0"
+                            aria-label="Xem gợi ý"
+                        >
+                            <Lightbulb className="w-4 h-4 text-amber-500" />
+                        </button>
+                    )}
 
-                        {/* Lightbulb Icon - Show Hint */}
-                        {question.suggested_answer && (
-                            <div className="shrink-0 relative">
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        setShowAnswer(!showAnswer);
-                                    }}
-                                    className={cn(
-                                        'p-2 rounded-full transition-all duration-200',
-                                        'hover:bg-amber-50 dark:hover:bg-amber-950/20',
-                                        'group'
-                                    )}
-                                    aria-label="Xem gợi ý"
-                                >
-                                    💡
-                                </button>
+                    {/* Expand icon */}
+                    {!disabled && (
+                        <motion.div
+                            animate={{ rotate: isExpanded ? 180 : 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="shrink-0"
+                        >
+                            <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                        </motion.div>
+                    )}
+                </button>
 
-                                {/* Tooltip */}
-                                <AnimatePresence>
-                                    {showAnswer && (
-                                        <motion.div
-                                            initial={{ opacity: 0, scale: 0.95, y: -4 }}
-                                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                                            exit={{ opacity: 0, scale: 0.95, y: -4 }}
-                                            transition={{ duration: 0.15 }}
-                                            onClick={(e) => e.stopPropagation()}
-                                            className="absolute right-0 top-full mt-2 w-max max-w-[calc(100vw-2rem)] md:max-w-[700px] z-50"
-                                        >
-                                            <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/90 dark:to-orange-950/90 rounded-xl shadow-xl border border-amber-200/50 dark:border-amber-800/50 p-4 backdrop-blur-sm">
-                                                {/* Arrow */}
-                                                <div className="absolute -top-2 right-4 w-4 h-4 bg-amber-50 dark:bg-amber-950/90 border-l border-t border-amber-200/50 dark:border-amber-800/50 rotate-45"></div>
-
-                                                {/* Header */}
-                                                <div className="flex items-center gap-2 mb-2.5 relative">
-                                                    <Lightbulb className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                                                    <span className="text-xs font-semibold text-amber-700 dark:text-amber-400 uppercase tracking-wide">
-                                                        Gợi ý
-                                                    </span>
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            setShowAnswer(false);
-                                                        }}
-                                                        className="ml-auto p-1 rounded-full hover:bg-amber-100 dark:hover:bg-amber-900/50 transition-colors"
-                                                        aria-label="Đóng"
-                                                    >
-                                                        <X className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                                                    </button>
-                                                </div>
-
-                                                {/* Content */}
-                                                <p className="text-xs leading-relaxed text-gray-700 dark:text-gray-200 whitespace-pre-wrap">
-                                                    {question.suggested_answer}
-                                                </p>
-                                            </div>
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
+                {/* Hint Tooltip */}
+                <AnimatePresence>
+                    {showHint && question.suggested_answer && (
+                        <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="overflow-hidden px-3 pb-3"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="bg-amber-50 dark:bg-amber-950/30 rounded-lg p-3 relative">
+                                <div className="flex items-start justify-between gap-2 mb-1.5">
+                                    <span className="text-[10px] font-semibold text-amber-700 dark:text-amber-400 uppercase tracking-wide flex items-center gap-1">
+                                        <Lightbulb className="w-3 h-3" /> Gợi ý
+                                    </span>
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowHint(false)}
+                                        className="p-0.5 rounded hover:bg-amber-200 dark:hover:bg-amber-800/50 transition-colors"
+                                    >
+                                        <X className="w-3 h-3 text-amber-600 dark:text-amber-400" />
+                                    </button>
+                                </div>
+                                <p className="text-xs text-amber-900 dark:text-amber-200 leading-relaxed whitespace-pre-wrap">
+                                    {question.suggested_answer}
+                                </p>
                             </div>
-                        )}
-                    </div>
-
-                    {/* Status Badges */}
-                    <div className="flex flex-wrap items-center gap-2 mb-4">
-                        {isCompleted && audioUrl && (
-                            <Badge variant="success" className="gap-1">
-                                <CheckCircle2 className="w-3 h-3" />
-                                Đã ghi âm
-                            </Badge>
-                        )}
-                        {isActive && !isCompleted && (
-                            <Badge variant="warning" className="gap-1">
-                                <Mic className="w-3 h-3" />
-                                Đang chờ ghi âm
-                            </Badge>
-                        )}
-                    </div>
-
-                    {/* Audio Recorder - Chỉ hiện khi active hoặc chưa completed */}
-                    {isActive && !disabled && (
-                        <div className="mt-6 pt-4 border-t border-border">
-                            <AudioRecorder
-                                maxDuration={300}
-                                onRecordingComplete={(blob, dur) => {
-                                    onRecordingComplete?.(question.question_number, blob, dur);
-                                }}
-                                onUploadComplete={(url, dur) => {
-                                    onUploadComplete?.(question.question_number, question.question_text, url, dur);
-                                }}
-                                showUploadButton={true}
-                                disabled={disabled}
-                            />
-
-
-                        </div>
+                        </motion.div>
                     )}
+                </AnimatePresence>
 
-                    {/* Completed Audio Playback */}
-                    {isCompleted && audioUrl && (
-                        <div className="mt-4 pt-4 border-t border-border">
-                            <p className="text-sm text-muted-foreground mb-2">Bài ghi âm của bạn:</p>
-                            <audio
-                                src={audioUrl}
-                                controls
-                                className="w-full h-10 rounded-lg"
-                            />
-                        </div>
+                {/* Expandable Content */}
+                <AnimatePresence>
+                    {isExpanded && (
+                        <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="overflow-hidden"
+                        >
+                            <div className="px-3 pb-3 space-y-3">
+                                {/* Audio Recorder - Only when active */}
+                                {isActive && !disabled && (
+                                    <div className="pt-2 border-t border-border/50">
+                                        <AudioRecorder
+                                            maxDuration={300}
+                                            onRecordingComplete={(blob, dur) => {
+                                                onRecordingComplete?.(question.question_number, blob, dur);
+                                            }}
+                                            onUploadComplete={(url, dur) => {
+                                                onUploadComplete?.(question.question_number, question.question_text, url, dur);
+                                            }}
+                                            showUploadButton={true}
+                                            disabled={disabled}
+                                        />
+                                    </div>
+                                )}
+
+                                {/* Completed Audio Playback */}
+                                {isCompleted && audioUrl && (
+                                    <div className="pt-2 border-t border-border/50">
+                                        <p className="text-xs text-muted-foreground mb-1.5 flex items-center gap-1">
+                                            <Mic className="w-3 h-3" /> Bài ghi âm của bạn:
+                                        </p>
+                                        <audio
+                                            src={audioUrl}
+                                            controls
+                                            className="w-full h-9 rounded-lg"
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        </motion.div>
                     )}
-                </CardContent>
-            </Card>
+                </AnimatePresence>
+            </div>
         </motion.div>
     );
 }

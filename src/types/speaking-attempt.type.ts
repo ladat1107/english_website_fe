@@ -1,4 +1,4 @@
-import { AIAnalysis, SpeakingExam } from "./speaking.type";
+import { AIAnalysis, MultipleChoiceAnswer, SpeakingExam } from "./speaking.type";
 import { UserType } from "./user.type";
 
 export interface SpeakingAttemptResponse {
@@ -10,6 +10,7 @@ export interface SpeakingAttemptResponse {
         started_at: string;
         completed_at?: string;
         submitted_at?: string;
+        multiple_choice_answers?: MultipleChoiceAnswer[];
     };
     answers: {
         question: {
@@ -30,6 +31,7 @@ export interface SpeakingAttemptType {
     started_at: string;
     submitted_at?: string;
     has_teacher_feedback: boolean;
+    multiple_choice_answers?: MultipleChoiceAnswer[];
     createdAt: string;
     updatedAt: string;
     exam: SpeakingExam;

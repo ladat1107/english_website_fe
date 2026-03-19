@@ -32,3 +32,9 @@ export type {
     FormErrors,
     SpeakingExamFormProps,
 } from './SpeakingExamForm';
+
+// Multiple Choice Question Editor - Editor câu hỏi trắc nghiệm (Admin)
+export { MultipleChoiceQuestionEditor } from './MultipleChoiceQuestionEditor';
+
+// Multiple Choice Question Card - Card câu hỏi trắc nghiệm cho User
+export { MultipleChoiceQuestionCard, MultipleChoiceSection } from './MultipleChoiceQuestionCard';
