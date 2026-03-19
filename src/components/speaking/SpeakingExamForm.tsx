@@ -599,7 +599,6 @@ export function SpeakingExamForm({
     const onSubmit = useCallback(
         async (data: SpeakingExamFormValues) => {
             const dataToSave = { ...data, is_published: mode === "create" ? false : watchedValues.is_published };
-            console.log("Submitting form with data:", dataToSave);
             onSaveSuccess?.(dataToSave);
         },
         [mode, onSaveSuccess, watchedValues.is_published]

@@ -35,7 +35,7 @@ export default function AdminCreateSpeakingExamPage() {
             showPreview={true}
             onPreview={() => {
                 // TODO: Implement preview modal
-                console.log('Preview exam');
+                //console.log('Preview exam');
             }}
             onSaveSuccess={handleSave}
             onSaveError={(error) => {

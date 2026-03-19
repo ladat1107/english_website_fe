@@ -22,7 +22,7 @@ export const useSpeakingSocket = () => {
         isAuthenticatedRef.current = false;
 
         socket.on("connect", () => {
-            console.log("🔔 Connected to speaking socket:", socket.id);
+            //console.log("🔔 Connected to speaking socket:", socket.id);
             // Reset authentication status khi reconnect
             isAuthenticatedRef.current = false;
         });
@@ -46,7 +46,7 @@ export const useSpeakingSocket = () => {
         });
 
         socket.on("connect_error", (err) => {
-            console.log("CONNECT ERROR:", err.message);
+            console.error("CONNECT ERROR:", err.message);
         });
 
 
@@ -68,7 +68,7 @@ export const useSpeakingSocket = () => {
         // ✅ Chỉ join nếu đã authenticated, nếu chưa thì lưu vào pending
         if (isAuthenticatedRef.current) {
             socket.emit("join_room", { topic, examId });
-            console.log("🔵 Joined room:", topic);
+            //console.log("🔵 Joined room:", topic);
         } else {
             pendingJoinRef.current = { topic, examId };
         }
@@ -79,7 +79,7 @@ export const useSpeakingSocket = () => {
         if (!socket) return;
 
         socket.emit("leave_room", { topic });
-        console.log("🔴 LEAVE:", topic);
+        //console.log("🔴 LEAVE:", topic);
     }, []);
 
 
@@ -91,7 +91,7 @@ export const useSpeakingSocket = () => {
         emit: (event: string, data?: any) => {
             if (socketRef.current) {
                 socketRef.current.emit(event, data);
-                console.log(`🔔 Emitting ${event}:`, data);
+                //console.log(`🔔 Emitting ${event}:`, data);
             }
         },
         // Một số method tiện ích phổ biến (optional)

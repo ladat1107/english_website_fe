@@ -75,7 +75,6 @@ export function usePreventLeave({
             isHandlingPopStateRef.current = true;
         
             if (window.confirm(message)) {
-                console.log('User confirmed - allowing navigation');
                 allowNavigationRef.current = true;
                 onNavigateAway?.();
                 // Không gọi history.back() ở đây!

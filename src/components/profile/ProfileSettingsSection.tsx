@@ -144,7 +144,7 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({ 
                 }
             });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             addToast("Xảy ra lỗi", "error")
         }
     };
@@ -159,13 +159,8 @@ export const ProfileSettingsSection: React.FC<ProfileSettingsSectionProps> = ({ 
             if (avatarRef.current) {
                 avatarRef.current.value = '';
             }
-            // if (result?.secureUrl) {
-            //     await uploadAvatarMutation.mutateAsync(result.secureUrl);
-            //     await checkAuthStatus();
-            //     addToast("Thành công", "success")
-            // }
         } catch (error) {
-            console.log(error);
+            console.error(error);
             addToast("Xảy ra lỗi", "error")
         }
     };

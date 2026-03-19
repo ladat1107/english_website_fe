@@ -69,7 +69,6 @@ export default function AdminUserEditPage() {
     // Load user data vào form
     useEffect(() => {
         if (user) {
-            console.log("User data loaded:", user);
             reset({
                 full_name: user.full_name,
                 role: user.role as UserRole,

@@ -7,12 +7,10 @@ export function useAIChat() {
 
     const mutation = useMutation({
         mutationFn: (messages: { role: string; content: string }[]) => {
-            console.log("Sending messages to AI:", messages);
             return http.post("/chat", { messages: messages });
         },
 
         onSuccess: (data) => {
-            console.log("AI response:", data);
             addMessage(
                 "assistant",
                 data.data || "Xin lỗi, tôi không thể trả lời lúc này."
