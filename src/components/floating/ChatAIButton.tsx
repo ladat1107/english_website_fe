@@ -18,7 +18,7 @@ export default function ChatAIButton() {
     return (
         <>
             {/* Chat Window */}
-            <div className="absolute -bottom-4 sm:-bottom-6 right-16 z-50 pointer-events-none">
+            <div className="fixed bottom-4 sm:bottom-0 right-20 z-50 pointer-events-none">
                 <ChatWindow isOpen={isOpen} onClose={() => setIsOpen(false)} />
             </div>
 

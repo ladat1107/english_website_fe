@@ -17,7 +17,7 @@ export const HeroSection: React.FC = () => {
     const { openAuthModal, isAuthenticated } = useAuth();
     const router = useRouter();
     return (
-        <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-hero bee-pattern">
+        <section className="relative min-h-[30vh] lg:min-h-screen flex items-center overflow-hidden bg-gradient-hero bee-pattern">
             {/* Decorative elements */}
             <div className="absolute inset-0 overflow-hidden">
                 {/* Circle decorations */}
