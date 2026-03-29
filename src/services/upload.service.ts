@@ -156,6 +156,64 @@ class UploadService {
     }
 
     /**
+    * Upload nhiều file cùng lúc | file docx, pdf,xlsx, png, jpg, ...
+    * tự động phân loại file dựa trên type 
+    */
+
+    async uploadMultipleAutoType(
+        files: File[],
+        options: {
+            folder: CloudinaryFolder | string;
+            onProgress?: (fileIndex: number, progress: number) => void;
+        }
+    ): Promise<UploadResult[]> {
+        const uploadResults: UploadResult[] = [];
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const type = file.type.startsWith("image/")
+                ? "image"
+                : file.type.startsWith("video/")
+                    ? "video"
+                    : file.type.startsWith("audio/")
+                        ? "audio"
+                        : "raw"; // raw cho các file khác (docx, pdf, v.v.)
+            try {
+                let result: UploadResult;
+                if (type === "image") {
+                    result = await this.uploadImage(file, {
+                        folder: options.folder,
+                        onProgress: (progress) => options.onProgress?.(i, progress),
+                    });
+                } else if (type === "video") {
+                    result = await this.uploadVideo(file, {
+                        folder: options.folder,
+                        onProgress: (progress) => options.onProgress?.(i, progress),
+                    });
+                }
+                else if (type === "audio") {
+                    result = await this.uploadAudio(file, {
+                        folder: options.folder,
+                        onProgress: (progress) => options.onProgress?.(i, progress),
+                    });
+                }
+                else {
+                    // Upload raw file (docx, pdf, v.v.)
+                    result = await uploadMultipleClient([file], {
+                        folder: options.folder,
+                        resourceType: "raw",
+                        onProgress: (fileIndex, progress) => options.onProgress?.(i, progress),
+                    }).then(results => results[0]); // uploadMultipleClient vẫn trả về mảng
+                }
+                uploadResults.push(result);
+            } catch (err) {
+                console.error(`Upload file thứ ${i} thất bại:`, err);
+                // Tiếp tục upload các file còn lại dù có lỗi
+            }
+        }
+        return uploadResults;
+    }
+
+    /**
      * Xóa file
      */
     async deleteFile(

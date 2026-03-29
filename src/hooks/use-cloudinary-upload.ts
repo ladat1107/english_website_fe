@@ -52,6 +52,7 @@ export interface UseCloudinaryUploadReturn {
     ) => Promise<UploadResult | null>;
 
     uploadMultiple: (files: File[]) => Promise<UploadResult[]>;
+    uploadMultipleFile: (files: File[]) => Promise<UploadResult[]>;
 
     reset: () => void;
 }
@@ -225,6 +226,40 @@ export function useCloudinaryUpload(
         [folder, resourceType, onError]
     );
 
+    // Upload file đơn giản (tự động nhận dạng loại) | docx, pdf, xls, v.v.
+    const uploadMultipleFile = useCallback(
+        async (files: File[]): Promise<UploadResult[]> => {
+            setIsUploading(true);
+            setProgress(0);
+            setError(null);
+            try {
+                const uploadResult = await uploadService.uploadMultipleAutoType(files, {
+                    folder: folder || CloudinaryFolder.GENERAL_FILES,
+                    onProgress: (fileIndex, fileProgress) => {
+                        // Tính progress tổng thể dựa trên số file
+                        const overallProgress = Math.round(
+                            ((fileIndex + fileProgress / 100) / files.length) * 100
+                        );
+                        setProgress(overallProgress);
+                    },
+                });
+
+                setProgress(100);
+                return uploadResult;
+            } catch (err) {
+                const errorMessage =
+                    err instanceof Error ? err.message : "Upload nhiều file thất bại";
+                setError(errorMessage);
+                onError?.(err instanceof Error ? err : new Error(errorMessage));
+                return [];
+            } finally {
+                setIsUploading(false);
+            }
+        },
+        [folder, onError]
+    );
+
+
     return {
         isUploading,
         progress,
@@ -234,6 +269,7 @@ export function useCloudinaryUpload(
         uploadImage,
         uploadAudio,
         uploadMultiple,
+        uploadMultipleFile,
         reset,
     };
 }

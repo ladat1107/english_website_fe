@@ -68,9 +68,9 @@ export const Header: React.FC = () => {
 
                     {/* Desktop Navigation */}
                     <div className="hidden lg:flex items-center gap-1">
-                        {MAIN_NAV_ITEMS.map((item) => (
+                        {MAIN_NAV_ITEMS.map((item, index) => (
                             <div
-                                key={item.href}
+                                key={index}
                                 className="relative"
                                 onMouseEnter={() => item.children && setOpenDropdown(item.title)}
                                 onMouseLeave={() => setOpenDropdown(null)}
@@ -105,9 +105,9 @@ export const Header: React.FC = () => {
                                             transition={{ duration: 0.2 }}
                                             className="absolute top-full left-0 mt-1 w-fit bg-white rounded-xl shadow-lg border p-2"
                                         >
-                                            {item.children.map((child) => (
+                                            {item.children.map((child, childIndex) => (
                                                 <Link
-                                                    key={child.href}
+                                                    key={childIndex}
                                                     href={child.href}
                                                     className="block px-4 py-1 rounded-lg hover:bg-primary/5 transition-colors group"
                                                 >

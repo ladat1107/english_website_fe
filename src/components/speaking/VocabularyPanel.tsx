@@ -37,6 +37,21 @@ export default function VocabularyPanel({
     if (!data || data.length === 0) {
         return null; // Không hiển thị panel nếu không có dữ liệu
     }
+
+    const sortedData = [...data].sort((a, b) => {
+        if (language === TypeLanguage.CHINESE) {
+            return a.vocabulary.localeCompare(b.vocabulary, "zh", {
+                sensitivity: "accent",
+                numeric: true,
+            });
+        }
+        // Default: English
+        return a.vocabulary.localeCompare(b.vocabulary, "en", {
+            sensitivity: "base",
+            numeric: true,
+        });
+    });
+
     return (
         <Card className="shadow-sm hover:shadow-md transition-all">
             {/* Header */}
@@ -76,7 +91,7 @@ export default function VocabularyPanel({
                     >
                         <CardContent className="pt-0 pb-4">
                             <div className="space-y-3 max-h-[360px] overflow-y-auto pr-1">
-                                {data.map((item, index) => (
+                                {sortedData.map((item, index) => (
                                     <div
                                         key={index}
                                         className="flex flex-col sm:flex-row items-start sm:items-center p-0 rounded-lg bg-muted/40 hover:bg-muted transition-colors shadow-sm w-full"

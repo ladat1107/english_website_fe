@@ -111,6 +111,12 @@ export interface UploadResult {
     versionedUrl: string;
 
     thumbnailUrl?: string;
+
+    // Tên file gốc
+    originalFilename: string;
+
+    // Tên hiển thị (nếu có)
+    displayName?: string;
 }
 
 /**
@@ -237,6 +243,8 @@ export interface CloudinaryUploadResponse {
     type: string;
     url: string;
     secure_url: string;
+    original_filename: string;
+    display_name?: string;
     duration?: number;
     // eager là trả về kết quả có thumbnail nếu có cấu hình
     eager?: Array<{

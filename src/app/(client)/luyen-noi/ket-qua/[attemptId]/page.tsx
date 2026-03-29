@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
     ArrowLeft,
@@ -29,7 +29,7 @@ import {
     Badge
 } from '@/components/ui';
 import { MultipleChoiceSection } from '@/components/speaking';
-import { useGetSpeakingAttemptDetail } from '@/hooks/use-speaking-attempt';
+import { useDeleteSpeakingAttempt, useGetSpeakingAttemptDetail } from '@/hooks/use-speaking-attempt';
 import LoadingCustom from '@/components/ui/loading-custom';
 import { SpeakingAttemptDetailResponse, SpeakingAnswerType } from '@/types/speaking-attempt.type';
 import dayjs from 'dayjs';
@@ -39,6 +39,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/utils/constants/querykey';
 import { PATHS } from '@/utils/constants';
 import { useSpeakingExamStore } from '@/stores/speaking-exam.strore';
+import { useConfirmDialogContext } from '@/components/ui/confirm-dialog-context';
+import { useToast } from '@/components/ui/toaster';
 
 // =====================================================
 // HELPERS
@@ -506,11 +508,15 @@ function QuestionListItem({ answer, isSelected, onClick, index }: QuestionListIt
 // SPEAKING RESULT PAGE
 // =====================================================
 export default function SpeakingResultPage() {
+    const router = useRouter();
     const params = useParams();
     const attemptId = params.attemptId as string;
     const { type } = useSpeakingExamStore();
+    const { confirm } = useConfirmDialogContext();
+    const { mutate: deleteSpeakingAttempt, isPending } = useDeleteSpeakingAttempt();
     const { data: detailRes, isLoading } = useGetSpeakingAttemptDetail(attemptId);
     const detail: SpeakingAttemptDetailResponse | null = detailRes?.data || null;
+    const { addToast } = useToast();
 
     // Desktop: selected answer index
     const [selectedIndex, setSelectedIndex] = useState(0);
@@ -547,14 +553,30 @@ export default function SpeakingResultPage() {
         return question && ans.selected_option === question.correct_option;
     }).length;
 
-    // =====================================================
-    // MAIN RENDER
-    // =====================================================
+
+    const handleDelete = () => {
+        if (!attempt._id) return;
+
+        confirm({
+            title: 'Xác nhận xóa',
+            description: 'Bạn có chắc chắn muốn xóa bài làm này? Hành động này không thể hoàn tác.',
+            onConfirm: () => {
+                deleteSpeakingAttempt(attempt._id, {
+                    onSuccess: () => {
+                        router.push(PATHS.CLIENT.SPEAKING_HISTORY(exam._id));
+                        addToast("Đã xóa bài làm thành công", 'success');
+                    }
+                });
+
+            }
+        });
+    };
+
     return (
         <div className="min-h-screen bg-background flex flex-col">
             {/* ── Header ── */}
             <div className="bg-card border-b border-border sticky top-0 z-10">
-                <div className="container-custom px-3 sm:px-4 py-3 sm:py-4">
+                <div className="container-custom px-3 sm:px-4 py-3 sm:py-4 flex flex-wrap justify-between items-center gap-3">
                     <div className="flex items-center gap-3 sm:gap-4">
                         <Link href={PATHS.CLIENT.SPEAKING_HISTORY(exam._id)}>
                             <Button variant="ghost" size="icon" className="flex-shrink-0">
@@ -569,6 +591,18 @@ export default function SpeakingResultPage() {
                                 {exam.title}
                             </p>
                         </div>
+                    </div>
+                    <div>
+                        <Button
+                            variant="destructive"
+                            size={'sm'}
+                            className="w-full sm:w-auto h-8"
+                            onClick={handleDelete}
+                            disabled={isPending}
+                        >
+                            Xóa bài làm
+                        </Button>
+
                     </div>
                 </div>
             </div>
@@ -647,7 +681,7 @@ export default function SpeakingResultPage() {
                     DESKTOP LAYOUT (≥ lg) — split panel
                 ════════════════════════════════════ */}
                 {/* h-[calc(100vh-88px)] */}
-                <div className="hidden sm:grid sm:grid-cols-[250px_1fr] md:grid-cols-[300px_1fr] lg:grid-cols-[320px_1fr] xl:grid-cols-[380px_1fr] gap-6  w-full"> 
+                <div className="hidden sm:grid sm:grid-cols-[250px_1fr] md:grid-cols-[300px_1fr] lg:grid-cols-[320px_1fr] xl:grid-cols-[380px_1fr] gap-6  w-full">
 
                     {/* ── LEFT PANEL ── */}
                     <div className="flex flex-col gap-4 min-h-0 w-full">

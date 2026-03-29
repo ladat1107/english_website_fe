@@ -12,6 +12,17 @@ export const QUERY_KEYS = {
         detail: "speaking-attempt-detail",
         getById: "speaking-attempt-get-by-id",
     },
+    writingExam: {
+        getAll: "writing-exams",
+        findOne: "writing-exam",
+    },
+    writingAnswer: {
+        getAll: "writing-answers",
+        findOne: "writing-answer",
+        byExam: "writing-answers-by-exam",
+        pinned: "writing-answers-pinned",
+        history: "writing-answer-history",
+    },
     user: {
         getAll: "get-all-users",
         getById: "get-user-by-id",

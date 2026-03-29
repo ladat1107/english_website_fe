@@ -24,6 +24,7 @@ const eslintConfig = [
         }
       ],
       "no-console": ["error", { allow: ["warn", "error"] }], // Chỉ cho phép console.warn và console.error
+      "react-hooks/exhaustive-deps": "off", // Tắt cảnh báo về dependencies của useEffect và các hook khác
     },
   },
 ];

@@ -6,6 +6,7 @@
 import { LevelExam, SpeakingTopic, TypeLanguage } from "@/utils/constants/enum";
 import { ParamBasic } from ".";
 import { UserType } from "./user.type";
+import z from "zod";
 
 export interface OnlineUser {
     count: number;
@@ -189,6 +190,12 @@ export interface Vocabulary {
     meaning: string;
     type?: string;   // Loại từ (danh từ, động từ, tính từ, v.v.)
 }
+
+export const vocabularySchema = z.object({
+    vocabulary: z.string().min(1, "Vui lòng nhập từ vựng"),
+    meaning: z.string().min(1, "Vui lòng nhập nghĩa"),
+    type: z.string().optional(), // Loại từ (danh từ, động từ, tính từ, v.v.)
+});
 
 
 

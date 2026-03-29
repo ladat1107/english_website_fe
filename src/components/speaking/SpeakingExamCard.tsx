@@ -147,12 +147,12 @@ export function SpeakingExamCard({
 
                 {/* Content - Compact padding on mobile */}
                 <CardHeader className="p-3 sm:p-4 pb-1.5 sm:pb-2">
-                    <div className='flex justify-between'>
+                    <div className='flex justify-between items-center'>
                         {/* Topic Tag */}
-                        <div className="flex items-center gap-2 mb-1.5 sm:mb-2">
+                        <div className="flex items-center gap-2">
                             <Badge
                                 variant="outline"
-                                className={cn('gap-1 text-xs', topicColor.bg, topicColor.text, 'border-none')}
+                                className={cn('gap-1 text-xs', topicColor.bg, topicColor.text, 'border-none whitespace-nowrap')}
                             >
                                 <Tag className="w-3 h-3" />
                                 {speakingTopicMeaning[exam.topic]}
@@ -165,8 +165,8 @@ export function SpeakingExamCard({
                             </Badge>
                         </div>
                         <div className="flex items-center gap-1 text-xs sm:text-sm text-muted-foreground" >
-                            <HelpCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                            <span>{exam.questions.length} câu hỏi</span>
+                            <HelpCircle className="w-3 h-3" />
+                            <span className='whitespace-nowrap'>{exam.questions.length} câu hỏi</span>
                         </div>
                     </div>
 

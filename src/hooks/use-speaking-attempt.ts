@@ -1,7 +1,7 @@
 import { http } from '@/lib/http';
 import { SpeakingAttemptParams } from '@/types/speaking-attempt.type';
 import { QUERY_KEYS } from '@/utils/constants/querykey';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 const prefix = '/speaking-attempt';
 
@@ -58,10 +58,12 @@ export const useUpdateSpeakingAttempt = (id: string) => {
 
 // Delete hook
 export const useDeleteSpeakingAttempt = () => {
+    const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (id: string) => http.delete(`${prefix}/${id}`),
         onSuccess: () => {
-            // queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.speakingAttempt.getAll] });
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.speakingAttempt.getAll] });
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.speakingAttempt.history] });
         },
     });
 }

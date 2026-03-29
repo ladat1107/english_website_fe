@@ -14,6 +14,8 @@ import { ReactQueryProvider } from "./react-query-provider";
 import { ConfirmDialogProvider } from "@/components/ui/confirm-dialog-context";
 import { ToastProvider } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ImagePreviewProvider } from "@/contexts/image-preview-context";
+import ImagePreviewModal from "../ui/image-preview-modal";
 
 /**
  * AuthModalWrapper - Component riêng để render AuthModal
@@ -42,7 +44,10 @@ export const ClientProviders: React.FC<ClientProvidersProps> = ({ children }) =>
             <AuthProvider>
               <SocketProvider>
                 <TooltipProvider delayDuration={0}>
-                  {children}
+                  <ImagePreviewProvider>
+                    {children}
+                    <ImagePreviewModal /> {/* Global modal */}
+                  </ImagePreviewProvider>
                   <AuthModalWrapper />
                 </TooltipProvider>
               </SocketProvider>

@@ -11,7 +11,9 @@ import {
     Mic,
     LogOut,
     Bell,
-    Calendar
+    Calendar,
+    ClipboardPenLine,
+    BookCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -61,6 +63,15 @@ const sidebarItems: SidebarItem[] = [
             { title: "Danh sách đề", href: PATHS.ADMIN.SPEAKING_EXAM },
             { title: "Chấm bài", href: PATHS.ADMIN.SPEAKING_GRADING },
         ],
+    },
+    {
+        title: "Viết",
+        href: PATHS.ADMIN.WRITING_EXAM,
+        icon: ClipboardPenLine,
+        children: [
+            { title: "Danh sách đề", href: PATHS.ADMIN.WRITING_EXAM },
+            { title: "Chấm bài", href: PATHS.ADMIN.WRITING_GRADING },
+        ],
     }, {
         title: "Flashcard",
         href: PATHS.ADMIN.FLASHCARD,
@@ -69,7 +80,7 @@ const sidebarItems: SidebarItem[] = [
     {
         title: "Kiểm đầu vào",
         href: PATHS.ADMIN.FIRST_TEST,
-        icon: Users,
+        icon: BookCheck,
     },
     {
         title: "Người dùng",

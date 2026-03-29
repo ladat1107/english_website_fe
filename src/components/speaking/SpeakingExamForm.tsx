@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo, useCallback, useState } from "react";
+import React, { memo, useCallback } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -16,7 +16,6 @@ import {
     CheckCircle,
     Loader2,
     AlertCircle,
-    Pencil,
 } from "lucide-react";
 import {
     Button,
@@ -52,9 +51,10 @@ import DraggableQuestionItem from "./draggable-question-item";
 import { LevelExam, SpeakingTopic, TypeLanguage } from "@/utils/constants/enum";
 import { Switch } from "../ui/switch";
 import { PATHS } from "@/utils/constants";
-import { levelExamOptions, POS_OPTIONS_EN, POS_OPTIONS_ZH, speakingTopicOptions, typeLanguageOptions, Vocabulary } from "@/types/speaking.type";
+import { levelExamOptions, speakingTopicOptions, typeLanguageOptions, Vocabulary, vocabularySchema } from "@/types/speaking.type";
 import Link from "next/link";
 import MultipleChoiceQuestionEditor from "./MultipleChoiceQuestionEditor";
+import VocabularyAdmin from "./vocabulary-admin";
 
 // =====================================================
 // ZOD SCHEMA - Validation
@@ -72,11 +72,7 @@ const questionSchema = z.object({
     suggested_answer: z.string().optional(),
 });
 
-const vocabularySchema = z.object({
-    vocabulary: z.string().min(1, "Vui lòng nhập từ vựng"),
-    meaning: z.string().min(1, "Vui lòng nhập nghĩa"),
-    type: z.string().optional(), // Loại từ (danh từ, động từ, tính từ, v.v.)
-});
+
 
 const multipleChoiceOptionSchema = z.object({
     key: z.string().min(1),
@@ -256,41 +252,6 @@ const SummarySidebar = memo(function SummarySidebar({
     updateVocabulary,
     deleteVocabulary,
 }: SummarySidebarProps) {
-
-    const [newWord, setNewWord] = useState<Vocabulary>({ vocabulary: "", meaning: "", type: "" });
-
-    const [editIndex, setEditIndex] = useState<number | null>(null);
-    const [editItem, setEditItem] = useState<Vocabulary>({ vocabulary: "", meaning: "", type: "" });
-
-    const POS_OPTIONS = examType === TypeLanguage.ENGLISH ? POS_OPTIONS_EN : POS_OPTIONS_ZH;
-    const handleAddWord = () => {
-        addVocabulary({
-            vocabulary: newWord.vocabulary,
-            meaning: newWord.meaning,
-            type: POS_OPTIONS.find(option => option.value === newWord.type)?.label || newWord.type || "", // Lấy label hiển thị hoặc giữ nguyên nếu không tìm thấy
-        });
-        setNewWord({ vocabulary: "", meaning: "", type: "" });
-    };
-
-    const deleteWord = (index: number) => {
-        deleteVocabulary(index);
-    };
-
-    const startEdit = (index: number) => {
-        setEditIndex(index);
-        setEditItem(vocabularies[index]);
-    };
-
-    const handleSave = (index: number) => {
-        updateVocabulary(index, editItem);
-        setEditItem({ vocabulary: "", meaning: "", type: "" });
-        setEditIndex(null);
-    };
-
-    const cancelEdit = () => {
-        setEditIndex(null);
-    };
-
     return (
         <div className="space-y-4 sm:space-y-6">
             <Card className="sticky top-12 sm:top-16">
@@ -316,161 +277,13 @@ const SummarySidebar = memo(function SummarySidebar({
                             </div>
                         )}
                     </div>
-                    {/* Quản lý từ vựng */}
-                    <div className="space-y-3">
-                        <div className="flex items-center justify-between">
-                            <h3 className="text-sm font-medium">Danh sách từ vựng</h3>
-                            <Button
-                                size="sm"
-                                className="px-3"
-                                onClick={handleAddWord}
-                                disabled={!newWord.vocabulary || !newWord.meaning}
-                            >
-                                Thêm
-                            </Button>
-                        </div>
-
-                        {/* Form nhập từ */}
-                        <div className="flex flex-col sm:flex-row gap-2">
-                            <Input
-                                className="text-sm"
-                                placeholder="Từ vựng"
-                                value={newWord.vocabulary}
-                                onChange={(e) => setNewWord({ ...newWord, vocabulary: e.target.value })}
-                            />
-                            <Input
-                                className="text-sm"
-                                placeholder="Nghĩa"
-                                value={newWord.meaning}
-                                onChange={(e) => setNewWord({ ...newWord, meaning: e.target.value })}
-                            />
-                            <Select
-                                value={newWord.type}
-                                onValueChange={(value) => setNewWord({ ...newWord, type: value })}
-                            >
-                                <SelectTrigger className="text-sm w-20">
-                                    <SelectValue placeholder="Loại từ" />
-                                </SelectTrigger>
-                                <SelectContent className="text-sm w-20">
-                                    {POS_OPTIONS.map((option) => (
-                                        <SelectItem key={option.value} value={option.value}>
-                                            {option.label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-
-
-                        </div>
-
-                        {/* Danh sách từ vựng */}
-                        <div className=" space-y-2 max-h-80 overflow-y-auto">
-                            {vocabularies.length === 0 && (
-                                <p className="text-xs text-muted-foreground">Chưa có từ nào.</p>
-                            )}
-
-                            {vocabularies.map((item, index) => (
-                                <div
-                                    key={index}
-                                    className="group flex items-start justify-between bg-muted/30 p-2 rounded-md"
-                                >
-                                    {/* Text */}
-                                    {editIndex === index ? (
-                                        <div className="flex flex-1 gap-2 pr-8"> {/* chừa không gian cho nút */}
-                                            <Input
-                                                className="text-xs h-6"
-                                                value={editItem.vocabulary}
-                                                onChange={(e) =>
-                                                    setEditItem({ ...editItem, vocabulary: e.target.value })
-                                                }
-                                            />
-                                            <Input
-                                                className="text-xs h-6"
-                                                value={editItem.meaning}
-                                                onChange={(e) =>
-                                                    setEditItem({ ...editItem, meaning: e.target.value })
-                                                }
-                                            />
-                                            <Input
-                                                className="text-xs h-6"
-                                                value={editItem.type}
-                                                onChange={(e) =>
-                                                    setEditItem({ ...editItem, type: e.target.value })
-                                                }
-                                            />
-                                        </div>
-                                    ) : (
-                                        <div className="flex flex-wrap flex-row flex-1 min-w-0 pr-8"> {/* chừa chỗ */}
-                                            <span className="flex-1 font-medium text-sm break-words">
-                                                {item.vocabulary}
-                                            </span>
-                                            <span className="text-xs text-muted-foreground break-words w-1/2">
-                                                {item.meaning}
-                                            </span>
-                                            <span className="text-xs text-muted-foreground break-words w-1/6">
-                                                {item.type}
-                                            </span>
-                                        </div>
-                                    )}
-
-                                    {/* Nút (KHÔNG đẩy layout, nhờ fixed width + absolute) */}
-                                    <div className="relative w-8 flex justify-end">
-                                        <div className="
-        absolute right-0 top-[10px] -translate-y-1/2 
-        flex gap-1 
-        opacity-0 group-hover:opacity-100 
-        pointer-events-none group-hover:pointer-events-auto
-        transition-opacity
-      ">
-                                            {editIndex === index ? (
-                                                <>
-                                                    <Button
-                                                        type="button"
-                                                        size="sm"
-                                                        className="text-[10px] h-6 px-2"
-                                                        onClick={() => handleSave(index)}
-                                                    >
-                                                        Lưu
-                                                    </Button>
-                                                    <Button
-                                                        type="button"
-                                                        size="sm"
-                                                        variant="ghost"
-                                                        className="text-[10px] h-6 px-0"
-                                                        onClick={cancelEdit}
-                                                    >
-                                                        Huỷ
-                                                    </Button>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Button
-                                                        type="button"
-                                                        size="icon"
-                                                        variant="ghost"
-                                                        className="h-4 w-4 text-blue-600"
-                                                        onClick={() => startEdit(index)}
-                                                    >
-                                                        <Pencil className="w-4 h-4" />
-                                                    </Button>
-
-                                                    <Button
-                                                        type="button"
-                                                        size="icon"
-                                                        variant="ghost"
-                                                        className="h-4 w-4 text-red-600"
-                                                        onClick={() => deleteWord(index)}
-                                                    >
-                                                        <Trash2 className="w-4 h-4" />
-                                                    </Button>
-                                                </>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                    <VocabularyAdmin
+                        examType={examType}
+                        vocabularies={vocabularies}
+                        addVocabulary={addVocabulary}
+                        updateVocabulary={updateVocabulary}
+                        deleteVocabulary={deleteVocabulary}
+                    />
                 </CardContent>
             </Card>
         </div>

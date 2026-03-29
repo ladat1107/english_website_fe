@@ -14,6 +14,11 @@ export const PATHS = {
         SPEAKING_EXAM_EDIT: (examId: string) => `/quan-ly/giao-tiep/chinh-sua/${examId}`,
         SPEAKING_GRADING: '/quan-ly/giao-tiep/cham-bai',
         SPEAKING_GRADING_DETAIL: (attemptId: string) => `/quan-ly/giao-tiep/cham-bai/${attemptId}`,
+        WRITING_EXAM: '/quan-ly/luyen-viet',
+        WRITING_EXAM_CREATE: '/quan-ly/luyen-viet/tao-de',
+        WRITING_EXAM_EDIT: (examId: string) => `/quan-ly/luyen-viet/chinh-sua/${examId}`,
+        WRITING_GRADING: '/quan-ly/luyen-viet/cham-bai',
+        WRITING_GRADING_DETAIL: (attemptId: string) => `/quan-ly/luyen-viet/cham-bai/${attemptId}`,
         CLASS_SCHEDULE: '/quan-ly/lich-hoc',
         CLASS_SESSION_DETAIL: (sessionId: string) => `/quan-ly/lich-hoc/${sessionId}`,
         FIRST_TEST: '/quan-ly/dau-vao',
@@ -37,6 +42,9 @@ export const PATHS = {
         SPEAKING_RESULT: (attemptId: string) => `/luyen-noi/ket-qua/${attemptId}`,
         SPEAKING_HISTORY: (examId: string) => `/luyen-noi/lich-su/${examId}`,
         SPEAKING_DETAIL: (examId: string) => `/luyen-noi/${examId}`,
+        WRITING: (type?: string) => `/luyen-viet${type ? `?type=${type}` : ''}`,
+        WRITING_DETAIL: (examId: string) => `/luyen-viet/${examId}`,
+        WRITING_HISTORY: (examId: string) => `/luyen-viet/lich-su/${examId}`,
         CLASS_SCHEDULE: '/lich-hoc',
         CLASS_SESSION_DETAIL: (sessionId: string) => `/lich-hoc/${sessionId}`,
     }
@@ -116,9 +124,16 @@ export const MAIN_NAV_ITEMS: NavItem[] = [
         }]
     },
     {
-        title: "Chép chính tả",
-        href: "/nghe-chep-chinh-ta",
-        description: "Phần mềm luyện nghe chép chính tả theo từng câu",
+        title: "Luyện viết",
+        href: "#",
+        description: "Luyện viết với các chủ đề đa dạng",
+        children: [{
+            title: "Tiếng Anh",
+            href: `${PATHS.CLIENT.WRITING(TypeLanguage.ENGLISH)}`,
+        }, {
+            title: "Tiếng Trung",
+            href: `${PATHS.CLIENT.WRITING(TypeLanguage.CHINESE)}`,
+        }]
     },
     {
         title: "Flashcard",

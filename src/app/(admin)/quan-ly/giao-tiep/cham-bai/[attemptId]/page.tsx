@@ -185,9 +185,6 @@ function AnswerGradingCard({ answer, index, onGradeSuccess }: AnswerGradingCardP
                     setIsEditing(false);
                     onGradeSuccess();
                 },
-                onError: () => {
-                    addToast('Có lỗi xảy ra khi lưu', 'error');
-                },
             }
         );
     };
@@ -197,10 +194,7 @@ function AnswerGradingCard({ answer, index, onGradeSuccess }: AnswerGradingCardP
             onSuccess: () => {
                 addToast('Đang phân tích bằng AI...', 'info');
                 onGradeSuccess();
-            },
-            onError: () => {
-                addToast('Có lỗi xảy ra', 'error');
-            },
+            }
         });
     };
 

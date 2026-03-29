@@ -22,6 +22,7 @@ import {
     Input,
     Card,
     Badge,
+    Pagination,
 } from '@/components/ui';
 import { SpeakingExamCard } from '@/components/speaking';
 import { levelExamOptions, SpeakingExam, SpeakingExamParams, speakingTopicOptions, typeLanguageOptions } from '@/types/speaking.type';
@@ -30,7 +31,7 @@ import { SpeakingTopic, UserRole } from '@/utils/constants/enum';
 import { useDeleteSpeakingExam, useGetAllSpeakingExams } from '@/hooks/use-speaking-exam';
 import { useDebounce } from '@/hooks/use-debounce';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Pagination } from '@/types';
+import { Pagination as PaginationType } from '@/types';
 import LoadingCustom from '@/components/ui/loading-custom';
 import { PATHS } from '@/utils/constants';
 import { useConfirmDialogContext } from '@/components/ui/confirm-dialog-context';
@@ -53,7 +54,7 @@ export default function AdminSpeakingManagementPage() {
 
     const [params, setParams] = useState<SpeakingExamParams>({
         page: 1,
-        limit: 10,
+        limit: 12,
         search: searchDebounce,
         is_published: undefined,
         topic: undefined,
@@ -64,7 +65,7 @@ export default function AdminSpeakingManagementPage() {
         ...params,
         search: searchDebounce,
     });
-    const pagination: Pagination = speakingExamRes?.data?.pagination || {};
+    const pagination: PaginationType = speakingExamRes?.data?.pagination || {};
 
     const { mutate: deleteSpeakingExam } = useDeleteSpeakingExam();
     const { addToast } = useToast();
@@ -116,7 +117,7 @@ export default function AdminSpeakingManagementPage() {
         <div className="min-h-screen bg-background">
             {/* Header */}
             <div className="bg-card border-b border-border sticky top-0 z-10">
-                <div className="container mx-auto px-4 py-3">
+                <div className="container-custom mx-auto px-4 py-3">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div>
                             <h1 className="text-lg sm:text-xl font-bold text-foreground flex items-center gap-2">
@@ -146,7 +147,7 @@ export default function AdminSpeakingManagementPage() {
                 </div>
             </div>
 
-            <div className="container mx-auto px-4 py-6">
+            <div className="container-custom mx-auto px-4 py-6">
                 {/* Search & Filter Bar */}
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
 
@@ -157,160 +158,159 @@ export default function AdminSpeakingManagementPage() {
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             leftIcon={<Search className="w-4 h-4" />}
-                            className="h-10"
+                            className="h-8"
                         />
                     </div>
 
-                    {/* Select nhỏ gọn */}
-                    <div className="w-full sm:w-auto">
-                        <Select
-                            value={params.type !== undefined ? params.type + "" : ""}
-                            onValueChange={(value) =>
-                                setFilter("type", value === "all" ? undefined : value)
-                            }
-                        >
-                            <SelectTrigger className="h-10 min-w-[160px]">
-                                <SelectValue placeholder="Loại đề" />
-                            </SelectTrigger>
+                    <div className='flex flex-row gap-2'>
+                        {/* Select nhỏ gọn */}
+                        <div className="w-full sm:w-auto">
+                            <Select
+                                value={params.type !== undefined ? params.type + "" : ""}
+                                onValueChange={(value) =>
+                                    setFilter("type", value === "all" ? undefined : value)
+                                }
+                            >
+                                <SelectTrigger className="h-8 min-w-[140px]">
+                                    <SelectValue placeholder="Loại đề" />
+                                </SelectTrigger>
 
-                            <SelectContent>
-                                <SelectItem value="all">Tất cả</SelectItem>
-                                {typeLanguageOptions.map((item) => (
-                                    <SelectItem key={item.key} value={item.value}>
-                                        {item.label}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
+                                <SelectContent>
+                                    <SelectItem value="all">Tất cả</SelectItem>
+                                    {typeLanguageOptions.map((item) => (
+                                        <SelectItem key={item.key} value={item.value}>
+                                            {item.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
 
-                    {/* Button Lọc – auto width */}
-                    <div className="relative w-full sm:w-auto">
-                        <Button
-                            variant="outline"
-                            onClick={() => setShowFilterDropdown(!showFilterDropdown)}
-                            className="gap-2 h-10 w-full sm:w-auto"
-                        >
-                            <Filter className="w-4 h-4" />
-                            Lọc
-                            <ChevronDown
-                                className={cn(
-                                    'w-4 h-4 transition-transform',
-                                    showFilterDropdown && 'rotate-180'
-                                )}
-                            />
-                        </Button>
+                        {/* Button Lọc – auto width */}
+                        <div className="relative w-full sm:w-auto">
+                            <Button
+                                variant="outline"
+                                onClick={() => setShowFilterDropdown(!showFilterDropdown)}
+                                className="gap-2 h-8 w-full sm:w-auto"
+                            >
+                                <Filter className="w-4 h-4" />
+                                Lọc
+                                <ChevronDown
+                                    className={cn(
+                                        'w-4 h-4 transition-transform',
+                                        showFilterDropdown && 'rotate-180'
+                                    )}
+                                />
+                            </Button>
 
-                        {/* Dropdown */}
-                        <AnimatePresence>
-                            {showFilterDropdown && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: -10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                    className="absolute right-0 top-full mt-2 w-64 bg-card border border-border rounded-xl shadow-lg p-4 z-20"
-                                >
-
-                                    <DismissableLayer
-                                        onInteractOutside={(e) => {
-                                            // Nếu click vào select-content thì không đóng
-                                            if ((e.target as HTMLElement).closest("[data-radix-select-content]")) {
-                                                e.preventDefault();
-                                                return;
-                                            }
-
-                                            // Còn lại → đóng dropdown
-                                            setShowFilterDropdown(false);
-                                        }}
+                            {/* Dropdown */}
+                            <AnimatePresence>
+                                {showFilterDropdown && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: -10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                        className="absolute right-0 top-full mt-2 w-64 bg-card border border-border rounded-xl shadow-lg p-4 z-20"
                                     >
-                                        {/* Topic Filter */}
-                                        <div className="mb-4">
-                                            <label className="text-sm font-medium mb-2 block">
-                                                Chủ đề
-                                            </label>
 
-                                            <Select
-                                                value={params.topic ?? "all"}
-                                                onValueChange={(value) =>
-                                                    setFilter("topic", value === "all" ? undefined : value)
+                                        <DismissableLayer
+                                            onInteractOutside={(e) => {
+                                                // Nếu click vào select-content thì không đóng
+                                                if ((e.target as HTMLElement).closest("[data-radix-select-content]")) {
+                                                    e.preventDefault();
+                                                    return;
                                                 }
-                                            >
-                                                <SelectTrigger className="w-full h-10">
-                                                    <SelectValue placeholder="Tất cả chủ đề" />
-                                                </SelectTrigger>
 
-                                                <SelectContent>
-                                                    <SelectItem value="all">Tất cả chủ đề</SelectItem>
+                                                // Còn lại → đóng dropdown
+                                                setShowFilterDropdown(false);
+                                            }}
+                                        >
+                                            {/* Topic Filter */}
+                                            <div className="mb-4">
+                                                <label className="text-sm font-medium mb-2 block">
+                                                    Chủ đề
+                                                </label>
 
-                                                    {speakingTopicOptions.map((topic) => (
-                                                        <SelectItem key={topic.key} value={topic.value}>
-                                                            {topic.label}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
+                                                <Select
+                                                    value={params.topic ?? "all"}
+                                                    onValueChange={(value) =>
+                                                        setFilter("topic", value === "all" ? undefined : value)
+                                                    }
+                                                >
+                                                    <SelectTrigger className="w-full h-10">
+                                                        <SelectValue placeholder="Tất cả chủ đề" />
+                                                    </SelectTrigger>
 
-                                        {/* Level Filter */}
-                                        <div className='mb-4'>
-                                            <label className="text-sm font-medium mb-2 block">
-                                                Độ khó
-                                            </label>
-                                            <Select
-                                                value={params.level !== undefined ? params.level + "" : ""}
-                                                onValueChange={(value) =>
-                                                    setFilter("level", value === "all" ? undefined : value)
-                                                }
-                                            >
-                                                <SelectTrigger className="w-full h-10">
-                                                    <SelectValue placeholder="Độ khó" />
-                                                </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectItem value="all">Tất cả chủ đề</SelectItem>
 
-                                                <SelectContent>
-                                                    <SelectItem value="all">All</SelectItem>
-                                                    {levelExamOptions.map((item) => (
-                                                        <SelectItem key={item.key} value={item.value}>
-                                                            {item.label}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                        {/* Status Filter */}
-                                        <div className='mb-4'>
-                                            <label className="text-sm font-medium mb-2 block">
-                                                Trạng thái
-                                            </label>
-                                            <Select
-                                                value={params.is_published !== undefined ? params.is_published + "" : ""}
-                                                onValueChange={(key) =>
-                                                    setFilter("is_published", key === "all" ? undefined : key === "true" ? true : false)
-                                                }
-                                            >
-                                                <SelectTrigger className="w-full h-10">
-                                                    <SelectValue placeholder="Trạng thái" />
-                                                </SelectTrigger>
+                                                        {speakingTopicOptions.map((topic) => (
+                                                            <SelectItem key={topic.key} value={topic.value}>
+                                                                {topic.label}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
 
-                                                <SelectContent>
-                                                    {[
-                                                        { key: 'all', label: 'Tất cả' },
-                                                        { key: 'true', label: 'Đã xuất bản' },
-                                                        { key: 'false', label: 'Bản nháp' },
-                                                    ].map((item) => (
-                                                        <SelectItem key={item.key} value={item.key}>
-                                                            {item.label}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                    </DismissableLayer>
+                                            {/* Level Filter */}
+                                            <div className='mb-4'>
+                                                <label className="text-sm font-medium mb-2 block">
+                                                    Độ khó
+                                                </label>
+                                                <Select
+                                                    value={params.level !== undefined ? params.level + "" : ""}
+                                                    onValueChange={(value) =>
+                                                        setFilter("level", value === "all" ? undefined : value)
+                                                    }
+                                                >
+                                                    <SelectTrigger className="w-full h-10">
+                                                        <SelectValue placeholder="Độ khó" />
+                                                    </SelectTrigger>
 
+                                                    <SelectContent>
+                                                        <SelectItem value="all">All</SelectItem>
+                                                        {levelExamOptions.map((item) => (
+                                                            <SelectItem key={item.key} value={item.value}>
+                                                                {item.label}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                            {/* Status Filter */}
+                                            <div className='mb-4'>
+                                                <label className="text-sm font-medium mb-2 block">
+                                                    Trạng thái
+                                                </label>
+                                                <Select
+                                                    value={params.is_published !== undefined ? params.is_published + "" : ""}
+                                                    onValueChange={(key) =>
+                                                        setFilter("is_published", key === "all" ? undefined : key === "true" ? true : false)
+                                                    }
+                                                >
+                                                    <SelectTrigger className="w-full h-10">
+                                                        <SelectValue placeholder="Trạng thái" />
+                                                    </SelectTrigger>
 
-
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
+                                                    <SelectContent>
+                                                        {[
+                                                            { key: 'all', label: 'Tất cả' },
+                                                            { key: 'true', label: 'Đã xuất bản' },
+                                                            { key: 'false', label: 'Bản nháp' },
+                                                        ].map((item) => (
+                                                            <SelectItem key={item.key} value={item.key}>
+                                                                {item.label}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+                                        </DismissableLayer>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
                     </div>
 
                 </div>
@@ -361,23 +361,36 @@ export default function AdminSpeakingManagementPage() {
                         <LoadingCustom className='min-h-[150px]' />
                         :
                         exams.length > 0 ? (
-                            <div className={'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'}>
-                                {exams.map((exam, index) => (
-                                    <motion.div
-                                        key={exam._id}
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: index * 0.05 }}
-                                    >
-                                        <SpeakingExamCard
-                                            exam={exam}
-                                            variant={UserRole.ADMIN}
-                                            onEdit={handleEdit}
-                                            onDelete={handleDeleteClick}
-                                            onPreview={handlePreview}
-                                        />
-                                    </motion.div>
-                                ))}
+                            <div className='flex flex-col gap-2'>
+                                <div className={'grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-6'}>
+                                    {exams.map((exam, index) => (
+                                        <motion.div
+                                            key={exam._id}
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: index * 0.05 }}
+                                        >
+                                            <SpeakingExamCard
+                                                exam={exam}
+                                                variant={UserRole.ADMIN}
+                                                onEdit={handleEdit}
+                                                onDelete={handleDeleteClick}
+                                                onPreview={handlePreview}
+                                            />
+                                        </motion.div>
+                                    ))}
+                                </div>
+
+                                {/* Pagination */}
+                                <div className="border-t border-border px-4 py-3 bg-muted/30">
+                                    <Pagination
+                                        pagination={pagination}
+                                        onPageChange={(newPage) => setParams(prev => ({ ...prev, page: newPage }))}
+                                        variant="compact"
+                                        size="sm"
+                                    />
+                                </div>
+
                             </div>
                         ) : (
                             <Card className="p-12 text-center">

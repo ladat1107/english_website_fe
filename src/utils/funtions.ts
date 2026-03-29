@@ -84,3 +84,4 @@ export const speakText = (text: string, lang: TypeLanguage, speed: number = 0.9)
 export const removeBracketContent = (text: string): string => {
     return text.replace(/\s*[\(\[\{][^)\]\}]*[\)\]\}]/g, "").trim();
 };
+

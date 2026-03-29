@@ -51,7 +51,7 @@ export function useTextSelection() {
                 const chineseLength = countChineseChars(text);
                 if (chineseLength > 5) return;
             } else {
-                if (text.length < 2 || text.length > 25) return;
+                if (text.length < 2 || text.length > 10) return;
             }
 
             const range = sel.getRangeAt(0);

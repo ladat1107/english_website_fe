@@ -149,6 +149,7 @@ export async function uploadToCloudinaryClient(
                         createdAt: response.created_at,
                         versionedUrl: addVersionToUrl(response.secure_url),
                         thumbnailUrl,
+                        originalFilename: response.original_filename,
                     };
 
                     resolve(result);

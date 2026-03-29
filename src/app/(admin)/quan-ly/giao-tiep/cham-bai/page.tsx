@@ -250,7 +250,7 @@ export default function AdminSpeakingGradingPage() {
         <div className="min-h-screen bg-background">
             {/* Header */}
             <div className="bg-card border-b border-border sticky top-0 z-10">
-                <div className="container mx-auto px-3 sm:px-4 py-3">
+                <div className="container-custom mx-auto px-3 sm:px-4 py-3">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                         <div>
                             <h1 className="text-lg sm:text-xl font-bold text-foreground flex items-center gap-2">
@@ -272,7 +272,7 @@ export default function AdminSpeakingGradingPage() {
                 </div>
             </div>
 
-            <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
+            <div className="container-custom mx-auto px-3 sm:px-4 py-4 sm:py-6">
                 {/* Stats Cards */}
                 <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-4 sm:mb-6">
                     <StatsCard
@@ -293,18 +293,20 @@ export default function AdminSpeakingGradingPage() {
                 </div>
 
                 {/* Search & Filters */}
-                <div className="flex flex-col gap-3 mb-4 sm:mb-6">
+                <div className="flex flex-col sm:flex-row gap-3 mb-4 sm:mb-6">
                     {/* Search */}
-                    <Input
-                        placeholder="Tìm theo tên, email học viên hoặc tên đề..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        leftIcon={<Search className="w-4 h-4" />}
-                        className="w-full"
-                    />
+                    <div className='flex-1'>
+                        <Input
+                            placeholder="Tìm theo tên, email học viên hoặc tên đề..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            leftIcon={<Search className="w-4 h-4" />}
+                            className="w-full"
+                        />
+                    </div>
 
                     {/* Filter Row */}
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-row gap-2">
                         {/* Exam Filter */}
                         <Select
                             value={params.topic || 'all'}

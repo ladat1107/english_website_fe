@@ -13,13 +13,13 @@ import {
     MessageSquare,
     Sparkles
 } from 'lucide-react';
-import { Input, Badge } from '@/components/ui';
+import { Input, Badge, Pagination } from '@/components/ui';
 import { SpeakingExamCard } from '@/components/speaking';
 import { levelExamOptions, SpeakingExam, SpeakingExamParams, speakingTopicOptions } from '@/types/speaking.type';
 import { useGetAllSpeakingExams } from '@/hooks/use-speaking-exam';
 import { useDebounce } from '@/hooks/use-debounce';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Pagination } from '@/types';
+import { Pagination as PaginationType } from '@/types';
 import LoadingCustom from '@/components/ui/loading-custom';
 import { useSearchParams } from 'next/navigation';
 import { useSpeakingExamStore } from '@/stores/speaking-exam.strore';
@@ -44,7 +44,7 @@ export default function StudentSpeakingPage() {
         topic: undefined
     });
     const { data: speakingExamRes, isLoading: isExamLoading } = useGetAllSpeakingExams(params);
-    const pagination: Pagination = speakingExamRes?.data.pagination;
+    const pagination: PaginationType = speakingExamRes?.data.pagination;
 
     useEffect(() => {
         const type = searchParams.get("type");
@@ -197,20 +197,31 @@ export default function StudentSpeakingPage() {
 
                         {/* Exam Grid - Compact gap on mobile */}
                         {publishedExams.length > 0 ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
-                                {publishedExams.map((exam, index) => (
-                                    <motion.div
-                                        key={exam._id}
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: index * 0.05 }}
-                                    >
-                                        <SpeakingExamCard
-                                            exam={exam}
-                                            variant="student"
-                                        />
-                                    </motion.div>
-                                ))}
+                            <div className='flex flex-col gap-3'>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
+                                    {publishedExams.map((exam, index) => (
+                                        <motion.div
+                                            key={exam._id}
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: index * 0.05 }}
+                                        >
+                                            <SpeakingExamCard
+                                                exam={exam}
+                                                variant="student"
+                                            />
+                                        </motion.div>
+                                    ))}
+                                </div>
+
+                                <div className="px-4 py-3">
+                                    <Pagination
+                                        pagination={pagination}
+                                        onPageChange={(page) => setParams(pre => ({ ...pre, page }))}
+                                        variant="compact"
+                                        size="sm"
+                                    />
+                                </div>
                             </div>
                         ) : (
                             <div className="text-center py-10 sm:py-16">
