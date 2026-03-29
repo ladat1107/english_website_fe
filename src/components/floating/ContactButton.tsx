@@ -111,7 +111,7 @@ export default function ContactButton() {
             </AnimatePresence>
 
             {/* Nút chính */}
-            <button onClick={() => setIsOpen((prev) => !prev)} aria-label={isOpen ? "Đóng liên hệ" : "Mở liên hệ"} className={cn("w-12 h-12 rounded-full flex items-center justify-center", "bg-cyan-500 text-white shadow-xl", "transition-all duration-300 hover:scale-110 active:scale-95", "hover:bg-cyan-600 hover:shadow-2xl")} > {isOpen ? <HeadphoneOff /> : <HeadsetIcon />} </button>
+            <button onClick={() => setIsOpen((prev) => !prev)} aria-label={isOpen ? "Đóng liên hệ" : "Mở liên hệ"} className={cn("w-12 h-12 rounded-full flex items-center justify-center", "bg-primary text-white shadow-xl", "transition-all duration-300 hover:scale-110 active:scale-95", "hover:bg-primary/80 hover:shadow-2xl")} > {isOpen ? <HeadphoneOff /> : <HeadsetIcon />} </button>
         </div>
     );
 }

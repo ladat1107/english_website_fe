@@ -85,3 +85,22 @@ export const removeBracketContent = (text: string): string => {
     return text.replace(/\s*[\(\[\{][^)\]\}]*[\)\]\}]/g, "").trim();
 };
 
+// For SEO (URL Slug) =======================
+export function toSlug(str: string): string {
+    if (!str) return "";
+    return str
+        .toLowerCase()
+        .normalize('NFD') // tách dấu
+        .replace(/[\u0300-\u036f]/g, '') // xóa dấu
+        .replace(/đ/g, 'd') // thay đ -> d
+        .replace(/[^a-z0-9\s-]/g, '') // xóa ký tự không mong muốn
+        .trim()
+        .replace(/\s+/g, '-') // thay khoảng trắng -> dấu gạch ngang
+        .replace(/-+/g, '-'); // loại bỏ gạch ngang lặp
+}
+
+export function getIdFromSlug(slug: string): string | null {
+    const parts = slug.split('-');
+    const lastPart = parts[parts.length - 1];
+    return /^[a-f0-9]{24}$/.test(lastPart) ? lastPart : null;
+}
