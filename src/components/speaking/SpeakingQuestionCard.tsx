@@ -114,28 +114,28 @@ export function SpeakingQuestionCard({
                             isActive ? 'text-foreground' : 'text-muted-foreground'
                         )}>
                             {question.question_text}
+                            {/* Hint button */}
+                            {question.suggested_answer && (
+                                <button
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setShowHint(!showHint);
+                                    }}
+                                    className="text-lg rounded-full hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors shrink-0 animate-bounce"
+                                    aria-label="Xem gợi ý"
+                                >
+                                    💡
+                                </button>
+                            )}
                         </p>
+
                         {isCompleted && audioUrl && !isExpanded && (
                             <span className="text-[10px] text-green-600 dark:text-green-400 flex items-center gap-1 mt-0.5">
                                 <Mic className="w-3 h-3" /> Đã ghi âm
                             </span>
                         )}
                     </div>
-
-                    {/* Hint button */}
-                    {question.suggested_answer && (
-                        <button
-                            type="button"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setShowHint(!showHint);
-                            }}
-                            className="p-1.5 rounded-full hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors shrink-0"
-                            aria-label="Xem gợi ý"
-                        >
-                            <Lightbulb className="w-4 h-4 text-amber-500" />
-                        </button>
-                    )}
 
                     {/* Expand icon */}
                     {!disabled && (

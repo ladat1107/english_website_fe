@@ -10,6 +10,7 @@ export interface WritingExam {
     _id: string;
     title: string;
     content: string; // Nội dung đề bài
+    suggest: string; // Nội dung gợi ý
     images: string[]; // Hình ảnh đề bài (nếu có)
     type: TypeLanguage;
     is_published: boolean;

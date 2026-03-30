@@ -29,11 +29,12 @@ export default function AdminEditWritingExamPage() {
         return {
             title: exam.title,
             content: exam.content,
-            images: exam.images || [],
-            vocabularies: exam.vocabularies || [],
+            images: exam?.images || [],
+            vocabularies: exam?.vocabularies || [],
             level: exam.level,
             type: exam.type,
             is_published: exam.is_published,
+            suggest: exam?.suggest || '',
         };
     }, [examRes]);
 

@@ -395,15 +395,6 @@ export default function SpeakingPracticeDetailPage() {
                                 </div>
                             </div>
                         </div>
-
-                        <Button
-                            onClick={() => setShowSubmitDialog(true)}
-                            disabled={!canSubmit}
-                            className="gap-2"
-                        >
-                            <Send className="w-4 h-4" />
-                            <span className="hidden sm:inline">Nộp bài</span>
-                        </Button>
                     </div>
 
                     {/* Progress Bar */}
@@ -480,6 +471,17 @@ export default function SpeakingPracticeDetailPage() {
                                 </CardContent>
                             </Card>
                         )}
+
+                        <div className='hidden lg:flex w-full justify-end'>
+                            <Button
+                                onClick={() => setShowSubmitDialog(true)}
+                                disabled={!canSubmit}
+                                className="gap-2"
+                            >
+                                <Send className="w-4 h-4" />
+                                <span className="hidden sm:inline">Nộp bài</span>
+                            </Button>
+                        </div>
                     </div>
 
                     {/* Sidebar */}

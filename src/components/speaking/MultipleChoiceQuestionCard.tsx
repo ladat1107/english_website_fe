@@ -74,7 +74,7 @@ export function MultipleChoiceQuestionCard({
                             onClick={() => handleSelect(option.key)}
                             disabled={disabled}
                             className={cn(
-                                "flex items-center gap-3 pb-3 rounded-xl text-left transition-all duration-200",
+                                "flex items-center gap-3 pb-1 rounded-xl text-left transition-all duration-200",
                                 "hover:bg-muted/60 active:scale-[0.98]",
                                 !disabled && "cursor-pointer",
                                 disabled && "cursor-default",
@@ -150,7 +150,7 @@ export function MultipleChoiceSection({
             </div>
 
             {/* Questions */}
-            <div className="space-y-5">
+            <div className="space-y-2">
                 {questions.map((question, index) => {
                     const answer = answers.find(
                         (a) => a.question_number === question.question_number

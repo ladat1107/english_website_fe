@@ -1,8 +1,3 @@
-/**
- * Khailingo - Writing Exam Form Component
- * Component form chung cho tạo và chỉnh sửa đề luyện viết
- */
-
 "use client";
 
 import React, { useCallback, useEffect } from 'react';
@@ -29,7 +24,6 @@ import {
     CardTitle,
     Badge,
 } from '@/components/ui';
-import { Textarea } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { useCloudinaryUpload } from '@/hooks/use-cloudinary-upload';
@@ -38,10 +32,12 @@ import { levelExamOptions, typeLanguageOptions, Vocabulary, vocabularySchema } f
 import { LevelExam, TypeLanguage } from '@/utils/constants/enum';
 import z from 'zod';
 import VocabularyAdmin from '../speaking/vocabulary-admin';
+import { AutoResizeTextarea } from '../ui/auto-resize-text-area';
 
 export const writingExamSchema = z.object({
     title: z.string().min(1, 'Vui lòng nhập tiêu đề').max(200, 'Tiêu đề không được quá 200 ký tự'),
     content: z.string().min(1, 'Vui lòng nhập nội dung đề bài').max(10000, 'Nội dung không được quá 10000 ký tự'),
+    suggest: z.string().max(1000, 'Nội dung gợi ý không được quá 1000 ký tự').optional(),
     images: z.array(z.string().url('URL hình ảnh không hợp lệ')),
     type: z.enum(TypeLanguage),
     is_published: z.boolean(),
@@ -71,6 +67,7 @@ export default function WritingExamForm({ mode, defaultValues, onSubmit, isSubmi
         defaultValues: {
             title: '',
             content: '',
+            suggest: '',
             images: [],
             type: TypeLanguage.ENGLISH,
             is_published: false,
@@ -281,14 +278,20 @@ export default function WritingExamForm({ mode, defaultValues, onSubmit, isSubmi
 
                                     {/* Content */}
                                     <div>
-                                        <label className="text-sm font-medium mb-1 block">
-                                            Nội dung đề bài <span className="text-destructive">*</span>
-                                        </label>
+                                        <div className='flex justify-between items-center gap-2'>
+                                            <label className="text-sm font-medium mb-1 block">
+                                                Nội dung đề bài <span className="text-destructive">*</span>
+                                            </label>
+                                            <p className="text-[10px] text-muted-foreground">
+                                                {content?.length || 0} / 10000 ký tự
+                                            </p>
+                                        </div>
+
                                         <Controller
                                             name="content"
                                             control={control}
                                             render={({ field }) => (
-                                                <Textarea
+                                                <AutoResizeTextarea
                                                     {...field}
                                                     placeholder="Nhập nội dung đề bài chi tiết..."
                                                     rows={10}
@@ -304,9 +307,33 @@ export default function WritingExamForm({ mode, defaultValues, onSubmit, isSubmi
                                             ) : (
                                                 <span />
                                             )}
-                                            <p className="text-xs text-muted-foreground">
-                                                {content?.length || 0} / 10000 ký tự
-                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Suggest */}
+                                    <div>
+                                        <label className="text-sm font-medium mb-1 block">
+                                            Nội dung gợi ý <span className="text-destructive"></span>
+                                        </label>
+                                        <Controller
+                                            name="suggest"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <AutoResizeTextarea
+                                                    {...field}
+                                                    placeholder="Nhập nội dung gợi ý..."
+                                                    rows={5}
+                                                    className={errors.suggest ? 'border-destructive' : ''}
+                                                />
+                                            )}
+                                        />
+                                        <div className="flex items-center justify-between mt-1">
+                                            {errors.suggest && (
+                                                <p className="text-xs text-destructive">
+                                                    {errors.suggest.message}
+                                                </p>
+                                            )}
+
                                         </div>
                                     </div>
                                 </CardContent>

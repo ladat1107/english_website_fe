@@ -118,6 +118,7 @@ export default function WritingExamDetailPage() {
     const [selectedPinnedAnswer, setSelectedPinnedAnswer] = useState<WritingAnswer | null>(null);
     const [showPinnedAnswers, setShowPinnedAnswers] = useState(true);
     const [mode, setMode] = useState<"text" | "image">("text");
+    const [showSuggest, setShowSuggest] = useState(false)
 
     // Queries
     const { data: examRes, isLoading: examLoading } = useGetWritingExamById(examId);
@@ -233,14 +234,7 @@ export default function WritingExamDetailPage() {
                             {exam.title}
                         </h1>
                     </div>
-                    <Button variant="default" size="sm" className="gap-1"
-                        onClick={handleSubmit}
-                        disabled={isSubmitting || (mode === "text" ? !answerText.trim() : uploadedFiles.length === 0)
-                        }
-                    >
-                        {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                        <span className="hidden sm:inline">Nộp bài</span>
-                    </Button>
+
                 </div>
             </div>
 
@@ -254,11 +248,14 @@ export default function WritingExamDetailPage() {
                                 <CardTitle className="text-base sm:text-lg flex items-center gap-2">
                                     <FileText className="w-5 h-5 text-primary" />
                                     Đề bài
+                                    <button title='Gợi ý' className='p-0 text-lg hover:bg-yellow-200 rounded-full' onClick={() => setShowSuggest(!showSuggest)}>
+                                        💡
+                                    </button>
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="prose prose-sm max-w-none">
-                                    <p className="whitespace-pre-wrap text-foreground">{exam.content}</p>
+                                    <p className="text-sm whitespace-pre-wrap text-foreground text-justify">{exam.content}</p>
                                 </div>
                                 {exam.images && exam.images.length > 0 && (
                                     <div className="mt-4 grid grid-cols-2 gap-2">
@@ -269,6 +266,14 @@ export default function WritingExamDetailPage() {
                                                 />
                                             </div>
                                         ))}
+                                    </div>
+                                )}
+                                {showSuggest && exam.suggest && (
+                                    <div className="mt-4 bg-yellow-50 p-2 rounded-lg">
+                                        <h3 className="text-sm font-semibold mb-2 text-yellow-600">Gợi ý</h3>
+                                        <div className="prose prose-sm max-w-none">
+                                            <p className="text-sm whitespace-pre-wrap text-foreground text-justify">{exam.suggest}</p>
+                                        </div>
                                     </div>
                                 )}
                             </CardContent>
@@ -427,6 +432,16 @@ export default function WritingExamDetailPage() {
                                         }
                                     </>
                                 )}
+                                <div className='w-full flex justify-end mt-2'>
+                                    <Button variant="default" size="sm" className="gap-1"
+                                        onClick={handleSubmit}
+                                        disabled={isSubmitting || (mode === "text" ? !answerText.trim() : uploadedFiles.length === 0)
+                                        }
+                                    >
+                                        {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                                        <span className="hidden sm:inline">Nộp bài</span>
+                                    </Button>
+                                </div>
                             </CardContent>
                         </Card>
                     </div>

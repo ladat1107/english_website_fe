@@ -7,6 +7,7 @@ import { useTextSelection } from "@/hooks/use-selected-text";
 import ContextMenu from "../menu/context-menu";
 import { AddFlashcardModal } from "../flashcard/add-flashcard-modal";
 import { useAuth } from "@/contexts";
+import ZaloGroupModal from "../ui/zalo-dialog";
 
 interface ClientLayoutProps {
     children: ReactNode;
@@ -32,6 +33,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
             {/* Main content với padding top cho header fixed */}
             <main className="pt-14 min-h-screen">
                 {children}
+                <ZaloGroupModal />
                 {isAuthenticated && <ContextMenu text={text} rect={rect} onAdd={handleAdd} />}
             </main>
 

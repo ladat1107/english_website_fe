@@ -339,7 +339,7 @@ export default function WritingHistoryPage() {
                             <HistoryItem
                                 key={answer._id}
                                 answer={answer}
-                                index={historyItems.length - 1 - index}
+                                index={index}
                                 onRefreshAI={handleRefreshAI}
                                 isRefreshing={isRefreshingAI}
                             />
