@@ -65,6 +65,7 @@ export default function ZaloGroupModal() {
                                 alt="Zalo Group"
                                 width={150}
                                 height={90}
+                                priority
                                 className="absolute top-0 left-1/2 -translate-x-1/2  mx-auto mb-3 drop-shadow-lg opacity-90"
                             />
 

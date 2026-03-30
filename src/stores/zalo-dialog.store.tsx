@@ -42,7 +42,6 @@ export const useZaloDialog = create<ZaloDialogState>()(
         }),
         {
             name: "zalo-dialog-storage",
-            skipHydration: true,
         }
     )
 );
