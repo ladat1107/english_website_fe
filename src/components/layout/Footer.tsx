@@ -11,19 +11,13 @@ import Image from "next/image";
 import { Button } from "../ui";
 import FreeLevelTestDialog from "./FreeTestDialog";
 import { useState } from "react";
-import { useAuth } from "@/contexts";
 
 export const Footer: React.FC = () => {
     const currentYear = new Date().getFullYear();
     const [open, onOpenChange] = useState(false);
-    const { isAuthenticated, openAuthModal } = useAuth();
 
     const handleCTAClick = () => {
-        if (isAuthenticated) {
-            onOpenChange(true);
-        } else {
-            openAuthModal();
-        }
+        onOpenChange(true);
     };
     return (
         <footer className="bg-foreground text-white">
@@ -201,10 +195,8 @@ export const Footer: React.FC = () => {
                 </div>
             </div>
 
-            <FreeLevelTestDialog
-                open={open}
-                onOpenChange={onOpenChange}
-            />
+            {open && <FreeLevelTestDialog open={open} onOpenChange={onOpenChange} />}
+
         </footer>
     );
 };

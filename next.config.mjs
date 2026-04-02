@@ -23,6 +23,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'ui-avatars.com',
         pathname: '/**',
+      }, {
+        protocol: 'https',
+        hostname: 'i.pinimg.com',
+        pathname: '/**',
       }
     ],
   },

@@ -32,6 +32,9 @@ export enum CloudinaryFolder {
     USER_AVATARS = "users/avatars",
     USER_RECORDINGS = "users/recordings",
 
+    BLOG_IMAGES = "blog/images",
+    BLOG_FILES = 'blog/files',
+
     // General
     GENERAL_IMAGES = "general/images",
     GENERAL_FILES = "general/files",

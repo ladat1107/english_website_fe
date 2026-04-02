@@ -6,27 +6,25 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { FcGoogle } from "react-icons/fc";
 import { FiCheck, FiArrowRight } from "react-icons/fi";
 import { Button } from "@/components/ui";
-import { useAuth } from "@/contexts";
+import envConfig from "@/utils/env-config";
 
 // Danh sách lợi ích
 const benefits = [
-    "Truy cập không giới hạn kho đề thi IELTS",
-    "Lưu tiến độ và theo dõi kết quả học tập",
-    "Học flashcard với phương pháp Spaced Repetition",
-    "Nhận thông báo đề thi mới và bài mẫu cập nhật",
+    "Truy cập kho tài liệu học tập đa dạng",
+    "Lưu tiến độ và theo dõi quá trình học",
+    "Học từ vựng hiệu quả với flashcard",
+    "Cập nhật nội dung mới mỗi ngày",
 ];
 
 export const CTASection: React.FC = () => {
-    const { openAuthModal } = useAuth();
     return (
         <section className="py-20 bg-white overflow-hidden">
             <div className="container-custom">
                 <div className="relative">
                     {/* Background decoration */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-bee-red-dark rounded-3xl" />
+                    <div className="absolute inset-0 bg-[linear-gradient(135deg,#dc2626_0%,#ef4444_50%,#f87171_100%)] rounded-3xl" />
                     <div className="absolute inset-0 opacity-10">
                         <div className="absolute top-10 left-10 w-40 h-40 rounded-full bg-white blur-3xl" />
                         <div className="absolute bottom-10 right-10 w-60 h-60 rounded-full bg-white blur-3xl" />
@@ -43,13 +41,13 @@ export const CTASection: React.FC = () => {
                                 transition={{ duration: 0.6 }}
                             >
                                 <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-                                    Đăng ký tài khoản
+                                    Bắt đầu hành trình học tập
                                     <br />
-                                    <span className="text-bee-yellow">miễn phí ngay hôm nay!</span>
+                                    <span className="text-bee-yellow"> cùng cộng đồng Khailingo!</span>
                                 </h2>
                                 <p className="text-white/80 text-lg mb-8">
-                                    Tham gia cùng hơn 100,000+ người học và bắt đầu hành trình
-                                    chinh phục IELTS của bạn với Khailingo.
+                                    Kết nối, học hỏi và phát triển kỹ năng mỗi ngày
+                                    với nền tảng học tập hiện đại và cộng đồng năng động.
                                 </p>
 
                                 {/* Benefits list */}
@@ -73,13 +71,12 @@ export const CTASection: React.FC = () => {
 
                                 {/* CTA Button */}
                                 <Button
-                                    onClick={openAuthModal}
+                                    onClick={() => window.open(envConfig.NEXT_PUBLIC_ZALO_GROUP_URL, "_blank")}
                                     size="xl"
                                     className="bg-white text-primary hover:bg-white/90 shadow-lg"
                                 >
-                                    <FcGoogle className="w-6 h-6 mr-2" />
-                                    Đăng ký miễn phí với Google
-                                    <FiArrowRight className="w-5 h-5 ml-2" />
+                                    Tham gia cộng đồng
+                                    <FiArrowRight className="w-4 h-4 ml-2" />
                                 </Button>
                             </motion.div>
 

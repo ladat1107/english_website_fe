@@ -9,72 +9,32 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { FiArrowRight, FiPenTool, FiMic } from "react-icons/fi";
 import { Card, CardContent, Badge } from "@/components/ui";
-
-// Dữ liệu mẫu Writing
-const writingSamples = [
-    {
-        id: "australian-zoo",
-        title: "Real IELTS Writing Task 1 - Map - Topic Australian Zoo",
-        type: "Task 1 - Map",
-        band: "8.5+",
-        quarter: "Q4/2025",
-    },
-    {
-        id: "residence-hall",
-        title: "Real IELTS Writing Task 1 - Map - Topic Residence Hall",
-        type: "Task 1 - Map",
-        band: "8.5+",
-        quarter: "Q4/2025",
-    },
-    {
-        id: "fruit-jam",
-        title: "Real IELTS Writing Task 1 - Process - Topic Fruit Jam",
-        type: "Task 1 - Process",
-        band: "8.5+",
-        quarter: "Q4/2025",
-    },
-    {
-        id: "international-travellers",
-        title: "Real IELTS Writing Task 1 - Table - Topic International Travellers",
-        type: "Task 1 - Table",
-        band: "8.5+",
-        quarter: "Q4/2025",
-    },
-];
-
-// Dữ liệu mẫu Speaking
-const speakingSamples = [
-    {
-        id: "exciting-activity",
-        title: "IELTS Speaking Part 3 - Topic Exciting Activity for the First Time",
-        part: "Part 3",
-        band: "8.0+",
-        quarter: "Q4/2025",
-    },
-    {
-        id: "traditional-stories",
-        title: "IELTS Speaking Part 3 - Topic Traditional Stories",
-        part: "Part 3",
-        band: "8.0+",
-        quarter: "Q4/2025",
-    },
-    {
-        id: "useful-books",
-        title: "IELTS Speaking Part 3 - Topic Useful Books",
-        part: "Part 3",
-        band: "8.0+",
-        quarter: "Q4/2025",
-    },
-    {
-        id: "important-old-thing",
-        title: "Describe an important old thing that your family has kept",
-        part: "Part 2",
-        band: "8.0+",
-        quarter: "Q4/2025",
-    },
-];
+import { useGetAllWritingExams } from "@/hooks/use-writing-exam";
+import { useGetAllSpeakingExams } from "@/hooks";
+import { WritingExam } from "@/types/writing.type";
+import { SpeakingExam } from "@/types/speaking.type";
+import { PATHS } from "@/utils/constants";
+import { useAuth } from "@/contexts";
+import dayjs from "dayjs";
 
 export const SamplesSection: React.FC = () => {
+
+    const { isAuthenticated, openAuthModal } = useAuth();
+    const { data: writingRes, isLoading: writingLoading } = useGetAllWritingExams({ page: 1, limit: 4 });
+    const { data: speakingRes, isLoading: speakingLoading } = useGetAllSpeakingExams({ page: 1, limit: 4 });
+
+    if (writingLoading || speakingLoading) return null;
+
+    const writingSamples: WritingExam[] = writingRes?.data?.items || [];
+    const speakingSamples: SpeakingExam[] = speakingRes?.data?.items || [];
+
+    const handleSampleClick = (e: React.MouseEvent) => {
+        if (!isAuthenticated) {
+            e.preventDefault();
+            openAuthModal();
+        }
+    }
+
     return (
         <section className="py-20 bg-secondary/30">
             <div className="container-custom">
@@ -94,11 +54,11 @@ export const SamplesSection: React.FC = () => {
                         <span className="text-primary">Speaking</span>
                     </h2>
                     <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                        Tổng hợp bài mẫu IELTS band 8.0+ với dàn ý, từ vựng và bài tập ôn luyện
+                        Kho bài mẫu đa dạng giúp nâng cao kỹ năng và mở rộng vốn từ
                     </p>
                 </motion.div>
 
-                <div className="grid lg:grid-cols-2 gap-8">
+                <div className="grid sm:grid-cols-2 gap-8">
                     {/* Writing Samples */}
                     <motion.div
                         initial={{ opacity: 0, x: -30 }}
@@ -112,10 +72,10 @@ export const SamplesSection: React.FC = () => {
                                 <div className="w-10 h-10 rounded-xl bg-pink-100 flex items-center justify-center">
                                     <FiPenTool className="w-5 h-5 text-pink-500" />
                                 </div>
-                                <h3 className="text-xl font-bold">IELTS Writing Sample</h3>
+                                <h3 className="text-xl font-bold">Writing Sample</h3>
                             </div>
                             <Link
-                                href="/bai-mau/writing"
+                                href={PATHS.CLIENT.WRITING()}
                                 className="text-primary text-sm font-medium hover:underline flex items-center"
                             >
                                 Xem thêm
@@ -127,8 +87,9 @@ export const SamplesSection: React.FC = () => {
                         <div className="space-y-4">
                             {writingSamples.map((sample) => (
                                 <Link
-                                    key={sample.id}
-                                    href={`/bai-mau/writing/${sample.id}`}
+                                    key={sample._id}
+                                    onClick={handleSampleClick}
+                                    href={PATHS.CLIENT.WRITING_DETAIL(sample._id)}
                                     className="block group"
                                 >
                                     <Card variant="default" hoverable>
@@ -143,13 +104,13 @@ export const SamplesSection: React.FC = () => {
                                                             {sample.type}
                                                         </Badge>
                                                         <Badge variant="success" size="sm">
-                                                            Band {sample.band}
+                                                            {sample.level}
                                                         </Badge>
                                                         <span className="text-xs text-muted-foreground">
-                                                            {sample.quarter}
+                                                            {dayjs(sample.updatedAt).format("DD/MM/YYYY")}
                                                         </span>
                                                     </div>
-                                                    <h4 className="font-medium text-sm group-hover:text-primary transition-colors line-clamp-2">
+                                                    <h4 className="text-sm group-hover:text-primary transition-colors line-clamp-1 uppercase font-bold">
                                                         {sample.title}
                                                     </h4>
                                                 </div>
@@ -175,7 +136,7 @@ export const SamplesSection: React.FC = () => {
                                 <div className="w-10 h-10 rounded-xl bg-cyan-100 flex items-center justify-center">
                                     <FiMic className="w-5 h-5 text-cyan-500" />
                                 </div>
-                                <h3 className="text-xl font-bold">IELTS Speaking Sample</h3>
+                                <h3 className="text-xl font-bold">Speaking Sample</h3>
                             </div>
                             <Link
                                 href="/bai-mau/speaking"
@@ -190,8 +151,9 @@ export const SamplesSection: React.FC = () => {
                         <div className="space-y-4">
                             {speakingSamples.map((sample) => (
                                 <Link
-                                    key={sample.id}
-                                    href={`/bai-mau/speaking/${sample.id}`}
+                                    key={sample._id}
+                                    onClick={handleSampleClick}
+                                    href={PATHS.CLIENT.SPEAKING_DETAIL(sample._id)}
                                     className="block group"
                                 >
                                     <Card variant="default" hoverable>
@@ -203,16 +165,16 @@ export const SamplesSection: React.FC = () => {
                                                 <div className="flex-1 min-w-0">
                                                     <div className="flex items-center gap-2 mb-1 flex-wrap">
                                                         <Badge variant="ghost" size="sm">
-                                                            {sample.part}
+                                                            {sample.type}
                                                         </Badge>
                                                         <Badge variant="success" size="sm">
-                                                            Band {sample.band}
+                                                            {sample.level}
                                                         </Badge>
                                                         <span className="text-xs text-muted-foreground">
-                                                            {sample.quarter}
+                                                            {dayjs(sample.updatedAt).format("DD/MM/YYYY")}
                                                         </span>
                                                     </div>
-                                                    <h4 className="font-medium text-sm group-hover:text-primary transition-colors line-clamp-2">
+                                                    <h4 className="text-sm group-hover:text-primary transition-colors line-clamp-1 uppercase font-bold">
                                                         {sample.title}
                                                     </h4>
                                                 </div>

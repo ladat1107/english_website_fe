@@ -46,5 +46,11 @@ export const QUERY_KEYS = {
         findOnePublic: "flashcard-deck-public",
         getAllForClient: "flashcard-decks-for-client",
         getMyDecks: "flashcard-my-decks",
-    }
+    },
+    blog: {
+        getAll: "blogs",
+        findOne: "blog",
+        getByCategory: "blogs-by-category",
+        getPublic: "blogs-public",
+    },
 }

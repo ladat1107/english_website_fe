@@ -125,8 +125,9 @@
     }
 
     html {
-        overflow-y: scroll;
-        scroll-behavior: smooth;
+        /* overflow-y: scroll;
+        scroll-behavior: smooth; */
+        
         /* Prevent font scaling on orientation change */
         -webkit-text-size-adjust: 100%;
         text-size-adjust: 100%;
@@ -193,7 +194,7 @@
        Compact padding on mobile
        ========================================== */
     .container-custom {
-        @apply max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8;
+        @apply max-w-7xl mx-auto px-3 sm:px-2 md:px-4 lg:px-6;
     }
 
     /* Compact container for mobile */

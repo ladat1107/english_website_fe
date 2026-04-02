@@ -18,6 +18,7 @@ import { useToast } from "../ui/toaster";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/utils/constants/querykey";
 import { Loader2 } from "lucide-react";
+import { useAuth } from "@/contexts";
 
 type Props = {
     open: boolean;
@@ -28,10 +29,16 @@ export default function FreeLevelTestDialog({
     open,
     onOpenChange,
 }: Props) {
+    const { isAuthenticated, openAuthModal } = useAuth();
     const [phone, setPhone] = useState("");
     const { mutate: updateBookingTest, isPending: isUpdating } = useUpdateBookingTest();
     const { addToast } = useToast();
     const queryClient = useQueryClient();
+
+    if (open && !isAuthenticated) {
+        openAuthModal();
+        return;
+    }
 
     const handleSubmit = (title: string) => {
         if (title === "Tham gia nhóm Zalo") {
@@ -52,6 +59,7 @@ export default function FreeLevelTestDialog({
             });
         }
     }
+
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="max-w-lg rounded-2xl p-6">

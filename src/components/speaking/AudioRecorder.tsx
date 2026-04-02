@@ -250,27 +250,7 @@ export function AudioRecorder({
 
         setError(null);
 
-        try {
-            // const formData = new FormData();
-            // formData.append('file', audioToUpload);
-            // formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-            // formData.append('resource_type', 'video'); // Cloudinary uses 'video' for audio
-
-            // const response = await fetch(
-            //     `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/video/upload`,
-            //     {
-            //         method: 'POST',
-            //         body: formData,
-            //     }
-            // );
-
-            // if (!response.ok) {
-            //     throw new Error('Upload failed');
-            // }
-
-            // const data = await response.json();
-            // onUploadComplete?.(data.secure_url, duration);
-
+        try {            
             await uploadAudio(audioToUpload, {
                 fileName: `recording_${Date.now()}.webm`,
             });

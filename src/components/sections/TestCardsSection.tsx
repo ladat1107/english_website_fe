@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { FiArrowRight, FiUsers, FiBookOpen } from "react-icons/fi";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import { Pagination, Autoplay } from "swiper/modules";
 import {
     Card,
     CardContent,
@@ -19,8 +19,8 @@ import {
 
 // Import Swiper styles
 import "swiper/css";
-import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { useToast } from "../ui/toaster";
 
 // Dữ liệu mẫu các đề thi
 const featuredTests = [
@@ -81,32 +81,42 @@ const featuredTests = [
 ];
 
 export const TestCardsSection: React.FC = () => {
+    const { addToast } = useToast();
     return (
         <section className="py-20 bg-secondary/30">
             <div className="container-custom">
-                {/* Section Header */}
+                {/* ===== HEADER ===== */}
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.6 }}
-                    className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-10"
+                    className="flex flex-col lg:flex-row justify-between gap-6 mb-8"
                 >
-                    <div>
-                        <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-3">
-                            Đề thi mới nhất
+                    {/* LEFT */}
+                    <div className="flex-1">
+                        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary text-white text-xs font-semibold mb-3">
+                            🚀 Sắp ra mắt
                         </span>
-                        <h2 className="text-3xl font-bold">
-                            <span className="text-primary">IELTS</span> Online Test
+
+                        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold leading-snug">
+                            <span className="text-primary">Khailingo</span> Online Test
                         </h2>
+
+                        <p className="text-sm text-muted-foreground mt-2 max-w-md">
+                            Thi thử trực tuyến với trải nghiệm thực tế, chấm điểm tự động và kho đề đa dạng.
+                        </p>
                     </div>
-                    <Link
-                        href="/luyen-thi-ielts/full-test"
-                        className="group inline-flex items-center text-primary font-medium hover:underline"
-                    >
-                        Xem tất cả
-                        <FiArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
-                    </Link>
+
+                    {/* RIGHT CTA */}
+                    <div className="flex items-center">
+                        <Link
+                            href="#"
+                            className="group inline-flex items-center px-4 py-2 rounded-lg border border-primary/30 text-primary text-sm font-medium hover:bg-primary hover:text-white transition"
+                        >
+                            Khám phá
+                            <FiArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition" />
+                        </Link>
+                    </div>
                 </motion.div>
 
                 {/* Tests Swiper */}
@@ -117,18 +127,21 @@ export const TestCardsSection: React.FC = () => {
                     transition={{ duration: 0.6, delay: 0.2 }}
                 >
                     <Swiper
-                        modules={[Navigation, Pagination, Autoplay]}
+                        modules={[Pagination, Autoplay]}
                         spaceBetween={24}
                         slidesPerView={1}
-                        navigation
+                        loop={true}
                         pagination={{ clickable: true }}
                         autoplay={{
                             delay: 5000,
                             disableOnInteraction: false,
                         }}
                         breakpoints={{
-                            640: {
-                                slidesPerView: 2,
+                            0: {
+                                slidesPerView: 1.5,
+                            },
+                            480: {
+                                slidesPerView: 2.5,
                             },
                             768: {
                                 slidesPerView: 3,
@@ -141,7 +154,9 @@ export const TestCardsSection: React.FC = () => {
                     >
                         {featuredTests.map((test) => (
                             <SwiperSlide key={test.id}>
-                                <Link href={`/luyen-thi-ielts/${test.id}`} className="block group">
+                                <div className="block group"
+                                    onClick={() => addToast("Tính năng đang phát triển, Bạn vui lòng chờ nhé!", "info")}
+                                >
                                     <Card variant="default" hoverable className="overflow-hidden">
                                         {/* Image */}
                                         <div className="relative aspect-[4/3] bg-gradient-to-br from-primary/20 to-accent/20">
@@ -176,7 +191,7 @@ export const TestCardsSection: React.FC = () => {
                                                 </div>
                                                 <div className="flex items-center gap-1">
                                                     <FiUsers className="w-4 h-4" />
-                                                    <span>{test.attempts} lượt làm</span>
+                                                    <span>{test.attempts} lượt đăng ký</span>
                                                 </div>
                                             </div>
 
@@ -186,7 +201,7 @@ export const TestCardsSection: React.FC = () => {
                                             </Button>
                                         </CardContent>
                                     </Card>
-                                </Link>
+                                </div>
                             </SwiperSlide>
                         ))}
                     </Swiper>
@@ -224,21 +239,7 @@ export const TestCardsSection: React.FC = () => {
             </div>
 
             {/* Custom Swiper Styles */}
-            <style jsx global>{`
-        .tests-swiper .swiper-button-prev,
-        .tests-swiper .swiper-button-next {
-          background: white;
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        .tests-swiper .swiper-button-prev:after,
-        .tests-swiper .swiper-button-next:after {
-          font-size: 16px;
-          color: #D42525;
-          font-weight: bold;
-        }
+            <style jsx global>{`        
         .tests-swiper .swiper-pagination-bullet {
           background: #D42525;
         }

@@ -35,7 +35,7 @@ module.exports = {
          Slightly smaller for mobile screens
          ========================================== */
       fontSize: {
-        'xxs': ['0.625rem', { lineHeight: '0.875rem' }],  // 10px
+        'xxs': ['0.625rem', { lineHeight: '0.875rem' }],  // 10px - for labels, captions
         'xs': ['0.75rem', { lineHeight: '1rem' }],       // 12px
         'sm': ['0.8125rem', { lineHeight: '1.25rem' }],  // 13px
         'base': ['0.875rem', { lineHeight: '1.375rem' }], // 14px (mobile default)

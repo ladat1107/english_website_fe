@@ -26,6 +26,9 @@ export const PATHS = {
         FLASHCARD: '/quan-ly/flashcard',
         FLASHCARD_CREATE: '/quan-ly/flashcard/tao-de',
         FLASHCARD_EDIT: (deckId: string) => `/quan-ly/flashcard/chinh-sua/${deckId}`,
+        BLOG: '/quan-ly/blog',
+        BLOG_CREATE: '/quan-ly/blog/tao-bai-viet',
+        BLOG_EDIT: (blogId: string) => `/quan-ly/blog/chinh-sua/${blogId}`,
     },
     CLIENT: {
         HOME: '/',
@@ -47,6 +50,9 @@ export const PATHS = {
         WRITING_HISTORY: (examId: string) => `/luyen-viet/lich-su/${examId}`,
         CLASS_SCHEDULE: '/lich-hoc',
         CLASS_SESSION_DETAIL: (sessionId: string) => `/lich-hoc/${sessionId}`,
+        BLOG: '/blog',
+        BLOG_DETAIL: (slug: string) => `/blog/${slug}`,
+        BLOG_CATEGORY: (category: string) => `/blog/danh-muc/${category}`,
     }
 } as const;
 // =====================================================
@@ -140,7 +146,11 @@ export const MAIN_NAV_ITEMS: NavItem[] = [
         href: "/flashcard",
         description: "Học từ vựng hiệu quả với flashcard",
     },
-
+    {
+        title: "Blog",
+        href: PATHS.CLIENT.BLOG,
+        description: "Kiến thức, mẹo thi và tin tức mới nhất về Khailingo",
+    },
     {
         title: "Lịch học",
         href: "/lich-hoc",

@@ -17,74 +17,64 @@ import {
     FaLayerGroup,
 } from "react-icons/fa";
 import { Card, CardContent, Button } from "@/components/ui";
+import { PATHS } from "@/utils/constants";
 
 // Dữ liệu các tính năng
 const features = [
     {
         icon: FaHeadphones,
-        title: "IELTS Online Test",
+        title: "Luyện đề Online",
         description:
-            "Đề thi IELTS Online Test với trải nghiệm thi thật và kho đề khủng kèm giải thích chi tiết.",
-        href: "/luyen-thi-ielts/full-test",
+            "Trải nghiệm thi thử trực tuyến với nhiều dạng đề, giao diện giống thực tế và có giải thích chi tiết.",
         color: "bg-blue-500",
         lightColor: "bg-blue-50",
-        count: "500+ đề",
     },
     {
         icon: FaBookReader,
-        title: "IELTS Reading Practice",
+        title: "Luyện đọc hiểu",
         description:
-            "Kho đề luyện tập IELTS Reading với phân loại theo dạng câu hỏi và chủ đề.",
-        href: "/luyen-thi-ielts/reading",
+            "Kho bài đọc đa dạng theo chủ đề và dạng câu hỏi, giúp nâng cao kỹ năng đọc hiểu hiệu quả.",
         color: "bg-green-500",
         lightColor: "bg-green-50",
-        count: "300+ passages",
     },
     {
         icon: FaHeadphones,
-        title: "IELTS Listening Practice",
+        title: "Luyện nghe",
         description:
-            "Kho đề luyện tập IELTS Listening với audio chất lượng cao và transcript chi tiết.",
-        href: "/luyen-thi-ielts/listening",
+            "Bài nghe chất lượng cao kèm transcript và luyện tập theo từng cấp độ từ cơ bản đến nâng cao.",
         color: "bg-purple-500",
         lightColor: "bg-purple-50",
-        count: "400+ audios",
     },
     {
         icon: FaKeyboard,
-        title: "Nghe chép chính tả",
+        title: "Nghe & chép chính tả",
         description:
-            "Phần mềm luyện nghe chép chính tả theo từng câu với kho đề nghe IELTS và TOEIC.",
-        href: "/nghe-chep-chinh-ta",
+            "Luyện nghe chủ động qua bài tập chép chính tả, giúp cải thiện phản xạ và độ chính xác.",
         color: "bg-orange-500",
         lightColor: "bg-orange-50",
-        count: "1000+ bài",
     },
     {
         icon: FaPenFancy,
-        title: "Bài mẫu Writing",
+        title: "Bài mẫu & viết",
         description:
-            "Tổng hợp bài mẫu IELTS Writing Task 1 & Task 2 band 8.0+ với dàn ý và từ vựng.",
-        href: "/bai-mau/writing",
+            "Tham khảo bài viết mẫu chất lượng kèm dàn ý, từ vựng và cách triển khai hiệu quả.",
         color: "bg-pink-500",
         lightColor: "bg-pink-50",
-        count: "200+ samples",
     },
     {
         icon: FaMicrophone,
-        title: "Bài mẫu Speaking",
+        title: "Luyện nói",
         description:
-            "Bài mẫu IELTS Speaking Part 1, 2, 3 band 8.0+ với từ vựng và audio mẫu.",
-        href: "/bai-mau/speaking",
+            "Phát triển kỹ năng nói với bài mẫu, từ vựng và hướng dẫn luyện tập thực tế.",
         color: "bg-cyan-500",
         lightColor: "bg-cyan-50",
-        count: "300+ topics",
     },
 ];
 
 export const FeaturesSection: React.FC = () => {
+
     return (
-        <section className="py-20 bg-white">
+        <section className="py-5 md:py-10 lg:py-16 bg-white">
             <div className="container-custom">
                 {/* Section Header */}
                 <motion.div
@@ -92,7 +82,7 @@ export const FeaturesSection: React.FC = () => {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6 }}
-                    className="text-center mb-16"
+                    className="text-center mb-6 sm:mb-10 lg:mb-16"
                 >
                     <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
                         Tính năng nổi bật
@@ -106,7 +96,7 @@ export const FeaturesSection: React.FC = () => {
                 </motion.div>
 
                 {/* Features Grid */}
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid xs:grid-cols-2 md:grid-cols-3 gap-6">
                     {features.map((feature, index) => (
                         <motion.div
                             key={feature.title}
@@ -115,58 +105,60 @@ export const FeaturesSection: React.FC = () => {
                             viewport={{ once: true }}
                             transition={{ duration: 0.5, delay: index * 0.1 }}
                         >
-                            <Link href={feature.href} className="group block h-full">
+                            <div className="group block">
                                 <Card
                                     variant="bordered"
                                     hoverable
-                                    className="h-full border-transparent hover:border-primary/30 transition-all duration-300"
+                                    className="border-transparent hover:border-primary/30 transition-all duration-300"
                                 >
-                                    <CardContent className="p-6">
-                                        {/* Icon */}
-                                        <div
-                                            className={`w-14 h-14 rounded-2xl ${feature.lightColor} flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300`}
-                                        >
-                                            <feature.icon
-                                                className={`w-7 h-7 text-${feature.color.replace("bg-", "")}`}
-                                                style={{
-                                                    color: feature.color.includes("blue")
-                                                        ? "#3B82F6"
-                                                        : feature.color.includes("green")
-                                                            ? "#22C55E"
-                                                            : feature.color.includes("purple")
-                                                                ? "#A855F7"
-                                                                : feature.color.includes("orange")
-                                                                    ? "#F97316"
-                                                                    : feature.color.includes("pink")
-                                                                        ? "#EC4899"
-                                                                        : "#06B6D4",
-                                                }}
-                                            />
-                                        </div>
+                                    <CardContent className="p-1 sm:p-4">
+                                        <div className="flex items-start gap-3">
+                                            {/* Icon */}
+                                            <div
+                                                className={`
+                        w-10 h-10 shrink-0
+                        rounded-xl ${feature.lightColor}
+                        flex items-center justify-center
+                        group-hover:scale-105 transition
+                    `}
+                                            >
+                                                <feature.icon
+                                                    className="w-5 h-5"
+                                                    style={{
+                                                        color: feature.color.includes("blue")
+                                                            ? "#3B82F6"
+                                                            : feature.color.includes("green")
+                                                                ? "#22C55E"
+                                                                : feature.color.includes("purple")
+                                                                    ? "#A855F7"
+                                                                    : feature.color.includes("orange")
+                                                                        ? "#F97316"
+                                                                        : feature.color.includes("pink")
+                                                                            ? "#EC4899"
+                                                                            : "#06B6D4",
+                                                    }}
+                                                />
+                                            </div>
 
-                                        {/* Count badge */}
-                                        <span className="inline-block px-3 py-1 rounded-full bg-secondary text-xs font-medium text-muted-foreground mb-3">
-                                            {feature.count}
-                                        </span>
+                                            {/* Content */}
+                                            <div className="flex-1 min-w-0">
+                                                <h3 className="text-sm sm:text-base font-semibold mb-1 line-clamp-1 group-hover:text-primary">
+                                                    {feature.title}
+                                                </h3>
 
-                                        {/* Title */}
-                                        <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
-                                            {feature.title}
-                                        </h3>
+                                                <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 mb-1">
+                                                    {feature.description}
+                                                </p>
 
-                                        {/* Description */}
-                                        <p className="text-muted-foreground text-sm mb-4">
-                                            {feature.description}
-                                        </p>
-
-                                        {/* Link */}
-                                        <div className="flex items-center text-primary font-medium text-sm">
-                                            <span>Xem thêm</span>
-                                            <FiArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-2" />
+                                                <div className="flex items-center text-primary text-xs font-medium">
+                                                    <span>Xem</span>
+                                                    <FiArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-1 transition" />
+                                                </div>
+                                            </div>
                                         </div>
                                     </CardContent>
                                 </Card>
-                            </Link>
+                            </div>
                         </motion.div>
                     ))}
                 </div>
@@ -188,8 +180,8 @@ export const FeaturesSection: React.FC = () => {
                             <CardContent className="p-8">
                                 <div className="flex flex-col md:flex-row items-center gap-8">
                                     {/* Icon */}
-                                    <div className="w-20 h-20 rounded-2xl bg-gradient-primary flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                                        <FaLayerGroup className="w-10 h-10 text-white" />
+                                    <div className="hidden md:flex w-10 h-10 md:w-20 md:h-20 rounded-2xl bg-gradient-primary  items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                                        <FaLayerGroup className="w-5 h-5 md:w-10 md:h-10 text-white" />
                                     </div>
 
                                     {/* Content */}
@@ -198,11 +190,11 @@ export const FeaturesSection: React.FC = () => {
                                             Mới cập nhật
                                         </span>
                                         <h3 className="text-2xl font-bold mb-2 group-hover:text-primary transition-colors">
-                                            Flashcard Từ vựng IELTS
+                                            Flashcard Từ vựng
                                         </h3>
                                         <p className="text-muted-foreground mb-4">
                                             Học từ vựng hiệu quả với phương pháp Spaced Repetition.
-                                            Hơn 5000+ từ vựng IELTS được phân loại theo chủ đề và band điểm.
+                                            Hơn 5000+ từ vựng được phân loại theo chủ đề và band điểm.
                                         </p>
                                         <div className="flex flex-wrap justify-center md:justify-start gap-3">
                                             <span className="px-3 py-1 rounded-full bg-success/10 text-success text-sm">
@@ -218,10 +210,12 @@ export const FeaturesSection: React.FC = () => {
                                     </div>
 
                                     {/* CTA */}
-                                    <Button size="lg" className="flex-shrink-0">
-                                        Học ngay
-                                        <FiArrowRight className="w-5 h-5 ml-2" />
-                                    </Button>
+                                    <Link href={PATHS.CLIENT.FLASHCARD}>
+                                        <Button size="lg" className="flex-shrink-0">
+                                            Học ngay
+                                            <FiArrowRight className="w-5 h-5 ml-2" />
+                                        </Button>
+                                    </Link>
                                 </div>
                             </CardContent>
                         </Card>

@@ -84,7 +84,7 @@ const PracticeCard: React.FC<{
 
     return (
         <Link
-            href={`/luyen-thi-ielts/${type}/${practice.id}`}
+            href={`#`}
             className="group block"
         >
             <Card variant="default" hoverable className="h-full">
@@ -127,7 +127,7 @@ const PracticeCard: React.FC<{
 
 export const PracticeSection: React.FC = () => {
     return (
-        <section className="py-20 bg-white">
+        <section className="py-5 md:py-10 lg:py-16 bg-white">
             <div className="container-custom">
                 {/* Section Header */}
                 <motion.div
@@ -161,11 +161,11 @@ export const PracticeSection: React.FC = () => {
                             <TabsList variant="pills">
                                 <TabsTrigger value="listening" variant="pills">
                                     <FiHeadphones className="w-4 h-4 mr-2" />
-                                    IELTS Listening
+                                    Listening
                                 </TabsTrigger>
                                 <TabsTrigger value="reading" variant="pills">
                                     <FiBook className="w-4 h-4 mr-2" />
-                                    IELTS Reading
+                                    Reading
                                 </TabsTrigger>
                             </TabsList>
                         </div>
@@ -182,7 +182,7 @@ export const PracticeSection: React.FC = () => {
                                 ))}
                             </div>
                             <div className="text-center mt-8">
-                                <Link href="/luyen-thi-ielts/listening">
+                                <Link href="#">
                                     <Button variant="outline" size="lg">
                                         Xem tất cả bài Listening
                                         <FiArrowRight className="w-5 h-5 ml-2" />
@@ -203,7 +203,7 @@ export const PracticeSection: React.FC = () => {
                                 ))}
                             </div>
                             <div className="text-center mt-8">
-                                <Link href="/luyen-thi-ielts/reading">
+                                <Link href="#">
                                     <Button variant="outline" size="lg">
                                         Xem tất cả bài Reading
                                         <FiArrowRight className="w-5 h-5 ml-2" />

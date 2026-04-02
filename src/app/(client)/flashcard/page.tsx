@@ -9,22 +9,21 @@ export const metadata: Metadata = {
 
 export default function FlashcardPage() {
     return (
-        <div className="py-8">
-            <div className="container-custom">
-                {/* Page Header */}
-                <div className="text-center mb-10">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-primary mb-4">
-                        <FiLayers className="w-8 h-8 text-white" />
-                    </div>
-                    <h1 className="text-3xl md:text-4xl font-bold mb-4">
-                        <span className="text-primary">Flashcard</span> Từ vựng IELTS
-                    </h1>
-                    <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                        Học từ vựng hiệu quả với phương pháp Spaced Repetition.
-                        Toàn bộ từ vựng được phân loại theo chủ đề và cấp độ.
-                    </p>
+        <div className="">
+            {/* Page Header */}
+            <div className="text-center mb-10 bg-gradient-hero py-12 md:py-16 lg:py-20">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-primary mb-4">
+                    <FiLayers className="w-8 h-8 text-white" />
                 </div>
-
+                <h1 className="text-3xl md:text-4xl font-bold mb-4">
+                    <span className="text-primary">Flashcard</span> Từ vựng IELTS
+                </h1>
+                <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                    Học từ vựng hiệu quả với phương pháp Spaced Repetition.
+                    Toàn bộ từ vựng được phân loại theo chủ đề và cấp độ.
+                </p>
+            </div>
+            <div className="container-custom py-8 ">
                 {/* Flashcard Decks */}
                 <FlashcardClient />
 

@@ -12,6 +12,7 @@ import {
   SamplesSection,
   CTASection,
 } from "@/components/sections";
+import BlogSection from "@/components/sections/blog-section";
 
 export default function HomePage() {
   return (
@@ -24,14 +25,17 @@ export default function HomePage() {
         {/* Features Section - Các tính năng */}
         <FeaturesSection />
 
+        {/* Samples Section - Bài mẫu Writing/Speaking */}
+        <SamplesSection />
+
+        {/* Blog Section - Bài viết nổi bật */}
+        <BlogSection />
+
         {/* Test Cards Section - Đề thi nổi bật */}
         <TestCardsSection />
 
         {/* Practice Section - Luyện tập Reading/Listening */}
         <PracticeSection />
-
-        {/* Samples Section - Bài mẫu Writing/Speaking */}
-        <SamplesSection />
 
         {/* CTA Section - Kêu gọi đăng ký */}
         <CTASection />

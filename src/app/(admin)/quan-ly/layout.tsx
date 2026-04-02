@@ -13,7 +13,8 @@ import {
     Bell,
     Calendar,
     ClipboardPenLine,
-    BookCheck
+    BookCheck,
+    Newspaper
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -76,6 +77,11 @@ const sidebarItems: SidebarItem[] = [
         title: "Flashcard",
         href: PATHS.ADMIN.FLASHCARD,
         icon: FiZap,
+    },
+    {
+        title: "Blog",
+        href: PATHS.ADMIN.BLOG,
+        icon: Newspaper,
     },
     {
         title: "Kiểm đầu vào",
